@@ -1,6 +1,9 @@
 package iteratorhelper
 
 import (
+	"bufio"
+	"io"
+
 	orderedmap "github.com/wk8/go-ordered-map/v2"
 )
 
@@ -58,6 +61,25 @@ func OrderedMapIter[K comparable, V any](o *orderedmap.OrderedMap[K, V]) func(yi
 	return func(yield func(k K, v V) bool) {
 		for pair := o.Oldest(); pair != nil; pair = pair.Next() {
 			if !yield(pair.Key, pair.Value) {
+				return
+			}
+		}
+	}
+}
+
+func Scan(r io.Reader, split bufio.SplitFunc) func(yield func(text string, err error) bool) {
+	scanner := bufio.NewScanner(r)
+	if split != nil {
+		scanner.Split(split)
+	}
+
+	return func(yield func(text string, err error) bool) {
+		for scanner.Scan() {
+			if scanner.Err() != nil {
+				yield("", scanner.Err())
+				return
+			}
+			if !yield(scanner.Text(), nil) {
 				return
 			}
 		}

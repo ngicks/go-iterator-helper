@@ -2,6 +2,7 @@ package iteratorhelper
 
 import (
 	"sort"
+	"strings"
 	"testing"
 
 	cmp "github.com/google/go-cmp/cmp"
@@ -120,4 +121,12 @@ func TestBase(t *testing.T) {
 	if diff := cmp.Diff(expectedV, outV); diff != "" {
 		t.Errorf("not equal. diff =%s", diff)
 	}
+
+	//Scanner
+	testCases[string, error]{
+		{
+			iter:      Scan(strings.NewReader("foo\nbar\nbaz"), nil),
+			expectedK: []string{"foo", "bar", "baz"},
+		},
+	}.test(t)
 }

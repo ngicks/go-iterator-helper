@@ -75,13 +75,13 @@ func Scan(r io.Reader, split bufio.SplitFunc) func(yield func(text string, err e
 
 	return func(yield func(text string, err error) bool) {
 		for scanner.Scan() {
-			if scanner.Err() != nil {
-				yield("", scanner.Err())
-				return
-			}
 			if !yield(scanner.Text(), nil) {
 				return
 			}
+		}
+		if scanner.Err() != nil {
+			yield("", scanner.Err())
+			return
 		}
 	}
 }

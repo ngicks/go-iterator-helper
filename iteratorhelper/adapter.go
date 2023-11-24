@@ -126,12 +126,11 @@ func TakeWhile[K, V any](
 	predicate func(k K, v V) bool,
 ) func(yield func(k K, v V) bool) {
 	return func(yield func(k K, v V) bool) {
-		taking := true
 		iter(func(k K, v V) bool {
-			if taking && !predicate(k, v) {
+			if !predicate(k, v) {
 				return false
 			}
-			if taking && !yield(k, v) {
+			if !yield(k, v) {
 				return false
 			}
 			return true
@@ -146,6 +145,7 @@ func Window[K, V any](iter func(yield func(k K, v V) bool), size uint) func(yiel
 	return func(yield func(k []K, v []V) bool) {
 		bufK, bufV := make([]K, size), make([]V, size)
 		idx := uint(0)
+		ended := false
 		iter(func(k K, v V) bool {
 			if idx < size {
 				bufK[idx] = k
@@ -160,6 +160,7 @@ func Window[K, V any](iter func(yield func(k K, v V) bool), size uint) func(yiel
 
 			if idx == size {
 				if !yield(append([]K{}, bufK...), append([]V{}, bufV...)) {
+					ended = true
 					return false
 				}
 			}
@@ -167,7 +168,7 @@ func Window[K, V any](iter func(yield func(k K, v V) bool), size uint) func(yiel
 			return true
 		})
 
-		if idx != size {
+		if !ended && idx != size {
 			_ = yield(append([]K{}, bufK[:idx]...), append([]V{}, bufV[:idx]...))
 		}
 	}
@@ -269,5 +270,16 @@ func ZipPair[K1, V1, K2, V2 any](
 			iterResult <- true
 			iterResult <- true
 		}
+	}
+}
+
+func Swap[K, V any](iter func(yield func(k K, v V) bool)) func(yield func(v V, k K) bool) {
+	return func(yield func(v V, k K) bool) {
+		iter(func(k K, v V) bool {
+			if !yield(v, k) {
+				return false
+			}
+			return true
+		})
 	}
 }

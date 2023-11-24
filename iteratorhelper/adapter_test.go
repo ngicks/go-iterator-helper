@@ -158,6 +158,15 @@ func TestAdapter(t *testing.T) {
 		},
 	}.test(t)
 
+	// swap
+	testCases[string, int]{
+		{
+			iter:      Swap(SliceIter([]string{"foo", "bar", "baz"})),
+			expectedK: []string{"foo", "bar", "baz"},
+			expectedV: []int{0, 1, 2},
+		},
+	}.test(t)
+
 	// combined
 	testCases[Pair[int, string], Pair[int, string]]{
 		{

@@ -47,8 +47,14 @@ func ChanIter[V any](ch <-chan V) func(yield func(V) bool) {
 	}
 }
 
-func RangeIter(start, end int) func(yield func(int) bool) {
-	return func(yield func(int) bool) {
+type Numeric interface {
+	~int | ~int8 | ~int16 | ~int32 | ~int64 |
+		~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr |
+		~float32 | ~float64
+}
+
+func RangeIter[T Numeric](start, end T) func(yield func(T) bool) {
+	return func(yield func(T) bool) {
 		for i := start; i < end; i++ {
 			if !yield(i) {
 				return

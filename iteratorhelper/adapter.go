@@ -1,21 +1,22 @@
 package iteratorhelper
 
 func Chain[K, V any](
-	iter1, iter2 func(yield func(k K, v V) bool),
+	iters ...(func(yield func(k K, v V) bool)),
 ) func(yield func(k K, v V) bool) {
 	return func(yield func(k K, v V) bool) {
 		stopped := false
-		iter1(func(k K, v V) bool {
-			if !yield(k, v) {
-				stopped = true
-				return false
+		for _, iter := range iters {
+			iter(func(k K, v V) bool {
+				if !yield(k, v) {
+					stopped = true
+					return false
+				}
+				return true
+			})
+			if stopped {
+				return
 			}
-			return true
-		})
-		if stopped {
-			return
 		}
-		iter2(yield)
 	}
 }
 

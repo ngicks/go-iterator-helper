@@ -6,11 +6,11 @@ gotip https://github.com/golang/go/issues/61897 iterator helper experimental hel
 
 ```
 go install golang.org/dl/gotip@latest
-gotip download 510541
+gotip download 543319
 ```
 
 ## Test
 
 ```
-GOEXPERIMENT=range gotip test ./...
+GOEXPERIMENT=rangefunc gotip test ./...
 ```

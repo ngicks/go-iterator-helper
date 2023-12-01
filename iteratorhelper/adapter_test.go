@@ -136,6 +136,22 @@ func TestAdapter(t *testing.T) {
 			expectedV: []string{"foo", "bar"},
 			breakIf:   func(l int, r string) bool { return r == "baz" },
 		},
+		{
+			iter:      ZipPull(SliceIterSingle([]int{1, 5, 7}), SliceIterSingle([]string{"foo", "bar", "baz"})),
+			expectedK: []int{1, 5, 7},
+			expectedV: []string{"foo", "bar", "baz"},
+		},
+		{
+			iter:      ZipPull(SliceIterSingle([]int{1, 5, 7}), SliceIterSingle([]string{"foo", "bar", "baz", "qux"})),
+			expectedK: []int{1, 5, 7},
+			expectedV: []string{"foo", "bar", "baz"},
+		},
+		{
+			iter:      ZipPull(SliceIterSingle([]int{1, 5, 7, 4}), SliceIterSingle([]string{"foo", "bar", "baz", "qux"})),
+			expectedK: []int{1, 5},
+			expectedV: []string{"foo", "bar"},
+			breakIf:   func(l int, r string) bool { return r == "baz" },
+		},
 	}.test(t)
 
 	// ZipPair

@@ -1,5 +1,9 @@
 package iteratorhelper
 
+import (
+	"iter"
+)
+
 func Chain[K, V any](
 	iters ...(func(yield func(k K, v V) bool)),
 ) func(yield func(k K, v V) bool) {
@@ -218,6 +222,30 @@ func Zip[V1, V2 any](
 			}
 			iterResult <- true
 			iterResult <- true
+		}
+	}
+}
+
+func ZipPull[V1, V2 any](
+	left func(yield func(v V1) bool),
+	right func(yield func(v V2) bool),
+) func(yield func(l V1, r V2) bool) {
+	return func(yield func(l V1, r V2) bool) {
+		nextL, stopL := iter.Pull(left)
+		nextR, stopR := iter.Pull(right)
+		defer stopL()
+		defer stopR()
+
+		for {
+			l, lOk := nextL()
+			r, rOk := nextR()
+
+			if !lOk || !rOk {
+				return
+			}
+			if !yield(l, r) {
+				return
+			}
 		}
 	}
 }

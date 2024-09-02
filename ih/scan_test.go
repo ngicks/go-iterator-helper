@@ -11,27 +11,42 @@ import (
 
 	goCmp "github.com/google/go-cmp/cmp"
 	"github.com/ngicks/go-iterator-helper/ih"
+	"github.com/ngicks/go-iterator-helper/ih/iterable"
 )
 
 func TestScan(t *testing.T) {
+	factory := func() *bufio.Scanner {
+		return bufio.NewScanner(strings.NewReader("foo\nbar\nbaz\n"))
+	}
 	testCase2[string, error]{
 		Seq: func() iter.Seq2[string, error] {
-			scanner := bufio.NewScanner(strings.NewReader("foo\nbar\nbaz\n"))
-			return ih.Scan(scanner)
+			return ih.Scan(factory())
+		},
+		Seqs: []func() iter.Seq2[string, error]{
+			func() iter.Seq2[string, error] {
+				return iterable.Scanner{Scanner: factory()}.IntoIter2()
+			},
 		},
 		Expected: []ih.KeyValue[string, error]{{"foo", nil}, {"bar", nil}, {"baz", nil}},
 		BreakAt:  2,
 	}.Test(t)
 
 	sampleErr := errors.New("sample")
+	factory = func() *bufio.Scanner {
+		return bufio.NewScanner(
+			io.MultiReader(
+				strings.NewReader("foo\nbar\nbaz\n"),
+				iotest.ErrReader(sampleErr)),
+		)
+	}
 	testCase2[string, error]{
 		Seq: func() iter.Seq2[string, error] {
-			scanner := bufio.NewScanner(
-				io.MultiReader(
-					strings.NewReader("foo\nbar\nbaz\n"),
-					iotest.ErrReader(sampleErr)),
-			)
-			return ih.Scan(scanner)
+			return ih.Scan(factory())
+		},
+		Seqs: []func() iter.Seq2[string, error]{
+			func() iter.Seq2[string, error] {
+				return iterable.Scanner{Scanner: factory()}.IntoIter2()
+			},
 		},
 		Expected: []ih.KeyValue[string, error]{{"foo", nil}, {"bar", nil}, {"baz", nil}, {"", sampleErr}},
 		BreakAt:  2,

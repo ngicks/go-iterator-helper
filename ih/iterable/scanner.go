@@ -13,6 +13,6 @@ type Scanner struct {
 	*bufio.Scanner
 }
 
-func (s *Scanner) IntoIter2() iter.Seq2[string, error] {
+func (s Scanner) IntoIter2() iter.Seq2[string, error] {
 	return ih.Scan(s.Scanner)
 }

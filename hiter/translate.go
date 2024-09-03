@@ -16,8 +16,9 @@ func Enumerate[T any](seq iter.Seq[T]) iter.Seq2[int, T] {
 	}
 }
 
-// Combine combines seq1 and seq2 into single key-value pairs.
-func Combine[K, V any](seq1 iter.Seq[K], seq2 iter.Seq[V]) iter.Seq2[K, V] {
+// Pairs combines seq1 and seq2 into an iterator over key-value pairs.
+// If either stops, the returned iterator stops.
+func Pairs[K, V any](seq1 iter.Seq[K], seq2 iter.Seq[V]) iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
 		next, stop := iter.Pull(seq2)
 		defer stop()

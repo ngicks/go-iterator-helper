@@ -24,24 +24,24 @@ func TestEnumerate(t *testing.T) {
 	}.Test(t)
 }
 
-func TestCombine(t *testing.T) {
+func TestPairs(t *testing.T) {
 	testCase2[int, int]{
 		Seq: func() iter.Seq2[int, int] {
-			return hiter.Combine(slices.Values(srcInt1), slices.Values(srcInt2))
+			return hiter.Pairs(slices.Values(srcInt1), slices.Values(srcInt2))
 		},
 		BreakAt:  2,
 		Expected: []hiter.KeyValue[int, int]{{12, 567}, {76, 2}, {8, 8}, {9, 0}, {923, 3}},
 	}.Test(t)
 	testCase2[int, int]{
 		Seq: func() iter.Seq2[int, int] {
-			return hiter.Combine(slices.Values(srcInt1[:len(srcInt1)-1]), slices.Values(srcInt2))
+			return hiter.Pairs(slices.Values(srcInt1[:len(srcInt1)-1]), slices.Values(srcInt2))
 		},
 		BreakAt:  2,
 		Expected: []hiter.KeyValue[int, int]{{12, 567}, {76, 2}, {8, 8}, {9, 0}},
 	}.Test(t)
 	testCase2[int, int]{
 		Seq: func() iter.Seq2[int, int] {
-			return hiter.Combine(slices.Values(srcInt1), slices.Values(srcInt2[:len(srcInt2)-1]))
+			return hiter.Pairs(slices.Values(srcInt1), slices.Values(srcInt2[:len(srcInt2)-1]))
 		},
 		BreakAt:  2,
 		Expected: []hiter.KeyValue[int, int]{{12, 567}, {76, 2}, {8, 8}, {9, 0}},
@@ -51,7 +51,7 @@ func TestCombine(t *testing.T) {
 func TestTranspose(t *testing.T) {
 	testCase2[int, int]{
 		Seq: func() iter.Seq2[int, int] {
-			return hiter.Transpose(hiter.Combine(slices.Values(srcInt1[:len(srcInt1)-1]), slices.Values(srcInt2)))
+			return hiter.Transpose(hiter.Pairs(slices.Values(srcInt1[:len(srcInt1)-1]), slices.Values(srcInt2)))
 		},
 		BreakAt:  2,
 		Expected: []hiter.KeyValue[int, int]{{567, 12}, {2, 76}, {8, 8}, {0, 9}},
@@ -61,7 +61,7 @@ func TestTranspose(t *testing.T) {
 func TestOmitL(t *testing.T) {
 	testCase1[int]{
 		Seq: func() iter.Seq[int] {
-			return hiter.OmitL(hiter.Combine(slices.Values(srcInt1), slices.Values(srcInt2)))
+			return hiter.OmitL(hiter.Pairs(slices.Values(srcInt1), slices.Values(srcInt2)))
 		},
 		BreakAt:  2,
 		Expected: []int{12, 76, 8, 9, 923},
@@ -71,7 +71,7 @@ func TestOmitL(t *testing.T) {
 func TestOmitF(t *testing.T) {
 	testCase1[int]{
 		Seq: func() iter.Seq[int] {
-			return hiter.OmitF(hiter.Combine(slices.Values(srcInt1), slices.Values(srcInt2)))
+			return hiter.OmitF(hiter.Pairs(slices.Values(srcInt1), slices.Values(srcInt2)))
 		},
 		BreakAt:  2,
 		Expected: []int{567, 2, 8, 0, 3},

@@ -21,7 +21,7 @@ func TestFlatten(t *testing.T) {
 	t.Run("FlattenF", func(t *testing.T) {
 		testCase2[int, int]{
 			Seq: func() iter.Seq2[int, int] {
-				return hiter.FlattenF(hiter.Combine(
+				return hiter.FlattenF(hiter.Pairs(
 					slices.Values([][]int{{0, 1, 2}, {3, 4}, {5}}),
 					slices.Values([]int{10, 7, 8, 1}),
 				))
@@ -33,7 +33,7 @@ func TestFlatten(t *testing.T) {
 	t.Run("FlattenL", func(t *testing.T) {
 		testCase2[int, int]{
 			Seq: func() iter.Seq2[int, int] {
-				return hiter.FlattenL(hiter.Combine(
+				return hiter.FlattenL(hiter.Pairs(
 					slices.Values([]int{0, 1, 2, 3, 4, 5}),
 					slices.Values([][]int{{10}, {7, 8}, {1}}),
 				))

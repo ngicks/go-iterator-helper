@@ -77,10 +77,12 @@ func mergeSortIterFunc[S ~[]T, T any](m S, cmp func(l, r T) int) iter.Seq[T] {
 	}
 }
 
-func Example() {
+// Example_merge_sort implements slice version merge sort and re-implements iterator version of it.
+func Example_merge_sort() {
 	rng := hiter.RepeatFunc(func() int { return rand.N(20) }, -1)
-	fmt.Printf("merged sort: %t\n", slices.IsSorted(mergeSortFunc(slices.Collect(limit(rng, 10)), cmp.Compare)))
-
+	fmt.Printf("merge sort: %t\n",
+		slices.IsSorted(mergeSortFunc(slices.Collect(limit(rng, 10)), cmp.Compare)),
+	)
 	fmt.Printf(
 		"merge sort iter: %t\n",
 		slices.IsSorted(
@@ -89,8 +91,7 @@ func Example() {
 			),
 		),
 	)
-
 	// Output:
-	// merged sort: true
+	// merge sort: true
 	// merge sort iter: true
 }

@@ -39,6 +39,7 @@ func Flatten[S ~[]E, E any](seq iter.Seq[S]) iter.Seq[E]
 func FlattenF[S1 ~[]E1, E1 any, E2 any](i iter.Seq2[S1, E2]) iter.Seq2[E1, E2]
 func FlattenL[S2 ~[]E2, E1 any, E2 any](i iter.Seq2[E1, S2]) iter.Seq2[E1, E2]
 func Heap[T any](h heap.Interface) iter.Seq[T]
+func IndexAccessible[A Atter[T], T any](a A, indices iter.Seq[int]) iter.Seq2[int, T]
 func LimitUntil[V any](seq iter.Seq[V], f func(V) bool) iter.Seq[V]
 func LimitUntil2[K, V any](seq iter.Seq2[K, V], f func(K, V) bool) iter.Seq2[K, V]
 func ListAll[T any](l *list.List) iter.Seq[T]
@@ -74,6 +75,7 @@ func StringsSplitFunc(s string, n int, splitFn StringsCutterFunc) iter.Seq[strin
 func SyncMap[K, V any](m *sync.Map) iter.Seq2[K, V]
 func Transpose[K, V any](seq iter.Seq2[K, V]) iter.Seq2[V, K]
 func Window[S ~[]E, E any](s S, n int) iter.Seq[S]
+type Atter[T any] interface{ ... }
 type FuncIterable[V any] func() iter.Seq[V]
 type FuncIterable2[K, V any] func() iter.Seq2[K, V]
 type IntoIterable[V any] interface{ ... }
@@ -96,6 +98,7 @@ All of them implement 1 or 2 of `Iter() iter.Seq[V]`, `Iter2() iter.Seq[K, V]`, 
 ```go
 type Chan[V any] <-chan V
 type Heap[T any] struct{ ... }
+type IndexAccessible[A hiter.Atter[T], T any] struct{ ... }
 type ListAll[T any] struct{ ... }
 type ListBackward[T any] struct{ ... }
 type ListElementAll[T any] struct{ ... }

@@ -23,8 +23,13 @@ func Heap[T any](h heap.Interface) iter.Seq[T] {
 
 // ListAll returns an iterator over l.
 func ListAll[T any](l *list.List) iter.Seq[T] {
+	return ListElementAll[T](l.Front())
+}
+
+// ListElementAll returns an iterator over from ele to end of the list.
+func ListElementAll[T any](ele *list.Element) iter.Seq[T] {
 	return func(yield func(T) bool) {
-		for ele := l.Front(); ele != nil; ele = ele.Next() {
+		for ; ele != nil; ele = ele.Next() {
 			if !yield(ele.Value.(T)) {
 				return
 			}
@@ -35,8 +40,13 @@ func ListAll[T any](l *list.List) iter.Seq[T] {
 // ListBackward returns an iterator over l,
 // traversing it backward by calling Back and Prev.
 func ListBackward[T any](l *list.List) iter.Seq[T] {
+	return ListElementBackward[T](l.Back())
+}
+
+// ListElementBackward returns an iterator over from ele to start of the list.
+func ListElementBackward[T any](ele *list.Element) iter.Seq[T] {
 	return func(yield func(T) bool) {
-		for ele := l.Back(); ele != nil; ele = ele.Prev() {
+		for ; ele != nil; ele = ele.Prev() {
 			if !yield(ele.Value.(T)) {
 				return
 			}

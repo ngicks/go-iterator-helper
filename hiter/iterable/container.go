@@ -34,6 +34,15 @@ func (l List[T]) Iter() iter.Seq[T] {
 	return hiter.ListAll[T](l.List)
 }
 
+// ListElement adds Iter method to *list.Element.
+type ListElement[T any] struct {
+	*list.Element
+}
+
+func (l ListElement[T]) Iter() iter.Seq[T] {
+	return hiter.ListElementAll[T](l.Element)
+}
+
 // ListBackward adds Iter method to *list.List.
 // Iter returns an iterator that traverses list backward.
 type ListBackward[T any] struct {
@@ -42,6 +51,16 @@ type ListBackward[T any] struct {
 
 func (l ListBackward[T]) Iter() iter.Seq[T] {
 	return hiter.ListBackward[T](l.List)
+}
+
+// ListElementBackward adds Iter method to *list.Element.
+// Iter returns an iterator that traverses list backward.
+type ListElementBackward[T any] struct {
+	*list.Element
+}
+
+func (l ListElementBackward[T]) Iter() iter.Seq[T] {
+	return hiter.ListElementBackward[T](l.Element)
 }
 
 var (

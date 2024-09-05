@@ -59,15 +59,26 @@ func TestContainerList(t *testing.T) {
 			},
 			Seqs: []func() iter.Seq[int]{
 				func() iter.Seq[int] {
-					s := list.New()
-					for i := range 5 {
-						s.PushBack(i + 5)
-					}
 					return iterable.List[int]{List: s}.Iter()
 				},
 			},
 			Expected: []int{5, 6, 7, 8, 9},
 			BreakAt:  3,
+		}.Test(t)
+	})
+
+	t.Run("ListElementAll", func(t *testing.T) {
+		testCase1[int]{
+			Seq: func() iter.Seq[int] {
+				return hiter.ListElementAll[int](s.Front().Next().Next())
+			},
+			Seqs: []func() iter.Seq[int]{
+				func() iter.Seq[int] {
+					return iterable.ListElement[int]{Element: s.Front().Next().Next()}.Iter()
+				},
+			},
+			Expected: []int{7, 8, 9},
+			BreakAt:  2,
 		}.Test(t)
 	})
 
@@ -82,6 +93,21 @@ func TestContainerList(t *testing.T) {
 				},
 			},
 			Expected: []int{9, 8, 7, 6, 5},
+			BreakAt:  3,
+		}.Test(t)
+	})
+
+	t.Run("ListElementBackward", func(t *testing.T) {
+		testCase1[int]{
+			Seq: func() iter.Seq[int] {
+				return hiter.ListElementBackward[int](s.Back().Prev())
+			},
+			Seqs: []func() iter.Seq[int]{
+				func() iter.Seq[int] {
+					return iterable.ListElementBackward[int]{Element: s.Back().Prev()}.Iter()
+				},
+			},
+			Expected: []int{8, 7, 6, 5},
 			BreakAt:  3,
 		}.Test(t)
 	})

@@ -9,7 +9,7 @@ import (
 
 // Heap returns an iterator over heap.Interface.
 // Consuming iter.Seq[T] also consumes h.
-// Explicit closing is needed if h needs not to be mutated.
+// To avoid this, the caller must clone input h before passing to Heap.
 func Heap[T any](h heap.Interface) iter.Seq[T] {
 	return func(yield func(T) bool) {
 		for h.Len() > 0 {

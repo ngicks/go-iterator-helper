@@ -59,7 +59,7 @@ func TestContainerList(t *testing.T) {
 			},
 			Seqs: []func() iter.Seq[int]{
 				func() iter.Seq[int] {
-					return iterable.List[int]{List: s}.Iter()
+					return iterable.ListAll[int]{List: s}.Iter()
 				},
 			},
 			Expected: []int{5, 6, 7, 8, 9},
@@ -74,7 +74,7 @@ func TestContainerList(t *testing.T) {
 			},
 			Seqs: []func() iter.Seq[int]{
 				func() iter.Seq[int] {
-					return iterable.ListElement[int]{Element: s.Front().Next().Next()}.Iter()
+					return iterable.ListElementAll[int]{Element: s.Front().Next().Next()}.Iter()
 				},
 			},
 			Expected: []int{7, 8, 9},

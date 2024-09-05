@@ -21,25 +21,25 @@ func (h Heap[T]) IntoIter() iter.Seq[T] {
 }
 
 var (
-	_ hiter.Iterable[any] = List[any]{}
+	_ hiter.Iterable[any] = ListAll[any]{}
 	_ hiter.Iterable[any] = ListBackward[any]{}
 )
 
-// List adds Iter method to *list.List.
-type List[T any] struct {
+// ListAll adds Iter method to *list.ListAll.
+type ListAll[T any] struct {
 	*list.List
 }
 
-func (l List[T]) Iter() iter.Seq[T] {
+func (l ListAll[T]) Iter() iter.Seq[T] {
 	return hiter.ListAll[T](l.List)
 }
 
-// ListElement adds Iter method to *list.Element.
-type ListElement[T any] struct {
+// ListElementAll adds Iter method to *list.Element.
+type ListElementAll[T any] struct {
 	*list.Element
 }
 
-func (l ListElement[T]) Iter() iter.Seq[T] {
+func (l ListElementAll[T]) Iter() iter.Seq[T] {
 	return hiter.ListElementAll[T](l.Element)
 }
 

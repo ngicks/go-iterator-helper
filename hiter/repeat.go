@@ -3,9 +3,10 @@ package hiter
 import "iter"
 
 // Repeat returns an iterator that generates v n times.
+// If n < 0, the returned iterator repeats forever.
 func Repeat[V any](v V, n int) iter.Seq[V] {
 	return func(yield func(V) bool) {
-		for range n {
+		for ; n != 0; n-- {
 			if !yield(v) {
 				return
 			}
@@ -14,10 +15,35 @@ func Repeat[V any](v V, n int) iter.Seq[V] {
 }
 
 // Repeat2 returns an iterator that generates v n times.
+// If n < 0, the returned iterator repeats forever.
 func Repeat2[K, V any](k K, v V, n int) iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
-		for range n {
+		for ; n != 0; n-- {
 			if !yield(k, v) {
+				return
+			}
+		}
+	}
+}
+
+// RepeatFunc returns an iterator that generates result from fnV n times.
+// If n < 0, the returned iterator repeats forever.
+func RepeatFunc[V any](fnV func() V, n int) iter.Seq[V] {
+	return func(yield func(V) bool) {
+		for ; n != 0; n-- {
+			if !yield(fnV()) {
+				return
+			}
+		}
+	}
+}
+
+// RepeatFunc2 returns an iterator that generates result of fnK and fnV n times.
+// If n < 0, the returned iterator repeats forever.
+func RepeatFunc2[K, V any](fnK func() K, fnV func() V, n int) iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		for ; n != 0; n-- {
+			if !yield(fnK(), fnV()) {
 				return
 			}
 		}

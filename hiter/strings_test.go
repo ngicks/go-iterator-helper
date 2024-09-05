@@ -221,4 +221,19 @@ func TestStringsSplitFunc(t *testing.T) {
 			Expected: []string{"S", "T", "O", "P ", "A", "L", "L ", "C", "A", "P", "I", "T", "A", "L"},
 		}.Test(t)
 	})
+
+	t.Run("StringsCutWord", func(t *testing.T) {
+		testCase1[string]{
+			Seq: func() iter.Seq[string] {
+				return hiter.StringsSplitFunc(allCapital, -1, hiter.StringsCutWord)
+			},
+			Expected: []string{"STOP", "ALL", "CAPITAL"},
+		}.Test(t)
+		testCase1[string]{
+			Seq: func() iter.Seq[string] {
+				return hiter.StringsSplitFunc("AAA\t\tBBB    CCC    ", -1, hiter.StringsCutWord)
+			},
+			Expected: []string{"AAA", "BBB", "CCC"},
+		}.Test(t)
+	})
 }

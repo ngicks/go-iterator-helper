@@ -86,6 +86,34 @@ func StringsCutNewLine(s string) (int, int) {
 	return i, j
 }
 
+// StringsCutWord is a split function for a [StringsSplitFunc] that returns each space-separated word of text,
+// with surrounding spaces deleted. It will never return an empty string.
+// The definition of space is set by unicode.IsSpace.
+func StringsCutWord(s string) (tokUntil int, skipUntil int) {
+	if len(s) < 1 {
+		return len(s), len(s)
+	}
+	var i int
+	for len(s) > 0 {
+		r, k := utf8.DecodeRuneInString(s)
+		if unicode.IsSpace(r) {
+			break
+		}
+		s = s[k:]
+		i += k
+	}
+	j := i
+	for len(s) > 0 {
+		r, k := utf8.DecodeRuneInString(s)
+		if !unicode.IsSpace(r) {
+			break
+		}
+		s = s[k:]
+		j += k
+	}
+	return i, j
+}
+
 // StringsCutUpperCase splits "UpperCasedWords" into "Upper" "Cased" "Words"
 func StringsCutUpperCase(s string) (tokUntil int, skipUntil int) {
 	org := s

@@ -43,6 +43,8 @@ func LimitUntil[V any](seq iter.Seq[V], f func(V) bool) iter.Seq[V]
 func LimitUntil2[K, V any](seq iter.Seq2[K, V], f func(K, V) bool) iter.Seq2[K, V]
 func ListAll[T any](l *list.List) iter.Seq[T]
 func ListBackward[T any](l *list.List) iter.Seq[T]
+func ListElementAll[T any](ele *list.Element) iter.Seq[T]
+func ListElementBackward[T any](ele *list.Element) iter.Seq[T]
 func Omit[K any](seq iter.Seq[K]) func(yield func() bool)
 func Omit2[K, V any](seq iter.Seq2[K, V]) func(yield func() bool)
 func OmitF[T, U any](i iter.Seq2[T, U]) iter.Seq[U]
@@ -51,17 +53,22 @@ func Pairs[K, V any](seq1 iter.Seq[K], seq2 iter.Seq[V]) iter.Seq2[K, V]
 func Range[T Numeric](start, end T) iter.Seq[T]
 func Repeat[V any](v V, n int) iter.Seq[V]
 func Repeat2[K, V any](k K, v V, n int) iter.Seq2[K, V]
+func RepeatFunc[V any](fnV func() V, n int) iter.Seq[V]
+func RepeatFunc2[K, V any](fnK func() K, fnV func() V, n int) iter.Seq2[K, V]
 func RingAll[T any](r *ring.Ring) iter.Seq[T]
 func RingBackward[T any](r *ring.Ring) iter.Seq[T]
 func Scan(scanner *bufio.Scanner) iter.Seq2[string, error]
 func Skip[V any](seq iter.Seq[V], n int) iter.Seq[V]
 func Skip2[K, V any](seq iter.Seq2[K, V], n int) iter.Seq2[K, V]
+func SkipLast[V any](seq iter.Seq[V], n int) iter.Seq[V]
+func SkipLast2[K, V any](seq iter.Seq2[K, V], n int) iter.Seq2[K, V]
 func SkipWhile[V any](seq iter.Seq[V], f func(V) bool) iter.Seq[V]
 func SkipWhile2[K, V any](seq iter.Seq2[K, V], f func(K, V) bool) iter.Seq2[K, V]
 func StringsChunk(s string, n int) iter.Seq[string]
 func StringsCollect(seq iter.Seq[string], sizeHint int) string
 func StringsCutNewLine(s string) (int, int)
 func StringsCutUpperCase(s string) (tokUntil int, skipUntil int)
+func StringsCutWord(s string) (tokUntil int, skipUntil int)
 func StringsRuneChunk(s string, n int) iter.Seq[string]
 func StringsSplitFunc(s string, n int, splitFn StringsCutterFunc) iter.Seq[string]
 func SyncMap[K, V any](m *sync.Map) iter.Seq2[K, V]
@@ -84,17 +91,23 @@ type StringsCutterFunc func(s string) (tokUntil, skipUntil int)
 
 Wrapper for iterable objects; heap, list, ring, slice, map, channel, etc.
 
+All of them implement 1 or 2 of `Iter() iter.Seq[V]`, `Iter2() iter.Seq[K, V]`, `IntoIter() iter.Seq[V]` or `IntoIter2() iter.Seq2[K, V]`
+
 ```go
 type Chan[V any] <-chan V
 type Heap[T any] struct{ ... }
-type List[T any] struct{ ... }
+type ListAll[T any] struct{ ... }
 type ListBackward[T any] struct{ ... }
+type ListElementAll[T any] struct{ ... }
+type ListElementBackward[T any] struct{ ... }
 type MapAll[K comparable, V any] map[K]V
 type MapSorted[K cmp.Ordered, V any] map[K]V
 type MapSortedFunc[M ~map[K]V, K comparable, V any] struct{ ... }
 type Range[T hiter.Numeric] struct{ ... }
 type Repeatable[V any] struct{ ... }
 type Repeatable2[K, V any] struct{ ... }
+type RepeatableFunc[V any] struct{ ... }
+type RepeatableFunc2[K, V any] struct{ ... }
 type Ring[T any] struct{ ... }
 type RingBackward[T any] struct{ ... }
 type Scanner struct{ ... }

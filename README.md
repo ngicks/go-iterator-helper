@@ -1,5 +1,7 @@
 # go-iterator-helper
 
+[![GoDoc](https://godoc.org/github.com/golang/gddo?status.svg)](https://pkg.go.dev/github.com/ngicks/go-iterator-helper)
+
 Helpers / converters / sources for iterators.
 
 ## collection

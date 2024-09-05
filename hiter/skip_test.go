@@ -18,6 +18,26 @@ func TestSkip(t *testing.T) {
 			Expected: []int{1, 4, 2, 1, 1, 6, 2, 1, 1, 9, 2},
 			BreakAt:  3,
 		}.Test(t)
+		testCase1[int]{
+			Seq: func() iter.Seq[int] {
+				return hiter.Skip(slices.Values(src[:2]), 5)
+			},
+		}.Test(t)
+	})
+
+	t.Run("SkipLast", func(t *testing.T) {
+		testCase1[int]{
+			Seq: func() iter.Seq[int] {
+				return hiter.SkipLast(slices.Values(src), 5)
+			},
+			Expected: []int{1, 1, 4, 2, 1, 1, 4, 2, 1, 1, 6},
+			BreakAt:  3,
+		}.Test(t)
+		testCase1[int]{
+			Seq: func() iter.Seq[int] {
+				return hiter.SkipLast(slices.Values(src[:2]), 5)
+			},
+		}.Test(t)
 	})
 
 	t.Run("Skip2", func(t *testing.T) {
@@ -32,6 +52,26 @@ func TestSkip(t *testing.T) {
 				{14, 9}, {15, 2},
 			},
 			BreakAt: 3,
+		}.Test(t)
+		testCase2[int, int]{
+			Seq: func() iter.Seq2[int, int] {
+				return hiter.Skip2(slices.All(src[:2]), 5)
+			},
+		}.Test(t)
+	})
+
+	t.Run("SkipLast2", func(t *testing.T) {
+		testCase2[int, int]{
+			Seq: func() iter.Seq2[int, int] {
+				return hiter.SkipLast2(slices.All(src), 5)
+			},
+			Expected: []hiter.KeyValue[int, int]{{0, 1}, {1, 1}, {2, 4}, {3, 2}, {4, 1}, {5, 1}, {6, 4}, {7, 2}, {8, 1}, {9, 1}, {10, 6}},
+			BreakAt:  3,
+		}.Test(t)
+		testCase2[int, int]{
+			Seq: func() iter.Seq2[int, int] {
+				return hiter.SkipLast2(slices.All(src[:2]), 5)
+			},
 		}.Test(t)
 	})
 }

@@ -27,7 +27,7 @@ func (tc testCase1[V]) Test(t *testing.T, cb ...func()) {
 	for i, seq := range append([](func() iter.Seq[V]){tc.Seq}, tc.Seqs...) {
 		t.Run(fmt.Sprintf("#%02d", i), func(t *testing.T) {
 			collected := slices.Collect(seq())
-			assert.Assert(t, cmp.DeepEqual(collected, tc.Expected, tc.CmpOpt...))
+			assert.Assert(t, cmp.DeepEqual(tc.Expected, collected, tc.CmpOpt...))
 
 			for _, f := range cb {
 				f()
@@ -43,7 +43,7 @@ func (tc testCase1[V]) Test(t *testing.T, cb ...func()) {
 				collected[i] = v
 				i++
 			}
-			assert.Assert(t, cmp.DeepEqual(collected, tc.Expected[:tc.BreakAt], tc.CmpOpt...))
+			assert.Assert(t, cmp.DeepEqual(tc.Expected[:tc.BreakAt], collected, tc.CmpOpt...))
 
 			for _, f := range cb {
 				f()
@@ -71,7 +71,7 @@ func (tc testCase2[K, V]) Test(t *testing.T, cb ...func()) {
 				collected = append(collected, hiter.KeyValue[K, V]{k, v})
 			}
 
-			assert.Assert(t, cmp.DeepEqual(collected, tc.Expected, tc.CmpOpt...))
+			assert.Assert(t, cmp.DeepEqual(tc.Expected, collected, tc.CmpOpt...))
 
 			for _, f := range cb {
 				f()
@@ -86,7 +86,7 @@ func (tc testCase2[K, V]) Test(t *testing.T, cb ...func()) {
 				collected[i] = hiter.KeyValue[K, V]{k, v}
 				i++
 			}
-			assert.Assert(t, cmp.DeepEqual(collected, tc.Expected[:tc.BreakAt], tc.CmpOpt...))
+			assert.Assert(t, cmp.DeepEqual(tc.Expected[:tc.BreakAt], collected, tc.CmpOpt...))
 
 			for _, f := range cb {
 				f()
@@ -111,7 +111,7 @@ func (tc testCaseMap[K, V]) Test(t *testing.T, cb ...func()) {
 
 			collected := maps.Collect(seq())
 
-			assert.Assert(t, cmp.DeepEqual(collected, tc.Expected, tc.CmpOpt...))
+			assert.Assert(t, cmp.DeepEqual(tc.Expected, collected, tc.CmpOpt...))
 
 			for _, f := range cb {
 				f()
@@ -127,7 +127,7 @@ func (tc testCaseMap[K, V]) Test(t *testing.T, cb ...func()) {
 				i++
 			}
 			for k, v := range collected {
-				assert.Assert(t, cmp.DeepEqual(v, tc.Expected[k], tc.CmpOpt...), "key=%v", k)
+				assert.Assert(t, cmp.DeepEqual(tc.Expected[k], v, tc.CmpOpt...), "key=%v", k)
 			}
 			assert.Assert(t, cmp.Len(collected, tc.BreakAt))
 

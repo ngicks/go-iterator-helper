@@ -1,4 +1,4 @@
-package example
+package hiter_test
 
 import (
 	"cmp"

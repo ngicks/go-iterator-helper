@@ -8,7 +8,6 @@ import (
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
-	"gotest.tools/v3/assert"
 )
 
 func TestChanAll(t *testing.T) {
@@ -34,18 +33,34 @@ func TestChanAll(t *testing.T) {
 		return c
 	}
 
-	var count atomic.Int64
 	testCase1[int]{
 		Seq: func() iter.Seq[int] {
-			return hiter.Chan(chanAll(), func() { count.Add(1) })
+			return hiter.Chan(context.Background(), chanAll())
 		},
 		Seqs: []func() iter.Seq[int]{
 			func() iter.Seq[int] {
-				return iterable.Chan[int](chanAll()).IntoIter()
+				return iterable.Chan[int]{C: chanAll()}.IntoIter()
 			},
 		},
 		Expected: []int{5, 6, 7, 8, 9, 10},
 		BreakAt:  3,
 	}.Test(t, func() { (*cancelP.Load())() })
-	assert.Assert(t, count.Load() == 2)
+
+	testCase1[int]{
+		Seq: func() iter.Seq[int] {
+			ctx, cancel := context.WithCancel(context.Background())
+			var count int
+			return hiter.Tap(
+				func(_ int) {
+					count++
+					if count == 4 {
+						cancel()
+					}
+				},
+				hiter.Chan(ctx, chanAll()),
+			)
+		},
+		Expected: []int{5, 6, 7, 8},
+		BreakAt:  3,
+	}.Test(t)
 }

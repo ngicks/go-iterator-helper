@@ -11,10 +11,13 @@ Some useful function consuming iter.Seq / iter.Seq2.
 The idea is stolen from https://jsr.io/@std/collections/doc.
 
 ```go
+package collection // import "github.com/ngicks/go-iterator-helper/collection"
+
 func Permutations[S ~[]E, E any](in S) iter.Seq[S]
 func ReduceGroup[K comparable, V, Sum any](seq iter.Seq2[K, V], reducer func(accumulator Sum, current V) Sum, initial Sum) map[K]Sum
 func RunningReduce[V, Sum any](seq iter.Seq[V], reducer func(accumulator Sum, current V, i int) Sum, ...) iter.Seq[Sum]
 func SumOf[T any, E hiter.Numeric](seq iter.Seq[T], selector func(ele T) E) E
+
 ```
 
 ## hiter
@@ -28,6 +31,8 @@ For example, `Zip`, `Reduce` are not defined since it will be implemented in `xi
 [#61898](https://github.com/golang/go/issues/61898) accepted and merged.
 
 ```go
+package hiter // import "github.com/ngicks/go-iterator-helper/hiter"
+
 func Alternate[V any](seqs ...iter.Seq[V]) iter.Seq[V]
 func Alternate2[K, V any](seqs ...iter.Seq2[K, V]) iter.Seq2[K, V]
 func AppendSeq2[S ~[]KeyValue[K, V], K, V any](s S, seq iter.Seq2[K, V]) S
@@ -87,6 +92,7 @@ type KeyValue[K, V any] struct{ ... }
 type KeyValues[K, V any] []KeyValue[K, V]
 type Numeric interface{ ... }
 type StringsCutterFunc func(s string) (tokUntil, skipUntil int)
+
 ```
 
 ## hiter/iterable
@@ -96,6 +102,8 @@ Wrapper for iterable objects; heap, list, ring, slice, map, channel, etc.
 All of them implement 1 or 2 of `Iter() iter.Seq[V]`, `Iter2() iter.Seq[K, V]`, `IntoIter() iter.Seq[V]` or `IntoIter2() iter.Seq2[K, V]`
 
 ```go
+package iterable // import "github.com/ngicks/go-iterator-helper/hiter/iterable"
+
 type Chan[V any] <-chan V
 type Heap[T any] struct{ ... }
 type IndexAccessible[A hiter.Atter[T], T any] struct{ ... }
@@ -117,6 +125,7 @@ type Scanner struct{ ... }
 type SliceAll[E any] []E
 type SliceBackward[E any] []E
 type SyncMap[K comparable, V any] struct{ ... }
+
 ```
 
 ## x/exp/xiter

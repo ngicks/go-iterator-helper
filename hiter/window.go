@@ -1,6 +1,8 @@
 package hiter
 
-import "iter"
+import (
+	"iter"
+)
 
 // Window returns an iterator over overlapping sub-slices of n size (moving windows).
 func Window[S ~[]E, E any](s S, n int) iter.Seq[S] {

@@ -57,7 +57,7 @@ func TestStringsChunk(t *testing.T) {
 			BreakAt:  2,
 		}.Test(t)
 
-		assert.Equal(t, runesSrc, hiter.StringsCollect(slices.Values(expected), len(runesSrc)))
+		assert.Equal(t, runesSrc, hiter.StringsCollect(len(runesSrc), slices.Values(expected)))
 	})
 
 	t.Run("divide by 0", func(t *testing.T) {

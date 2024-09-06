@@ -9,11 +9,11 @@ import (
 
 func Example_range_map() {
 	for i := range hiter.LimitUntil(
+		func(i int) bool { return i < 50 },
 		xiter.Map(
 			func(i int) int { return i * 7 },
 			hiter.Range(0, 10),
 		),
-		func(i int) bool { return i < 50 },
 	) {
 		if i > 0 {
 			fmt.Printf(" ")

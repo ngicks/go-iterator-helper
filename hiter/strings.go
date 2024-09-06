@@ -13,7 +13,7 @@ import (
 // StringsCollect reduces seq to a single string.
 // sizeHint hints size of internal buffer.
 // Correctly sized sizeHint may reduce allocation.
-func StringsCollect(seq iter.Seq[string], sizeHint int) string {
+func StringsCollect(sizeHint int, seq iter.Seq[string]) string {
 	var buf strings.Builder
 	buf.Grow(sizeHint)
 	for s := range seq {
@@ -69,12 +69,12 @@ func StringsRuneChunk(s string, n int) iter.Seq[string] {
 	}
 }
 
-// StringsCutterFunc is used to cut string from head.
+// StringsCutterFunc is used with [StringsSplitFunc] to cut string from head.
 // s[:tokUntil] is yielded through StringsSplitFunc.
 // s[tokUntil:skipUntil] will be ignored.
 type StringsCutterFunc func(s string) (tokUntil, skipUntil int)
 
-// StringsCutNewLine is used with StringsSplitFunc.
+// StringsCutNewLine is used with [StringsSplitFunc].
 // The input strings will be splitted at "\n".
 // It also skips "\r" following "\n".
 func StringsCutNewLine(s string) (int, int) {
@@ -114,7 +114,8 @@ func StringsCutWord(s string) (tokUntil int, skipUntil int) {
 	return i, j
 }
 
-// StringsCutUpperCase splits "UpperCasedWords" into "Upper" "Cased" "Words"
+// StringsCutUpperCase is a split function for a [StringsSplitFunc]
+// that splits "UpperCasedWords" into "Upper" "Cased" "Words"
 func StringsCutUpperCase(s string) (tokUntil int, skipUntil int) {
 	org := s
 	if len(s) < 1 {

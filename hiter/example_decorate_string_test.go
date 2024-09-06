@@ -16,15 +16,15 @@ func Example_decorate_string() {
 		N:   1,
 	}
 	m := hiter.StringsCollect(
+		9+((2 /*num*/ +2 /*. */ +1 /* */)*3),
 		hiter.SkipLast(
+			1,
 			hiter.Decorate(
-				hiter.StringsSplitFunc(src, -1, hiter.StringsCutWord),
 				numListTitle,
 				iterable.Repeatable[string]{V: " ", N: 1},
+				hiter.StringsSplitFunc(src, -1, hiter.StringsCutWord),
 			),
-			1,
 		),
-		9+((2 /*num*/ +2 /*. */ +1 /* */)*3),
 	)
 	fmt.Printf("%s\n", m)
 	// Output:

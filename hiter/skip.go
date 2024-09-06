@@ -5,7 +5,7 @@ import (
 )
 
 // SkipWhile returns an iterator over seq that skips n elements from seq.
-func Skip[V any](seq iter.Seq[V], n int) iter.Seq[V] {
+func Skip[V any](n int, seq iter.Seq[V]) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		if n <= 0 {
 			return
@@ -22,7 +22,7 @@ func Skip[V any](seq iter.Seq[V], n int) iter.Seq[V] {
 }
 
 // SkipWhile returns an iterator over seq that skips n key-value pairs from seq.
-func Skip2[K, V any](seq iter.Seq2[K, V], n int) iter.Seq2[K, V] {
+func Skip2[K, V any](n int, seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
 		if n <= 0 {
 			return
@@ -39,7 +39,7 @@ func Skip2[K, V any](seq iter.Seq2[K, V], n int) iter.Seq2[K, V] {
 }
 
 // SkipLast returns an iterator over seq that skips last n elements.
-func SkipLast[V any](seq iter.Seq[V], n int) iter.Seq[V] {
+func SkipLast[V any](n int, seq iter.Seq[V]) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		var ( // easy implementation for ring buffer.
 			buf    = make([]V, n)
@@ -70,7 +70,7 @@ func SkipLast[V any](seq iter.Seq[V], n int) iter.Seq[V] {
 }
 
 // SkipLast returns an iterator over seq that skips last n key-value pairs.
-func SkipLast2[K, V any](seq iter.Seq2[K, V], n int) iter.Seq2[K, V] {
+func SkipLast2[K, V any](n int, seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
 		var ( // easy implementation for ring buffer.
 			buf    = make([]KeyValue[K, V], n)
@@ -101,7 +101,7 @@ func SkipLast2[K, V any](seq iter.Seq2[K, V], n int) iter.Seq2[K, V] {
 }
 
 // SkipWhile returns an iterator over seq that skips elements until f returns false.
-func SkipWhile[V any](seq iter.Seq[V], f func(V) bool) iter.Seq[V] {
+func SkipWhile[V any](f func(V) bool, seq iter.Seq[V]) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		skipping := true
 		for v := range seq {
@@ -117,7 +117,7 @@ func SkipWhile[V any](seq iter.Seq[V], f func(V) bool) iter.Seq[V] {
 }
 
 // SkipWhile2 returns an iterator over seq that skips key-value pairs until f returns false.
-func SkipWhile2[K, V any](seq iter.Seq2[K, V], f func(K, V) bool) iter.Seq2[K, V] {
+func SkipWhile2[K, V any](f func(K, V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
 		skipping := true
 		for k, v := range seq {

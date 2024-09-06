@@ -26,6 +26,7 @@ func (tc testCase1[V]) Test(t *testing.T, cb ...func()) {
 
 	for i, seq := range append([](func() iter.Seq[V]){tc.Seq}, tc.Seqs...) {
 		t.Run(fmt.Sprintf("#%02d", i), func(t *testing.T) {
+			t.Helper()
 			collected := slices.Collect(seq())
 			assert.Assert(t, cmp.DeepEqual(tc.Expected, collected, tc.CmpOpt...))
 
@@ -64,6 +65,7 @@ func (tc testCase2[K, V]) Test(t *testing.T, cb ...func()) {
 	t.Helper()
 
 	for i, seq := range append([](func() iter.Seq2[K, V]){tc.Seq}, tc.Seqs...) {
+		t.Helper()
 		t.Run(fmt.Sprintf("#%02d", i), func(t *testing.T) {
 
 			var collected []hiter.KeyValue[K, V]
@@ -108,6 +110,7 @@ func (tc testCaseMap[K, V]) Test(t *testing.T, cb ...func()) {
 
 	for i, seq := range append([](func() iter.Seq2[K, V]){tc.Seq}, tc.Seqs...) {
 		t.Run(fmt.Sprintf("#%02d", i), func(t *testing.T) {
+			t.Helper()
 
 			collected := maps.Collect(seq())
 

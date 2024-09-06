@@ -4,7 +4,7 @@ import "iter"
 
 // Decorate decorates seq by prepend and append,
 // by yielding additional elements before and after seq yields.
-func Decorate[V any](seq iter.Seq[V], prepend, append Iterable[V]) iter.Seq[V] {
+func Decorate[V any](prepend, append Iterable[V], seq iter.Seq[V]) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		for v := range seq {
 			if prepend != nil {
@@ -30,7 +30,7 @@ func Decorate[V any](seq iter.Seq[V], prepend, append Iterable[V]) iter.Seq[V] {
 
 // Decorate2 decorates seq by prepend and append,
 // by yielding additional elements before and after seq yields.
-func Decorate2[K, V any](seq iter.Seq2[K, V], prepend, append Iterable2[K, V]) iter.Seq2[K, V] {
+func Decorate2[K, V any](prepend, append Iterable2[K, V], seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
 		for k, v := range seq {
 			if prepend != nil {

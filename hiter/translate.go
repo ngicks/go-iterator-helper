@@ -43,9 +43,9 @@ func Transpose[K, V any](seq iter.Seq2[K, V]) iter.Seq2[V, K] {
 }
 
 // OmitL drops latter part of key-value pairs that seq generates.
-func OmitL[T, U any](i iter.Seq2[T, U]) iter.Seq[T] {
+func OmitL[T, U any](seq iter.Seq2[T, U]) iter.Seq[T] {
 	return func(yield func(T) bool) {
-		for t := range i {
+		for t := range seq {
 			if !yield(t) {
 				return
 			}
@@ -54,9 +54,9 @@ func OmitL[T, U any](i iter.Seq2[T, U]) iter.Seq[T] {
 }
 
 // OmitF drops former part of key-value pairs that seq generates.
-func OmitF[T, U any](i iter.Seq2[T, U]) iter.Seq[U] {
+func OmitF[T, U any](seq iter.Seq2[T, U]) iter.Seq[U] {
 	return func(yield func(U) bool) {
-		for _, u := range i {
+		for _, u := range seq {
 			if !yield(u) {
 				return
 			}

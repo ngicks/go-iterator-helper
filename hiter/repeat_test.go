@@ -12,11 +12,11 @@ func TestRepeat(t *testing.T) {
 	// avoiding depending to xiter.
 	limit10 := func(seq iter.Seq[uint]) iter.Seq[uint] {
 		var count int
-		return hiter.LimitUntil(seq, func(uint) bool { count++; return count <= 10 })
+		return hiter.LimitUntil(func(uint) bool { count++; return count <= 10 }, seq)
 	}
 	limit102 := func(seq iter.Seq2[uint, string]) iter.Seq2[uint, string] {
 		var count int
-		return hiter.LimitUntil2(seq, func(uint, string) bool { count++; return count <= 10 })
+		return hiter.LimitUntil2(func(uint, string) bool { count++; return count <= 10 }, seq)
 	}
 
 	t.Run("Repeatable", func(t *testing.T) {

@@ -12,12 +12,8 @@ func Window[S ~[]E, E any](s S, n int) iter.Seq[S] {
 		}
 		var (
 			start = 0
-			end   = n
+			end   = min(n, len(s))
 		)
-		if end > len(s) {
-			yield(s)
-			return
-		}
 		for {
 			if !yield(s[start:end]) {
 				return

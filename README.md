@@ -16,7 +16,8 @@ package collection // import "github.com/ngicks/go-iterator-helper/collection"
 func Permutations[S ~[]E, E any](in S) iter.Seq[S]
 func ReduceGroup[K comparable, V, Sum any](seq iter.Seq2[K, V], reducer func(accumulator Sum, current V) Sum, initial Sum) map[K]Sum
 func RunningReduce[V, Sum any](seq iter.Seq[V], reducer func(accumulator Sum, current V, i int) Sum, ...) iter.Seq[Sum]
-func SumOf[T any, E hiter.Numeric](seq iter.Seq[T], selector func(ele T) E) E
+func SumOf[T any, E Summable](seq iter.Seq[T], selector func(ele T) E) E
+type Summable interface{ ... }
 
 ```
 
@@ -55,8 +56,8 @@ func ListElementAll[T any](ele *list.Element) iter.Seq[T]
 func ListElementBackward[T any](ele *list.Element) iter.Seq[T]
 func Omit[K any](seq iter.Seq[K]) func(yield func() bool)
 func Omit2[K, V any](seq iter.Seq2[K, V]) func(yield func() bool)
-func OmitF[T, U any](seq iter.Seq2[T, U]) iter.Seq[U]
-func OmitL[T, U any](seq iter.Seq2[T, U]) iter.Seq[T]
+func OmitF[K, V any](seq iter.Seq2[K, V]) iter.Seq[V]
+func OmitL[K, V any](seq iter.Seq2[K, V]) iter.Seq[K]
 func Pairs[K, V any](seq1 iter.Seq[K], seq2 iter.Seq[V]) iter.Seq2[K, V]
 func Range[T Numeric](start, end T) iter.Seq[T]
 func Repeat[V any](v V, n int) iter.Seq[V]
@@ -74,7 +75,7 @@ func SkipWhile[V any](f func(V) bool, seq iter.Seq[V]) iter.Seq[V]
 func SkipWhile2[K, V any](f func(K, V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func StringsChunk(s string, n int) iter.Seq[string]
 func StringsCollect(sizeHint int, seq iter.Seq[string]) string
-func StringsCutNewLine(s string) (int, int)
+func StringsCutNewLine(s string) (tokUntil int, skipUntil int)
 func StringsCutUpperCase(s string) (tokUntil int, skipUntil int)
 func StringsCutWord(s string) (tokUntil int, skipUntil int)
 func StringsRuneChunk(s string, n int) iter.Seq[string]

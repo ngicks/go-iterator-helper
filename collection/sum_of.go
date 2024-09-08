@@ -21,10 +21,10 @@ type Summable interface {
 		~string
 }
 
-func SumOf[T any, E Summable](seq iter.Seq[T], selector func(ele T) E) E {
+func SumOf[V any, S Summable](seq iter.Seq[V], selector func(ele V) S) S {
 	return reduce(
 		seq,
-		func(e E, t T) E { return e + selector(t) },
-		*new(E),
+		func(e S, t V) S { return e + selector(t) },
+		*new(S),
 	)
 }

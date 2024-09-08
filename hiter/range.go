@@ -9,7 +9,7 @@ type Numeric interface {
 }
 
 // Range produces an iterator that yields sequential Numeric values in range [start, end).
-// Values start from `start` and steps toward `end` 1 by 1,
+// Values start from `start` and step toward `end` 1 by 1,
 // increased or decreased depending on start < end or not.
 func Range[T Numeric](start, end T) iter.Seq[T] {
 	return func(yield func(T) bool) {

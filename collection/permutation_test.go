@@ -27,7 +27,7 @@ func TestPermutations(t *testing.T) {
 		hiter.Pairs(
 			mapIter(
 				Permutations([]int{1, 2, 3, 4, 5}),
-				func(v []int) [4]int { return [4]int(slices.Clone(v)) },
+				func(v []int) [5]int { return [5]int(slices.Clone(v)) },
 			),
 			hiter.Repeat(struct{}{}, -1),
 		),

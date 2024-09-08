@@ -51,7 +51,7 @@ func StringsRuneChunk(s string, n int) iter.Seq[string] {
 	return func(yield func(string) bool) {
 		for len(s) > 0 {
 			var i int
-			for ii := n - 1; ii >= 0; ii-- {
+			for range n {
 				_, j := utf8.DecodeRuneInString(s[i:])
 				if j == 0 {
 					break
@@ -77,7 +77,7 @@ type StringsCutterFunc func(s string) (tokUntil, skipUntil int)
 // StringsCutNewLine is used with [StringsSplitFunc].
 // The input strings will be splitted at "\n".
 // It also skips "\r" preceding "\n".
-func StringsCutNewLine(s string) (int, int) {
+func StringsCutNewLine(s string) (tokUntil int, skipUntil int) {
 	i := strings.Index(s, "\n")
 	j := i + 1
 	if i >= 1 && strings.HasPrefix(s[i-1:], "\r\n") {

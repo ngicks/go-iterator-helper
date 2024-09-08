@@ -14,7 +14,7 @@ func Scan(scanner *bufio.Scanner) iter.Seq2[string, error] {
 			}
 		}
 		if scanner.Err() != nil {
-			_ = yield("", scanner.Err())
+			yield("", scanner.Err())
 			return
 		}
 	}

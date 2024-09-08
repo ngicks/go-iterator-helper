@@ -17,9 +17,14 @@ func Chan[V any](ctx context.Context, ch <-chan V) iter.Seq[V] {
 			select {
 			case <-ctx.Done():
 				return
-			case v, ok := <-ch:
-				if !ok || !yield(v) {
+			default:
+				select {
+				case <-ctx.Done():
 					return
+				case v, ok := <-ch:
+					if !ok || !yield(v) {
+						return
+					}
 				}
 			}
 		}

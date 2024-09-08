@@ -76,12 +76,12 @@ type StringsCutterFunc func(s string) (tokUntil, skipUntil int)
 
 // StringsCutNewLine is used with [StringsSplitFunc].
 // The input strings will be splitted at "\n".
-// It also skips "\r" following "\n".
+// It also skips "\r" preceding "\n".
 func StringsCutNewLine(s string) (int, int) {
 	i := strings.Index(s, "\n")
 	j := i + 1
-	if i >= 0 && strings.HasPrefix(s[i:], "\n\r") {
-		j++
+	if i >= 1 && strings.HasPrefix(s[i-1:], "\r\n") {
+		i--
 	}
 	return i, j
 }

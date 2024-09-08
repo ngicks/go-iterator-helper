@@ -137,7 +137,7 @@ func TestStringsRuneChunk(t *testing.T) {
 func TestStringsSplitFunc(t *testing.T) {
 	const (
 		src        = "foo\nbar\nbaz"
-		srcCr      = "foo\n\rbar\n\rbaz\n\r"
+		srcCr      = "foo\r\nbar\r\nbaz\r\n"
 		srcCase    = "NewHttpRequest"
 		allCapital = "STOP ALL CAPITAL"
 		longSingle = "foooooooooooooooooooooo"

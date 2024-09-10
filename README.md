@@ -126,7 +126,7 @@ type Repeatable[V any] struct{ ... }
 type Repeatable2[K, V any] struct{ ... }
 type RepeatableFunc[V any] struct{ ... }
 type RepeatableFunc2[K, V any] struct{ ... }
-type Ring[T any] struct{ ... }
+type RingAll[T any] struct{ ... }
 type RingBackward[T any] struct{ ... }
 type Scanner struct{ ... }
 type SliceAll[E any] []E

@@ -64,16 +64,16 @@ func (l ListElementBackward[T]) Iter() iter.Seq[T] {
 }
 
 var (
-	_ hiter.Iterable[any] = Ring[any]{}
+	_ hiter.Iterable[any] = RingAll[any]{}
 	_ hiter.Iterable[any] = RingBackward[any]{}
 )
 
-// Ring adds Iter method to *ring.Ring.
-type Ring[T any] struct {
+// RingAll adds Iter method to *ring.RingAll.
+type RingAll[T any] struct {
 	*ring.Ring
 }
 
-func (r Ring[T]) Iter() iter.Seq[T] {
+func (r RingAll[T]) Iter() iter.Seq[T] {
 	return hiter.RingAll[T](r.Ring)
 }
 

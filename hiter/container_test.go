@@ -133,7 +133,7 @@ func TestContainerRing(t *testing.T) {
 			},
 			Seqs: []func() iter.Seq[int]{
 				func() iter.Seq[int] {
-					return iterable.Ring[int]{Ring: r.Move(2)}.Iter()
+					return iterable.RingAll[int]{Ring: r.Move(2)}.Iter()
 				},
 			},
 			Expected: []int{7, 8, 9, 5, 6},

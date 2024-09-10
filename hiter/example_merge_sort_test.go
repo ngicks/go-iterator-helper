@@ -101,7 +101,7 @@ type subbable[S SliceLike[T], T any] struct {
 
 func (s subbable[S, T]) At(i int) T {
 	i = s.i + i
-	if i >= s.j {
+	if i < s.i || i >= s.j {
 		panic("index out of range")
 	}
 	return s.S.At(i)
@@ -114,7 +114,7 @@ func (s subbable[S, T]) Len() int {
 func (s subbable[S, T]) Sub(i, j int) subbable[S, T] {
 	i = i + s.i
 	j = j + s.i
-	if i < 0 || j > s.j || i > j {
+	if i < 0 || i < s.i || j > s.j || i > j {
 		panic(fmt.Errorf("index out of range: i=%d, j=%d,len=%d", i, j, s.Len()))
 	}
 	return subbable[S, T]{

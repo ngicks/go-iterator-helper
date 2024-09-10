@@ -43,6 +43,7 @@ func TestContainerHeap(t *testing.T) {
 		},
 		Expected: []int{0, 1, 2, 7, 9, 9},
 		BreakAt:  3,
+		Stateful: true,
 	}.Test(t)
 }
 

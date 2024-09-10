@@ -9,7 +9,7 @@ import (
 
 // Heap returns an iterator over heap.Interface.
 // Consuming iter.Seq[V] also consumes h.
-// To avoid this, the caller must clone input h before passing to Heap.
+// To avoid this, callers must clone input h before passing to Heap.
 func Heap[V any](h heap.Interface) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		for h.Len() > 0 {
@@ -33,7 +33,8 @@ func ListAll[V any](l *list.List) iter.Seq[V] {
 // If other than that or nil, the returned iterator panics.
 func ListElementAll[V any](ele *list.Element) iter.Seq[V] {
 	return func(yield func(V) bool) {
-		for ; ele != nil; ele = ele.Next() {
+		// shadowing ele, no state in the seq closure as much as possible.
+		for ele := ele; ele != nil; ele = ele.Next() {
 			if !yield(ele.Value.(V)) {
 				return
 			}
@@ -53,7 +54,8 @@ func ListBackward[V any](l *list.List) iter.Seq[V] {
 // If other than that or nil, the returned iterator panics.
 func ListElementBackward[V any](ele *list.Element) iter.Seq[V] {
 	return func(yield func(V) bool) {
-		for ; ele != nil; ele = ele.Prev() {
+		// no state in in the seq closure as much as possible.
+		for ele := ele; ele != nil; ele = ele.Prev() {
 			if !yield(ele.Value.(V)) {
 				return
 			}

@@ -15,7 +15,8 @@ func Repeat[V any](v V, n int) iter.Seq[V] {
 		}
 	}
 	return func(yield func(V) bool) {
-		for ; n != 0; n-- {
+		// no state in the seq.
+		for n := n; n != 0; n-- {
 			if !yield(v) {
 				return
 			}
@@ -36,7 +37,8 @@ func Repeat2[K, V any](k K, v V, n int) iter.Seq2[K, V] {
 		}
 	}
 	return func(yield func(K, V) bool) {
-		for ; n != 0; n-- {
+		// no state in the seq.
+		for n := n; n != 0; n-- {
 			if !yield(k, v) {
 				return
 			}
@@ -57,7 +59,7 @@ func RepeatFunc[V any](fnV func() V, n int) iter.Seq[V] {
 		}
 	}
 	return func(yield func(V) bool) {
-		for ; n != 0; n-- {
+		for n := n; n != 0; n-- {
 			if !yield(fnV()) {
 				return
 			}
@@ -78,7 +80,7 @@ func RepeatFunc2[K, V any](fnK func() K, fnV func() V, n int) iter.Seq2[K, V] {
 		}
 	}
 	return func(yield func(K, V) bool) {
-		for ; n != 0; n-- {
+		for n := n; n != 0; n-- {
 			if !yield(fnK(), fnV()) {
 				return
 			}

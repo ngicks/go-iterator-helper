@@ -31,7 +31,7 @@ func Chan[V any](ctx context.Context, ch <-chan V) iter.Seq[V] {
 	}
 }
 
-// ChanSend sends values yielded from seq to c.
+// ChanSend sends values from seq to c.
 // sentAll is false if ctx is cancelled before all values from seq are sent.
 func ChanSend[V any](ctx context.Context, c chan<- V, seq iter.Seq[V]) (v V, sentAll bool) {
 	for v := range seq {

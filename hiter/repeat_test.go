@@ -58,7 +58,8 @@ func TestRepeat(t *testing.T) {
 				3, 3, 3, 3, 3,
 				3, 3, 3, 3, 3,
 			},
-			BreakAt: 5,
+			BreakAt:  5,
+			Stateful: true,
 		}.Test(t)
 	})
 
@@ -105,6 +106,7 @@ func TestRepeat(t *testing.T) {
 				{7, "foo"}, {7, "foo"}, {7, "foo"}, {7, "foo"}, {7, "foo"},
 				{7, "foo"}, {7, "foo"}, {7, "foo"}, {7, "foo"}, {7, "foo"},
 			},
+			Stateful: true,
 		}.Test(t)
 	})
 }

@@ -46,6 +46,7 @@ func TestChanA(t *testing.T) {
 		},
 		Expected: []int{5, 6, 7, 8, 9, 10},
 		BreakAt:  3,
+		Stateful: true,
 	}.Test(t, func() { (*cancelP.Load())() })
 
 	testCase1[int]{
@@ -64,6 +65,7 @@ func TestChanA(t *testing.T) {
 		},
 		Expected: []int{5, 6, 7, 8},
 		BreakAt:  3,
+		Stateful: true,
 	}.Test(t)
 }
 

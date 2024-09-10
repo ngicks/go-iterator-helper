@@ -40,7 +40,8 @@ func TestEncoding(t *testing.T) {
 				{json.Token("foo"), nil}, {json.Token("bar"), nil},
 				{json.Delim('}'), nil},
 			},
-			BreakAt: 2,
+			BreakAt:  2,
+			Stateful: true,
 		}.Test(t)
 	})
 
@@ -63,8 +64,9 @@ func TestEncoding(t *testing.T) {
 				{xml.EndElement{Name: xml.Name{Local: "bar"}}, nil},
 				{nil, io.EOF},
 			},
-			BreakAt: 2,
-			CmpOpt:  []goCmp.Option{goCmp.Comparer(func(e1, e2 error) bool { return errors.Is(e1, e2) })},
+			BreakAt:  2,
+			CmpOpt:   []goCmp.Option{goCmp.Comparer(func(e1, e2 error) bool { return errors.Is(e1, e2) })},
+			Stateful: true,
 		}.Test(t)
 	})
 

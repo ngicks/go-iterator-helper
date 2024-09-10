@@ -7,6 +7,7 @@ import (
 // SkipWhile returns an iterator over seq that skips n elements from seq.
 func Skip[V any](n int, seq iter.Seq[V]) iter.Seq[V] {
 	return func(yield func(V) bool) {
+		n := n
 		if n <= 0 {
 			return
 		}
@@ -24,6 +25,7 @@ func Skip[V any](n int, seq iter.Seq[V]) iter.Seq[V] {
 // SkipWhile returns an iterator over seq that skips n key-value pairs from seq.
 func Skip2[K, V any](n int, seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
+		n := n // no state
 		if n <= 0 {
 			return
 		}

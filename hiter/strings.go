@@ -26,6 +26,7 @@ func StringsCollect(sizeHint int, seq iter.Seq[string]) string {
 // Sub slicing may cut in mid of utf8 sequences.
 func StringsChunk(s string, n int) iter.Seq[string] {
 	return func(yield func(string) bool) {
+		s := s // no state in the seq.
 		if n <= 0 {
 			return
 		}
@@ -49,6 +50,7 @@ func StringsChunk(s string, n int) iter.Seq[string] {
 // StringsRuneChunk returns an iterator over non overlapping sub strings of n utf8 characters.
 func StringsRuneChunk(s string, n int) iter.Seq[string] {
 	return func(yield func(string) bool) {
+		s := s // no state in the seq.
 		for len(s) > 0 {
 			var i int
 			for range n {
@@ -141,10 +143,12 @@ func StringsCutUpperCase(s string) (tokUntil int, skipUntil int) {
 // splitFn is allowed to return negative offsets.
 // In that case the returned iterator immediately yields rest of s and stops iteration.
 func StringsSplitFunc(s string, n int, splitFn StringsCutterFunc) iter.Seq[string] {
-	if splitFn == nil {
-		splitFn = StringsCutNewLine
-	}
 	return func(yield func(string) bool) {
+		if splitFn == nil {
+			splitFn = StringsCutNewLine
+		}
+		s := s
+		n := n
 		for len(s) > 0 {
 			tokUntil, skipUntil := splitFn(s)
 			if tokUntil < 0 || skipUntil < 0 {

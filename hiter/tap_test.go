@@ -30,7 +30,7 @@ func TestTap(t *testing.T) {
 	}.Test(t, func() {
 		if checked1 == 0 {
 			assert.Assert(t, cmp.DeepEqual([]int{0, 1, 2, 3, 4}, observed1))
-		} else {
+		} else if checked1 == 1 {
 			assert.Assert(t, cmp.DeepEqual([]int{0, 1, 2}, observed1))
 		}
 		checked1++
@@ -61,7 +61,7 @@ func TestTap(t *testing.T) {
 					observed2,
 				),
 			)
-		} else {
+		} else if checked2 == 1 {
 			assert.Assert(
 				t,
 				cmp.DeepEqual(

@@ -2,12 +2,19 @@ package hiter_test
 
 import (
 	"iter"
+	"slices"
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"gotest.tools/v3/assert"
+	"gotest.tools/v3/assert/cmp"
 )
 
 func TestWindow(t *testing.T) {
+	t.Run("empty slice", func(t *testing.T) {
+		c := slices.Collect(hiter.Window[[]int](nil, 5))
+		assert.Assert(t, cmp.Len(c, 0))
+	})
 	src := []int{28, 6, 49, 65, 30, 3}
 
 	t.Run("window 9 by 3", func(t *testing.T) {

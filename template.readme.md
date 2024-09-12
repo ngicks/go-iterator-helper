@@ -18,10 +18,10 @@ The idea is stolen from https://jsr.io/@std/collections/doc.
 
 Helpers for iterator.
 
-This package avoids re-implementing those who defined in standard or quasi-standard libraries.
+This package avoids re-implementing those which defined in standard or quasi-standard libraries.
 Namely `slices`, `maps`, `x/exp/xiter`.
 
-For example, `Zip`, `Reduce` are not defined since it will be implemented in `xiter` when
+For example, `Zip`, `Reduce` are not defined since they will be implemented in `xiter` when
 [#61898](https://github.com/golang/go/issues/61898) accepted and merged.
 
 ```go

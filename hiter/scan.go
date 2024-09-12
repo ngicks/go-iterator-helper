@@ -6,16 +6,13 @@ import (
 )
 
 // Scanner wraps scanner with an iterator over scanned text.
-func Scan(scanner *bufio.Scanner) iter.Seq2[string, error] {
-	return func(yield func(text string, err error) bool) {
+// Callers should check [bufio.Scanner.Err] after the returned iterator stops.
+func Scan(scanner *bufio.Scanner) iter.Seq[string] {
+	return func(yield func(text string) bool) {
 		for scanner.Scan() {
-			if !yield(scanner.Text(), nil) {
+			if !yield(scanner.Text()) {
 				return
 			}
-		}
-		if scanner.Err() != nil {
-			yield("", scanner.Err())
-			return
 		}
 	}
 }

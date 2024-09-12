@@ -12,22 +12,23 @@ import (
 	goCmp "github.com/google/go-cmp/cmp"
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
+	"gotest.tools/v3/assert"
 )
 
 func TestScan(t *testing.T) {
 	factory := func() *bufio.Scanner {
 		return bufio.NewScanner(strings.NewReader("foo\nbar\nbaz\n"))
 	}
-	testCase2[string, error]{
-		Seq: func() iter.Seq2[string, error] {
+	testCase1[string]{
+		Seq: func() iter.Seq[string] {
 			return hiter.Scan(factory())
 		},
-		Seqs: []func() iter.Seq2[string, error]{
-			func() iter.Seq2[string, error] {
-				return iterable.Scanner{Scanner: factory()}.IntoIter2()
+		Seqs: []func() iter.Seq[string]{
+			func() iter.Seq[string] {
+				return iterable.Scanner{Scanner: factory()}.IntoIter()
 			},
 		},
-		Expected: []hiter.KeyValue[string, error]{{"foo", nil}, {"bar", nil}, {"baz", nil}},
+		Expected: []string{"foo", "bar", "baz"},
 		BreakAt:  2,
 		Stateful: true,
 	}.Test(t)
@@ -40,18 +41,25 @@ func TestScan(t *testing.T) {
 				iotest.ErrReader(sampleErr)),
 		)
 	}
-	testCase2[string, error]{
-		Seq: func() iter.Seq2[string, error] {
-			return hiter.Scan(factory())
+	var scanner *bufio.Scanner
+	testCase1[string]{
+		Seq: func() iter.Seq[string] {
+			scanner = factory()
+			return hiter.Scan(scanner)
 		},
-		Seqs: []func() iter.Seq2[string, error]{
-			func() iter.Seq2[string, error] {
-				return iterable.Scanner{Scanner: factory()}.IntoIter2()
+		Seqs: []func() iter.Seq[string]{
+			func() iter.Seq[string] {
+				scanner = factory()
+				return iterable.Scanner{Scanner: scanner}.IntoIter()
 			},
 		},
-		Expected: []hiter.KeyValue[string, error]{{"foo", nil}, {"bar", nil}, {"baz", nil}, {"", sampleErr}},
+		Expected: []string{"foo", "bar", "baz"},
 		BreakAt:  2,
 		CmpOpt:   []goCmp.Option{compareError},
 		Stateful: true,
-	}.Test(t)
+	}.Test(t, func() {
+		if !scanner.Scan() {
+			assert.ErrorIs(t, scanner.Err(), sampleErr)
+		}
+	})
 }

@@ -25,10 +25,10 @@ type Summable interface{ ... }
 
 Helpers for iterator.
 
-This package avoids re-implementing those who defined in standard or quasi-standard libraries.
+This package avoids re-implementing those which defined in standard or quasi-standard libraries.
 Namely `slices`, `maps`, `x/exp/xiter`.
 
-For example, `Zip`, `Reduce` are not defined since it will be implemented in `xiter` when
+For example, `Zip`, `Reduce` are not defined since they will be implemented in `xiter` when
 [#61898](https://github.com/golang/go/issues/61898) accepted and merged.
 
 ```go
@@ -66,13 +66,14 @@ func RepeatFunc[V any](fnV func() V, n int) iter.Seq[V]
 func RepeatFunc2[K, V any](fnK func() K, fnV func() V, n int) iter.Seq2[K, V]
 func RingAll[V any](r *ring.Ring) iter.Seq[V]
 func RingBackward[V any](r *ring.Ring) iter.Seq[V]
-func Scan(scanner *bufio.Scanner) iter.Seq2[string, error]
+func Scan(scanner *bufio.Scanner) iter.Seq[string]
 func Skip[V any](n int, seq iter.Seq[V]) iter.Seq[V]
 func Skip2[K, V any](n int, seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func SkipLast[V any](n int, seq iter.Seq[V]) iter.Seq[V]
 func SkipLast2[K, V any](n int, seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func SkipWhile[V any](f func(V) bool, seq iter.Seq[V]) iter.Seq[V]
 func SkipWhile2[K, V any](f func(K, V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V]
+func SqlRows[T any](r *sql.Rows, scanner func(*sql.Rows) (T, error)) iter.Seq2[T, error]
 func StringsChunk(s string, n int) iter.Seq[string]
 func StringsCollect(sizeHint int, seq iter.Seq[string]) string
 func StringsCutNewLine(s string) (tokUntil int, skipUntil int)
@@ -131,6 +132,7 @@ type RingBackward[T any] struct{ ... }
 type Scanner struct{ ... }
 type SliceAll[E any] []E
 type SliceBackward[E any] []E
+type SqlRows[T any] struct{ ... }
 type SyncMap[K comparable, V any] struct{ ... }
 type XmlDecoder struct{ ... }
 

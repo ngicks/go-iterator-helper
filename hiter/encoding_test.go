@@ -3,7 +3,6 @@ package hiter_test
 import (
 	"encoding/json"
 	"encoding/xml"
-	"errors"
 	"io"
 	"iter"
 	"strings"
@@ -65,9 +64,8 @@ func TestEncoding(t *testing.T) {
 				{nil, io.EOF},
 			},
 			BreakAt:  2,
-			CmpOpt:   []goCmp.Option{goCmp.Comparer(func(e1, e2 error) bool { return errors.Is(e1, e2) })},
+			CmpOpt:   []goCmp.Option{compareError},
 			Stateful: true,
 		}.Test(t)
 	})
-
 }

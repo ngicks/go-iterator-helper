@@ -51,7 +51,7 @@ func TestScan(t *testing.T) {
 		},
 		Expected: []hiter.KeyValue[string, error]{{"foo", nil}, {"bar", nil}, {"baz", nil}, {"", sampleErr}},
 		BreakAt:  2,
-		CmpOpt:   []goCmp.Option{goCmp.Comparer(func(e1, e2 error) bool { return errors.Is(e1, e2) })},
+		CmpOpt:   []goCmp.Option{compareError},
 		Stateful: true,
 	}.Test(t)
 }

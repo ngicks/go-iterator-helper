@@ -1,6 +1,7 @@
 package hiter_test
 
 import (
+	"errors"
 	"fmt"
 	"iter"
 	"maps"
@@ -11,6 +12,10 @@ import (
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
+)
+
+var (
+	compareError = goCmp.Comparer(func(e1, e2 error) bool { return errors.Is(e1, e2) })
 )
 
 type testCase1[V any] struct {

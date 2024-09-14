@@ -1,4 +1,4 @@
-package errbox
+package errbox_test
 
 import (
 	"encoding/json"
@@ -7,6 +7,8 @@ import (
 	"io"
 	"strings"
 	"testing/iotest"
+
+	"github.com/ngicks/go-iterator-helper/hiter/errbox"
 )
 
 func Example_encoding_json_semantically_broken() {
@@ -15,7 +17,7 @@ func Example_encoding_json_semantically_broken() {
 		"baz": ["yay", "nay", 5, "wow"]
 	}`
 
-	dec := NewJsonDecoder(json.NewDecoder(strings.NewReader(semanticallyBroken)))
+	dec := errbox.NewJsonDecoder(json.NewDecoder(strings.NewReader(semanticallyBroken)))
 
 	var depth int
 	for t := range dec.Iter() {
@@ -64,7 +66,7 @@ func Example_encoding_json_syntactically_broken() {
 		"broken": {
 	}`
 
-	dec := NewJsonDecoder(json.NewDecoder(strings.NewReader(syntacticallyBroken)))
+	dec := errbox.NewJsonDecoder(json.NewDecoder(strings.NewReader(syntacticallyBroken)))
 
 	for t := range dec.Iter() {
 		fmt.Printf("%v\n", t)
@@ -95,7 +97,7 @@ func Example_encoding_json_reader_broken() {
 		"foo": "bar",
 		"baz": ["yay", "nay", 5, "wow"]`
 
-	dec := NewJsonDecoder(
+	dec := errbox.NewJsonDecoder(
 		json.NewDecoder(
 			io.MultiReader(
 				strings.NewReader(readerBroken),

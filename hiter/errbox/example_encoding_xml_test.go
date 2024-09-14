@@ -1,4 +1,4 @@
-package errbox
+package errbox_test
 
 import (
 	"encoding/xml"
@@ -7,6 +7,8 @@ import (
 	"io"
 	"strings"
 	"testing/iotest"
+
+	"github.com/ngicks/go-iterator-helper/hiter/errbox"
 )
 
 func Example_encoding_xml_semantically_broken() {
@@ -20,7 +22,7 @@ func Example_encoding_xml_semantically_broken() {
 		<baz>49</baz>
 	</root>`
 
-	dec := NewXmlDecoder(xml.NewDecoder(strings.NewReader(strings.TrimSpace(semanticallyBroken))))
+	dec := errbox.NewXmlDecoder(xml.NewDecoder(strings.NewReader(strings.TrimSpace(semanticallyBroken))))
 
 	var depth int
 	for t := range dec.Iter() {
@@ -66,7 +68,7 @@ func Example_encoding_xml_syntactically_broken() {
 		<baz>yay</baz>
 		<baz>49`
 
-	dec := NewXmlDecoder(xml.NewDecoder(strings.NewReader(strings.TrimSpace(syntacticallyBroken))))
+	dec := errbox.NewXmlDecoder(xml.NewDecoder(strings.NewReader(strings.TrimSpace(syntacticallyBroken))))
 
 	for t := range dec.Iter() {
 		fmt.Printf("%#v\n", t)
@@ -109,7 +111,7 @@ func Example_encoding_xml_reader_broken() {
 		<baz>yay</baz>
 		<baz>49`
 
-	dec := NewXmlDecoder(
+	dec := errbox.NewXmlDecoder(
 		xml.NewDecoder(
 			io.MultiReader(
 				strings.NewReader(strings.TrimSpace(readerBroken)),

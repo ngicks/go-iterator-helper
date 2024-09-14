@@ -3,34 +3,34 @@ package hiter
 import (
 	"encoding/json"
 	"encoding/xml"
+	"io"
 	"iter"
 )
 
 // JsonDecoder returns an iterator over json tokens.
 func JsonDecoder(dec *json.Decoder) iter.Seq2[json.Token, error] {
-	return func(yield func(json.Token, error) bool) {
-		for dec.More() {
-			if !yield(dec.Token()) {
-				return
-			}
-		}
-		if !yield(dec.Token()) {
-			return
-		}
-	}
+	return tokener(dec)
 }
 
 // XmlDecoder returns an iterator over xml tokens.
 // The first non-nil error encountered stops iteration.
 // Callers should call [xml.CopyToken] before going to next iteration if they need to retain tokens.
 func XmlDecoder(dec *xml.Decoder) iter.Seq2[xml.Token, error] {
-	return func(yield func(xml.Token, error) bool) {
+	return tokener(dec)
+}
+
+func tokener[Dec interface{ Token() (V, error) }, V any](dec Dec) iter.Seq2[V, error] {
+	return func(yield func(V, error) bool) {
 		for {
-			tok, err := dec.Token()
-			if tok != nil && !yield(tok, err) {
+			t, err := dec.Token()
+			if err != nil {
+				if err == io.EOF {
+					return
+				}
+				yield(*new(V), err)
 				return
 			}
-			if err != nil {
+			if !yield(t, nil) {
 				return
 			}
 		}

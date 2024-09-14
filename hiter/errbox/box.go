@@ -46,7 +46,6 @@ func (b *Box[V]) Iter() iter.Seq[V] {
 	return func(yield func(V) bool) {
 		for {
 			if b.err != nil {
-				b.stop()
 				return
 			}
 			v, err, ok := b.next()

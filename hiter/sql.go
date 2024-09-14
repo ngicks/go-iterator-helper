@@ -7,7 +7,7 @@ import (
 
 // SqlRows returns an iterator over scanned rows from r.
 // scanner will be invoked against every rows queried in r.
-// scanner should call [*sql.Rows.Scan] once or it can skip the row.
+// scanner should call [*sql.Rows.Scan] once per call or it can skip the row.
 // The returned iterator yields scanned result, including non-nil error.
 // If scanner returns an error, or [*sql.Rows.Err] returns non-nil error,
 // the iterator yields that error and stops iteration.

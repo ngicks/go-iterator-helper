@@ -27,7 +27,7 @@ type testCase1[V any] struct {
 	Stateful bool
 }
 
-func (tc testCase1[V]) Test(t *testing.T, cb ...func()) {
+func (tc testCase1[V]) Test(t *testing.T, cb ...func(length, count int)) {
 	t.Helper()
 
 	for i, seq := range append([](func() iter.Seq[V]){tc.Seq}, tc.Seqs...) {
@@ -37,7 +37,7 @@ func (tc testCase1[V]) Test(t *testing.T, cb ...func()) {
 			assert.Assert(t, cmp.DeepEqual(tc.Expected, collected, tc.CmpOpt...))
 
 			for _, f := range cb {
-				f()
+				f(len(collected), 0)
 			}
 
 			collected = collected[:tc.BreakAt]
@@ -54,7 +54,7 @@ func (tc testCase1[V]) Test(t *testing.T, cb ...func()) {
 			assert.Assert(t, cmp.DeepEqual(tc.Expected[:tc.BreakAt], collected, tc.CmpOpt...))
 
 			for _, f := range cb {
-				f()
+				f(len(collected), 1)
 			}
 
 			// call seq after breaking it to check if it is idempotence.
@@ -66,7 +66,7 @@ func (tc testCase1[V]) Test(t *testing.T, cb ...func()) {
 			}
 
 			for _, f := range cb {
-				f()
+				f(len(collected2), 2)
 			}
 		})
 	}
@@ -81,7 +81,7 @@ type testCase2[K, V any] struct {
 	Stateful bool
 }
 
-func (tc testCase2[K, V]) Test(t *testing.T, cb ...func()) {
+func (tc testCase2[K, V]) Test(t *testing.T, cb ...func(length, count int)) {
 	t.Helper()
 
 	for i, seq := range append([](func() iter.Seq2[K, V]){tc.Seq}, tc.Seqs...) {
@@ -95,7 +95,7 @@ func (tc testCase2[K, V]) Test(t *testing.T, cb ...func()) {
 			assert.Assert(t, cmp.DeepEqual(tc.Expected, collected, tc.CmpOpt...))
 
 			for _, f := range cb {
-				f()
+				f(len(collected), 0)
 			}
 
 			collected = collected[:tc.BreakAt]
@@ -111,7 +111,7 @@ func (tc testCase2[K, V]) Test(t *testing.T, cb ...func()) {
 			assert.Assert(t, cmp.DeepEqual(tc.Expected[:tc.BreakAt], collected, tc.CmpOpt...))
 
 			for _, f := range cb {
-				f()
+				f(len(collected), 1)
 			}
 
 			// call seq after breaking it to check if it is idempotence.
@@ -123,7 +123,7 @@ func (tc testCase2[K, V]) Test(t *testing.T, cb ...func()) {
 			}
 
 			for _, f := range cb {
-				f()
+				f(len(collected2), 2)
 			}
 		})
 	}

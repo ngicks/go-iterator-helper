@@ -10,11 +10,8 @@ import (
 )
 
 func TestTap(t *testing.T) {
+	var observed1 []int
 
-	var (
-		observed1 []int
-		checked1  int
-	)
 	testCase1[int]{
 		Seq: func() iter.Seq[int] {
 			observed1 = observed1[:0]
@@ -27,19 +24,17 @@ func TestTap(t *testing.T) {
 		},
 		Expected: []int{0, 1, 2, 3, 4},
 		BreakAt:  2,
-	}.Test(t, func() {
-		if checked1 == 0 {
+	}.Test(t, func(_, count int) {
+		switch count {
+		case 0:
 			assert.Assert(t, cmp.DeepEqual([]int{0, 1, 2, 3, 4}, observed1))
-		} else if checked1 == 1 {
+		case 1:
 			assert.Assert(t, cmp.DeepEqual([]int{0, 1, 2}, observed1))
 		}
-		checked1++
 	})
 
-	var (
-		observed2 hiter.KeyValues[int, int]
-		checked2  int
-	)
+	var observed2 hiter.KeyValues[int, int]
+
 	testCase2[int, int]{
 		Seq: func() iter.Seq2[int, int] {
 			observed2 = observed2[:0]
@@ -52,8 +47,9 @@ func TestTap(t *testing.T) {
 		},
 		Expected: hiter.KeyValues[int, int]{{5, 0}, {4, 1}, {3, 2}, {2, 3}, {1, 4}},
 		BreakAt:  2,
-	}.Test(t, func() {
-		if checked2 == 0 {
+	}.Test(t, func(_, count int) {
+		switch count {
+		case 0:
 			assert.Assert(
 				t,
 				cmp.DeepEqual(
@@ -61,7 +57,7 @@ func TestTap(t *testing.T) {
 					observed2,
 				),
 			)
-		} else if checked2 == 1 {
+		case 1:
 			assert.Assert(
 				t,
 				cmp.DeepEqual(
@@ -70,7 +66,6 @@ func TestTap(t *testing.T) {
 				),
 			)
 		}
-		checked2++
 	})
 
 }

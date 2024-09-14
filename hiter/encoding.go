@@ -27,7 +27,7 @@ func XmlDecoder(dec *xml.Decoder) iter.Seq2[xml.Token, error] {
 	return func(yield func(xml.Token, error) bool) {
 		for {
 			tok, err := dec.Token()
-			if !yield(tok, err) {
+			if tok != nil && !yield(tok, err) {
 				return
 			}
 			if err != nil {

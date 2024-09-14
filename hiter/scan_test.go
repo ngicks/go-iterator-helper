@@ -57,8 +57,8 @@ func TestScan(t *testing.T) {
 		BreakAt:  2,
 		CmpOpt:   []goCmp.Option{compareError},
 		Stateful: true,
-	}.Test(t, func() {
-		if !scanner.Scan() {
+	}.Test(t, func(length, count int) {
+		if length != 2 {
 			assert.ErrorIs(t, scanner.Err(), sampleErr)
 		}
 	})

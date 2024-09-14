@@ -48,7 +48,7 @@ func TestChanA(t *testing.T) {
 		Expected: []int{5, 6, 7, 8, 9, 10},
 		BreakAt:  3,
 		Stateful: true,
-	}.Test(t, func() { (*cancelP.Load())() })
+	}.Test(t, func(_, _ int) { (*cancelP.Load())() })
 
 	testCase1[int]{
 		Seq: func() iter.Seq[int] {

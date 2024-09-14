@@ -138,6 +138,24 @@ type XmlDecoder struct{ ... }
 
 ```
 
+## hiter/errbox
+
+`hiter/errbox` defines utility that wraps `iter.Seq2[V, error]` to `iter.Seq[V]` by remembering first error encountered.
+
+```go
+package errbox // import "github.com/ngicks/go-iterator-helper/hiter/errbox"
+
+type Box[V any] struct{ ... }
+    func New[V any](seq iter.Seq2[V, error]) *Box[V]
+type JsonDecoder struct{ ... }
+    func NewJsonDecoder(dec *json.Decoder) *JsonDecoder
+type SqlRows[V any] struct{ ... }
+    func NewSqlRows[V any](rows *sql.Rows, scanner func(*sql.Rows) (V, error)) *SqlRows[V]
+type XmlDecoder struct{ ... }
+    func NewXmlDecoder(dec *xml.Decoder) *XmlDecoder
+
+```
+
 ## x/exp/xiter
 
 Those listed in [#61898](https://github.com/golang/go/issues/61898).

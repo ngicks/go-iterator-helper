@@ -22,6 +22,7 @@ type GoDoc struct {
 	Collection    string
 	Hiter         string
 	HiterIterable string
+	HiterErrbox   string
 }
 
 func main() {
@@ -30,6 +31,7 @@ func main() {
 			Collection:    godoc("./collection"),
 			Hiter:         godoc("./hiter"),
 			HiterIterable: godoc("./hiter/iterable"),
+			HiterErrbox:   godoc("./hiter/errbox"),
 		},
 	}
 

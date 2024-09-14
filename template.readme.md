@@ -38,6 +38,14 @@ All of them implement 1 or 2 of `Iter() iter.Seq[V]`, `Iter2() iter.Seq[K, V]`, 
 {{.GoDoc.HiterIterable}}
 ```
 
+## hiter/errbox
+
+`hiter/errbox` defines utility that wraps `iter.Seq2[V, error]` to `iter.Seq[V]` by remembering first error encountered.
+
+```go
+{{.GoDoc.HiterErrbox}}
+```
+
 ## x/exp/xiter
 
 Those listed in [#61898](https://github.com/golang/go/issues/61898).

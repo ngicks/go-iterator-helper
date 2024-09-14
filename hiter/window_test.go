@@ -42,7 +42,7 @@ func TestWindow(t *testing.T) {
 			Seq: func() iter.Seq[[]int] {
 				return hiter.Window(src, 10)
 			},
-			Expected: [][]int{{28, 6, 49, 65, 30, 3}},
+			Expected: nil,
 		}.Test(t)
 	})
 

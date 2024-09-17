@@ -20,7 +20,7 @@ func Example_encoding_json_semantically_broken() {
 	dec := errbox.NewJsonDecoder(json.NewDecoder(strings.NewReader(semanticallyBroken)))
 
 	var depth int
-	for t := range dec.Iter() {
+	for t := range dec.IntoIter() {
 		if depth == 1 && t == "baz" {
 			// read 1 ahead.
 			t, err := dec.Dec.Token()
@@ -68,7 +68,7 @@ func Example_encoding_json_syntactically_broken() {
 
 	dec := errbox.NewJsonDecoder(json.NewDecoder(strings.NewReader(syntacticallyBroken)))
 
-	for t := range dec.Iter() {
+	for t := range dec.IntoIter() {
 		fmt.Printf("%v\n", t)
 	}
 	fmt.Printf("stored error: %v\n", dec.Err())
@@ -106,7 +106,7 @@ func Example_encoding_json_reader_broken() {
 		),
 	)
 
-	for t := range dec.Iter() {
+	for t := range dec.IntoIter() {
 		fmt.Printf("%v\n", t)
 	}
 	fmt.Printf("stored error: %v\n", dec.Err())

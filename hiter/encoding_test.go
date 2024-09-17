@@ -37,7 +37,7 @@ func TestEncoding(t *testing.T) {
 				},
 				func() iter.Seq2[json.Token, error] {
 					box = errbox.NewJsonDecoder(jsonDec())
-					return hiter.Pairs(box.Iter(), hiter.Repeat(error(nil), -1))
+					return hiter.Pairs(box.IntoIter(), hiter.Repeat(error(nil), -1))
 				},
 			},
 			Expected: []hiter.KeyValue[json.Token, error]{
@@ -66,7 +66,7 @@ func TestEncoding(t *testing.T) {
 				},
 				func() iter.Seq2[xml.Token, error] {
 					box = errbox.NewXmlDecoder(xmlDec())
-					return hiter.Pairs(xiter.Map(xml.CopyToken, box.Iter()), hiter.Repeat(error(nil), -1))
+					return hiter.Pairs(xiter.Map(xml.CopyToken, box.IntoIter()), hiter.Repeat(error(nil), -1))
 				},
 			},
 			Expected: []hiter.KeyValue[xml.Token, error]{

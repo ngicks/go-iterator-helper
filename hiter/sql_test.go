@@ -50,7 +50,7 @@ func TestSqliteRows(t *testing.T) {
 				Seq: func() iter.Seq[testhelper.TestRow] {
 					mock = testhelper.OpenMockDB(false)
 					boxed = errbox.NewSqlRows(testhelper.QueryRows(mock), scanner)
-					return boxed.Iter()
+					return boxed.IntoIter()
 				},
 				Expected: []testhelper.TestRow{
 					{Id: 1, Title: "post 1", Body: "hello"},
@@ -101,7 +101,7 @@ func TestSqliteRows(t *testing.T) {
 				Seq: func() iter.Seq[testhelper.TestRow] {
 					mock = testhelper.OpenMockDB(true)
 					boxed = errbox.NewSqlRows(testhelper.QueryRows(mock), scanner)
-					return boxed.Iter()
+					return boxed.IntoIter()
 				},
 				Expected: []testhelper.TestRow{
 					{Id: 1, Title: "post 1", Body: "hello"},
@@ -165,7 +165,7 @@ func TestSqliteRows(t *testing.T) {
 					count = 0
 					mock = testhelper.OpenMockDB(false)
 					boxed = errbox.NewSqlRows(testhelper.QueryRows(mock), scanner)
-					return boxed.Iter()
+					return boxed.IntoIter()
 				},
 				Expected: []testhelper.TestRow{
 					{Id: 1, Title: "post 1", Body: "hello"},

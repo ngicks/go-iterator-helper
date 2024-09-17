@@ -25,7 +25,7 @@ func Example_encoding_xml_semantically_broken() {
 	dec := errbox.NewXmlDecoder(xml.NewDecoder(strings.NewReader(strings.TrimSpace(semanticallyBroken))))
 
 	var depth int
-	for t := range dec.Iter() {
+	for t := range dec.IntoIter() {
 		var ok bool
 		tok, ok := t.(xml.StartElement)
 		if ok {
@@ -70,7 +70,7 @@ func Example_encoding_xml_syntactically_broken() {
 
 	dec := errbox.NewXmlDecoder(xml.NewDecoder(strings.NewReader(strings.TrimSpace(syntacticallyBroken))))
 
-	for t := range dec.Iter() {
+	for t := range dec.IntoIter() {
 		fmt.Printf("%#v\n", t)
 	}
 	fmt.Printf("stored err: %v\n", dec.Err())
@@ -120,7 +120,7 @@ func Example_encoding_xml_reader_broken() {
 		),
 	)
 
-	for t := range dec.Iter() {
+	for t := range dec.IntoIter() {
 		fmt.Printf("%#v\n", t)
 	}
 	fmt.Printf("stored err: %v\n", dec.Err())

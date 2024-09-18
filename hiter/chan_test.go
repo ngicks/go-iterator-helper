@@ -13,7 +13,7 @@ import (
 	"gotest.tools/v3/assert/cmp"
 )
 
-func TestChanA(t *testing.T) {
+func TestChan(t *testing.T) {
 	var (
 		cancelP atomic.Pointer[context.CancelFunc]
 	)
@@ -42,7 +42,7 @@ func TestChanA(t *testing.T) {
 		},
 		Seqs: []func() iter.Seq[int]{
 			func() iter.Seq[int] {
-				return iterable.Chan[int]{C: chanAll()}.IntoIter()
+				return iterable.Chan[int]{Ctx: context.Background(), C: chanAll()}.IntoIter()
 			},
 		},
 		Expected: []int{5, 6, 7, 8, 9, 10},

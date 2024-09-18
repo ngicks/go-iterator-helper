@@ -10,7 +10,7 @@ import (
 //
 // Box converts input iterator stateful form by calling [iter.Pull2].
 // [*Box.IntoIter] returns the iterator as [iter.Seq][V].
-// While consuming values from the iterator, it might conditionally yield non-nil error.
+// While consuming values from the iterator, it might conditionally yield a non-nil error.
 // In that case Box stores the error and stops without yielding the value V paired to the error.
 // [*Box.Err] returns that error otherwise nil.
 //
@@ -45,7 +45,7 @@ func (b *Box[V]) Stop() {
 //
 // As the name IntoIter suggests, the iterator is stateful;
 // breaking and calling seq again continues its iteration without replaying data.
-// If the iterator finds an error, it stops iteration and will never produce data again.
+// If the iterator finds an error, it stops iteration and will no longer produce any data.
 // In that case the error can be inspected by calling [*Box.Err].
 func (b *Box[V]) IntoIter() iter.Seq[V] {
 	return func(yield func(V) bool) {

@@ -77,7 +77,7 @@ func (r RingAll[T]) Iter() iter.Seq[T] {
 	return hiter.RingAll[T](r.Ring)
 }
 
-// Ring adds Iter method to *ring.Ring.
+// RingBackward adds Iter method to *ring.Ring.
 // Iter returns an iterator that traverses ring backward.
 type RingBackward[T any] struct {
 	*ring.Ring

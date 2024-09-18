@@ -6,7 +6,7 @@ import (
 
 // Window returns an iterator over overlapping sub-slices of n size (moving windows).
 // n must be a positive non zero value.
-// Values from the iterator are always size of n.
+// Values from the iterator are always slices of n size.
 // The iterator yields nothing when it is not possible.
 func Window[S ~[]E, E any](s S, n int) iter.Seq[S] {
 	return func(yield func(S) bool) {

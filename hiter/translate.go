@@ -2,8 +2,7 @@ package hiter
 
 import "iter"
 
-// Enumerate wraps seq so that former part of paired values has an index starting from 0.
-// Each time values are yielded index is increased by 1.
+// Enumerate adds 0-indexed integer counts to every values from seq.
 func Enumerate[T any](seq iter.Seq[T]) iter.Seq2[int, T] {
 	return func(yield func(int, T) bool) {
 		idx := 0

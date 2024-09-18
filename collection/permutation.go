@@ -9,7 +9,7 @@ import "iter"
 
 // Permutations returns an iterator that yields permutations of in.
 // The returned iterator reorders in in-place.
-// Callers should not retain in or slices from the iterator,
+// The caller should not retain in or slices from the iterator,
 // Or should explicitly clone yielded values.
 func Permutations[S ~[]E, E any](in S) iter.Seq[S] {
 	// implementation of Heap's algorithm

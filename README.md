@@ -13,10 +13,21 @@ The idea is stolen from https://jsr.io/@std/collections/doc.
 ```go
 package collection // import "github.com/ngicks/go-iterator-helper/collection"
 
+func Compact[V comparable](seq iter.Seq[V]) iter.Seq[V]
+func Compact2[K, V comparable](seq iter.Seq2[K, V]) iter.Seq2[K, V]
+func CompactFunc[V any](seq iter.Seq[V], eq func(i, j V) bool) iter.Seq[V]
+func CompactFunc2[K, V any](seq iter.Seq2[K, V], eq func(k1 K, v1 V, k2 K, v2 V) bool) iter.Seq2[K, V]
+func MergeSort[S ~[]T, T cmp.Ordered](m S) iter.Seq[T]
+func MergeSortFunc[S ~[]T, T any](m S, cmp func(l, r T) int) iter.Seq[T]
+func MergeSortSliceLike[S SliceLike[T], T cmp.Ordered](s S) iter.Seq[T]
+func MergeSortSliceLikeFunc[S SliceLike[T], T any](s S, cmp func(l, r T) int) iter.Seq[T]
 func Permutations[S ~[]E, E any](in S) iter.Seq[S]
 func ReduceGroup[K comparable, V, Sum any](seq iter.Seq2[K, V], reducer func(accumulator Sum, current V) Sum, initial Sum) map[K]Sum
 func RunningReduce[V, Sum any](seq iter.Seq[V], reducer func(accumulator Sum, current V, i int) Sum, ...) iter.Seq[Sum]
+func Sum[S Summable](seq iter.Seq[S]) S
 func SumOf[V any, S Summable](seq iter.Seq[V], selector func(ele V) S) S
+type SliceLike[T any] interface{ ... }
+    func ConcatSliceLike[T any](s ...SliceLike[T]) SliceLike[T]
 type Summable interface{ ... }
 
 ```

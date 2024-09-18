@@ -16,7 +16,7 @@ func Flatten[S ~[]E, E any](seq iter.Seq[S]) iter.Seq[E] {
 }
 
 // FlattenF returns an iterator over pairs of slice and non-slice.
-// While iterating over slices, the latter part of pair is repeated.
+// While iterating over slices, the latter part of pair is repeated until the slice is fully consumed.
 func FlattenF[S1 ~[]E1, E1 any, E2 any](seq iter.Seq2[S1, E2]) iter.Seq2[E1, E2] {
 	return func(yield func(E1, E2) bool) {
 		for s, g := range seq {
@@ -30,7 +30,7 @@ func FlattenF[S1 ~[]E1, E1 any, E2 any](seq iter.Seq2[S1, E2]) iter.Seq2[E1, E2]
 }
 
 // FlattenL returns an iterator over pairs of non-slice and slice.
-// While iterating over slices, the former part of pair is repeated.
+// While iterating over slices, the former part of pair is repeated until the slice is fully consumed.
 func FlattenL[S2 ~[]E2, E1 any, E2 any](seq iter.Seq2[E1, S2]) iter.Seq2[E1, E2] {
 	return func(yield func(E1, E2) bool) {
 		for e, t := range seq {

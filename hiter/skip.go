@@ -4,7 +4,7 @@ import (
 	"iter"
 )
 
-// SkipWhile returns an iterator over seq that skips n elements from seq.
+// Skip returns an iterator over seq that skips n elements from seq.
 func Skip[V any](n int, seq iter.Seq[V]) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		n := n
@@ -22,7 +22,7 @@ func Skip[V any](n int, seq iter.Seq[V]) iter.Seq[V] {
 	}
 }
 
-// SkipWhile returns an iterator over seq that skips n key-value pairs from seq.
+// Skip2 returns an iterator over seq that skips n key-value pairs from seq.
 func Skip2[K, V any](n int, seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
 		n := n // no state
@@ -40,7 +40,7 @@ func Skip2[K, V any](n int, seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 	}
 }
 
-// SkipLast returns an iterator over seq that skips last n elements.
+// SkipLast returns an iterator over seq that skips last n elements of seq.
 func SkipLast[V any](n int, seq iter.Seq[V]) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		var ( // easy implementation for ring buffer.
@@ -71,7 +71,7 @@ func SkipLast[V any](n int, seq iter.Seq[V]) iter.Seq[V] {
 	}
 }
 
-// SkipLast returns an iterator over seq that skips last n key-value pairs.
+// SkipLast2 returns an iterator over seq that skips last n key-value pairs of seq.
 func SkipLast2[K, V any](n int, seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
 		var ( // easy implementation for ring buffer.

@@ -13,9 +13,9 @@ type Range[T hiter.Numeric] struct {
 	Start, End T
 }
 
-// Iter returns an iterator that yields sequential Numeric values in range [Start, End).
-// Values start from `start` and steps toward `end` 1 by 1,
-// increased or decreased depending on start < end or not.
+// Iter returns an iterator that yields sequential Numeric values in the interval [Start, End).
+// Values start from `start` and steps toward `end`.
+// At each step value is increased by 1 if start < end, otherwise decreased by 1.
 func (r Range[T]) Iter() iter.Seq[T] {
 	return hiter.Range(r.Start, r.End)
 }

@@ -2,7 +2,7 @@ package hiter
 
 import "iter"
 
-// Alternate returns an iterator that yields alternatively each seq from head to tail.
+// Alternate returns an iterator that yields alternatively each seq.
 // The first exhausted seq stops the iterator.
 func Alternate[V any](seqs ...iter.Seq[V]) iter.Seq[V] {
 	return func(yield func(V) bool) {
@@ -41,7 +41,7 @@ func Alternate[V any](seqs ...iter.Seq[V]) iter.Seq[V] {
 	}
 }
 
-// Alternate returns an iterator that yields alternatively each seq from head to tail.
+// Alternate returns an iterator that yields alternatively each seq.
 // The first exhausted seq stops the iterator.
 func Alternate2[K, V any](seqs ...iter.Seq2[K, V]) iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {

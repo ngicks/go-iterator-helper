@@ -11,10 +11,13 @@ import (
 )
 
 // MergeSort implements merge sort algorithm.
+// Basically you should use []T -> []T implementation since this allocates a lot more.
+// MergeSort is worthy only when T is big structs and you only need one element at time, not a whole slice.
 func MergeSort[S ~[]T, T cmp.Ordered](m S) iter.Seq[T] {
 	return MergeSortFunc(m, cmp.Compare)
 }
 
+// MergeSortFunc is like [MergeSort] but uses comparison function.
 func MergeSortFunc[S ~[]T, T any](m S, cmp func(l, r T) int) iter.Seq[T] {
 	if len(m) <= 1 {
 		return slices.Values(m)
@@ -32,10 +35,14 @@ func MergeSortFunc[S ~[]T, T any](m S, cmp func(l, r T) int) iter.Seq[T] {
 	}
 }
 
+// MergeSortSliceLike is like [MergeSort] that uses [SliceLike] interface instead of []T.
+// This implementation is quite experimental.
+// Basically you do not want to use this since it is much, much less performant.
 func MergeSortSliceLike[S SliceLike[T], T cmp.Ordered](s S) iter.Seq[T] {
 	return MergeSortSliceLikeFunc(s, cmp.Compare)
 }
 
+// MergeSortSliceLikeFunc is like [MergeSortSliceLike] but uses comparison function instead.
 func MergeSortSliceLikeFunc[S SliceLike[T], T any](s S, cmp func(l, r T) int) iter.Seq[T] {
 	return mergeSortSubbableFunc(newSubbable(s), cmp)
 }

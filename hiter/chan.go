@@ -28,7 +28,8 @@ func Chan[V any](ctx context.Context, ch <-chan V) iter.Seq[V] {
 }
 
 // ChanSend sends values from seq to c.
-// sentAll is false if ctx is cancelled before all values from seq are sent.
+// It unblocks after either cancelling ctx or consuming all values from seq.
+// sentAll is true only when all values are sent to c.
 func ChanSend[V any](ctx context.Context, c chan<- V, seq iter.Seq[V]) (v V, sentAll bool) {
 	for v := range seq {
 		select {

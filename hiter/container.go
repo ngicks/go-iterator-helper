@@ -23,14 +23,14 @@ func Heap[V any](h heap.Interface) iter.Seq[V] {
 
 // ListAll returns an iterator over all element of l starting from l.Front().
 // ListAll assumes Values of all element are type V.
-// If other than that or nil, the returned iterator panics.
+// If other than that or nil, the returned iterator may panic on invocation.
 func ListAll[V any](l *list.List) iter.Seq[V] {
 	return ListElementAll[V](l.Front())
 }
 
 // ListElementAll returns an iterator over from ele to end of the list.
 // ListElementAll assumes Values of all element are type V.
-// If other than that or nil, the returned iterator panics.
+// If other than that or nil, the returned iterator may panic on invocation.
 func ListElementAll[V any](ele *list.Element) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		// shadowing ele, no state in the seq closure as much as possible.
@@ -44,14 +44,14 @@ func ListElementAll[V any](ele *list.Element) iter.Seq[V] {
 
 // ListBackward returns an iterator over all element of l starting from l.Back().
 // ListBackward assumes Values of all element are type V.
-// If other than that or nil, the returned iterator panics.
+// If other than that or nil, the returned iterator may panic on invocation.
 func ListBackward[V any](l *list.List) iter.Seq[V] {
 	return ListElementBackward[V](l.Back())
 }
 
 // ListElementBackward returns an iterator over from ele to start of the list.
 // ListElementBackward assumes Values of all element are type V.
-// If other than that or nil, the returned iterator panics.
+// If other than that or nil, the returned iterator may panic on invocation.
 func ListElementBackward[V any](ele *list.Element) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		// no state in in the seq closure as much as possible.

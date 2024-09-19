@@ -18,8 +18,8 @@ func TestSum(t *testing.T) {
 func TestSumOf(t *testing.T) {
 	src := []int{1, 2, 3, 4, 5}
 	s := SumOf(
-		slices.Values(src),
 		func(ele int) int { return ele },
+		slices.Values(src),
 	)
 
 	assert.Equal(t, 15, s)

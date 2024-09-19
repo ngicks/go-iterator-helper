@@ -30,7 +30,7 @@ func Compact[V comparable](seq iter.Seq[V]) iter.Seq[V] {
 
 // CompactFunc is like [Compact] but uses an equality function to compare elements.
 // For runs of elements that compare equal, CompactFunc keeps the first one.
-func CompactFunc[V any](seq iter.Seq[V], eq func(i, j V) bool) iter.Seq[V] {
+func CompactFunc[V any](eq func(i, j V) bool, seq iter.Seq[V]) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		var (
 			first bool = true
@@ -80,7 +80,7 @@ func Compact2[K, V comparable](seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 
 // CompactFunc2 is like [Compact2] but uses an equality function to compare elements.
 // For runs of elements that compare equal, CompactFunc2 keeps the first one.
-func CompactFunc2[K, V any](seq iter.Seq2[K, V], eq func(k1 K, v1 V, k2 K, v2 V) bool) iter.Seq2[K, V] {
+func CompactFunc2[K, V any](eq func(k1 K, v1 V, k2 K, v2 V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
 		var (
 			first bool = true

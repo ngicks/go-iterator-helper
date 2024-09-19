@@ -12,9 +12,9 @@ func TestRunningReduce(t *testing.T) {
 	src := []int{1, 2, 3, 4, 5}
 	r := slices.Collect(
 		RunningReduce(
-			slices.Values(src),
 			func(accum int, next int, idx int) int { return accum + next },
 			0,
+			slices.Values(src),
 		),
 	)
 	assert.Assert(

@@ -29,7 +29,7 @@ func Sum[S Summable](seq iter.Seq[S]) S {
 	)
 }
 
-func SumOf[V any, S Summable](seq iter.Seq[V], selector func(ele V) S) S {
+func SumOf[V any, S Summable](selector func(ele V) S, seq iter.Seq[V]) S {
 	return reduce(
 		seq,
 		func(e S, t V) S { return e + selector(t) },

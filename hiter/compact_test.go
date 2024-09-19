@@ -56,7 +56,7 @@ func TestCompactFunc(t *testing.T) {
 			eq:       func(i, j testSubject) bool { return i.Bar == j.Bar },
 		},
 	} {
-		assert.Assert(t, cmp.DeepEqual(tc.expected, slices.Collect(CompactFunc(tc.input, tc.eq))))
+		assert.Assert(t, cmp.DeepEqual(tc.expected, slices.Collect(CompactFunc(tc.eq, tc.input))))
 	}
 }
 
@@ -130,6 +130,6 @@ func TestCompactFunc2(t *testing.T) {
 			eq:       func(k1 int, v1 testSubject, k2 int, v2 testSubject) bool { return k1 == k2 },
 		},
 	} {
-		assert.Assert(t, cmp.DeepEqual(tc.expected, Collect2(CompactFunc2(tc.input, tc.eq))))
+		assert.Assert(t, cmp.DeepEqual(tc.expected, Collect2(CompactFunc2(tc.eq, tc.input))))
 	}
 }

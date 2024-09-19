@@ -4,16 +4,6 @@
 
 Helpers / converters / sources for iterators.
 
-## collection
-
-Some useful function consuming iter.Seq / iter.Seq2.
-
-The idea is stolen from https://jsr.io/@std/collections/doc.
-
-```go
-{{.GoDoc.Collection}}
-```
-
 ## hiter
 
 Helpers for iterator.
@@ -24,8 +14,24 @@ Namely `slices`, `maps`, `x/exp/xiter`.
 For example, `Zip`, `Reduce` are not defined since they will be implemented in `xiter` when
 [#61898](https://github.com/golang/go/issues/61898) accepted and merged.
 
+Some ideas are stolen from https://jsr.io/@std/collections/doc, like Permutation and SumOf.
+
+Iterator sources: functions that compose up iterators from data sources:
+
 ```go
-{{.GoDoc.Hiter}}
+{{join .GoDoc.Hiter.Source "\n"}}
+```
+
+Iterator adapters: iterator that processes / modifies values from other iterators.
+
+```go
+{{join .GoDoc.Hiter.Adapter "\n"}}
+```
+
+Collectors: functions that collect data from iterators and convert to other data.
+
+```go
+{{join .GoDoc.Hiter.Collector "\n"}}
 ```
 
 ## hiter/iterable
@@ -40,7 +46,7 @@ All of them implement 1 or 2 of `Iter() iter.Seq[V]`, `Iter2() iter.Seq[K, V]`, 
 
 ## hiter/errbox
 
-`hiter/errbox` defines utility that wraps `iter.Seq2[V, error]` to `iter.Seq[V]` by remembering first error encountered.
+`hiter/errbox` defines an utility that wraps `iter.Seq2[V, error]` to `iter.Seq[V]` by remembering first error encountered.
 
 ```go
 {{.GoDoc.HiterErrbox}}

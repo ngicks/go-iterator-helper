@@ -17,11 +17,11 @@ func TestReduceGroup(t *testing.T) {
 		{K: "foo", V: []int{12}},
 	}
 	m := ReduceGroup(
-		kvs.Iter2(),
 		func(accum []int, c []int) []int {
 			return append(accum, c...)
 		},
 		[]int{0},
+		kvs.Iter2(),
 	)
 	assert.Assert(
 		t,

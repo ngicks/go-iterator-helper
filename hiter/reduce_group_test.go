@@ -1,15 +1,14 @@
-package collection
+package hiter
 
 import (
 	"testing"
 
-	"github.com/ngicks/go-iterator-helper/hiter"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
 )
 
 func TestReduceGroup(t *testing.T) {
-	kvs := hiter.KeyValues[string, []int]{
+	kvs := KeyValues[string, []int]{
 		{K: "foo", V: []int{1, 2, 3}},
 		{K: "bar", V: []int{1, 2, 3}},
 		{K: "baz", V: []int{1, 2, 3}},

@@ -1,4 +1,4 @@
-package collection
+package hiter
 
 import "iter"
 

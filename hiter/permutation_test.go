@@ -1,4 +1,4 @@
-package collection
+package hiter
 
 import (
 	"iter"
@@ -6,7 +6,6 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/ngicks/go-iterator-helper/hiter"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
 )
@@ -24,12 +23,12 @@ func mapIter[V1, V2 any](seq iter.Seq[V1], mapper func(V1) V2) iter.Seq[V2] {
 
 func TestPermutations(t *testing.T) {
 	m := maps.Collect(
-		hiter.Pairs(
+		Pairs(
 			mapIter(
 				Permutations([]int{1, 2, 3, 4, 5}),
 				func(v []int) [5]int { return [5]int(slices.Clone(v)) },
 			),
-			hiter.Repeat(struct{}{}, -1),
+			Repeat(struct{}{}, -1),
 		),
 	)
 	assert.Assert(t, cmp.Len(m, 5*4*3*2*1))

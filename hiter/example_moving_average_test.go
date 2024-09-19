@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"slices"
 
-	"github.com/ngicks/go-iterator-helper/collection"
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
@@ -14,7 +13,7 @@ func Example_moving_average() {
 	movingAverage := slices.Collect(
 		xiter.Map(
 			func(s []int) float64 {
-				return float64(collection.Sum(slices.Values(s))) / float64(len(s))
+				return float64(hiter.Sum(slices.Values(s))) / float64(len(s))
 			},
 			hiter.Window(src, 5),
 		),

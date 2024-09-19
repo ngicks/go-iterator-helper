@@ -1,4 +1,4 @@
-package collection
+package hiter
 
 import (
 	"cmp"
@@ -6,7 +6,6 @@ import (
 	"iter"
 	"slices"
 
-	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
@@ -48,7 +47,7 @@ func MergeSortSliceLikeFunc[S SliceLike[T], T any](s S, cmp func(l, r T) int) it
 }
 
 type SliceLike[T any] interface {
-	hiter.Atter[T]
+	Atter[T]
 	Len() int
 }
 
@@ -111,7 +110,7 @@ func (c combiner[T]) Len() int {
 
 func mergeSortSubbableFunc[S SliceLike[T], T any](s subbable[S, T], cmp func(l, r T) int) iter.Seq[T] {
 	if s.Len() <= 1 {
-		return hiter.OmitF(hiter.IndexAccessible(s, hiter.Range(0, s.Len())))
+		return OmitF(IndexAccessible(s, Range(0, s.Len())))
 	}
 	return func(yield func(T) bool) {
 		left, right := s.Sub(0, s.Len()/2), s.Sub(s.Len()/2, s.Len())

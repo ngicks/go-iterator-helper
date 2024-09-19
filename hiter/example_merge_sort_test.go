@@ -1,4 +1,4 @@
-package collection_test
+package hiter_test
 
 import (
 	"cmp"
@@ -7,7 +7,6 @@ import (
 	"math/rand/v2"
 	"slices"
 
-	"github.com/ngicks/go-iterator-helper/collection"
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
@@ -62,7 +61,7 @@ func mergeFunc[S ~[]T, T any](l, r S, cmp func(l, r T) int) S {
 	return m
 }
 
-var _ collection.SliceLike[any] = sliceAdapter[any]{}
+var _ hiter.SliceLike[any] = sliceAdapter[any]{}
 
 type sliceAdapter[T any] []T
 
@@ -84,7 +83,7 @@ func Example_merge_sort() {
 		"merge sort iter: %t\n",
 		slices.IsSorted(
 			slices.Collect(
-				collection.MergeSort(slices.Collect(limit(rng, 10))),
+				hiter.MergeSort(slices.Collect(limit(rng, 10))),
 			),
 		),
 	)
@@ -92,7 +91,7 @@ func Example_merge_sort() {
 		"merge sort atter: %t\n",
 		slices.IsSorted(
 			slices.Collect(
-				collection.MergeSortSliceLike(sliceAdapter[int](slices.Collect(limit(rng, 10)))),
+				hiter.MergeSortSliceLike(sliceAdapter[int](slices.Collect(limit(rng, 10)))),
 			),
 		),
 	)
@@ -100,11 +99,11 @@ func Example_merge_sort() {
 		"merge sort atter logically concatenated: %t\n",
 		slices.IsSorted(
 			slices.Collect(
-				collection.MergeSortSliceLike(
-					collection.ConcatSliceLike(
+				hiter.MergeSortSliceLike(
+					hiter.ConcatSliceLike(
 						slices.Collect(
 							xiter.Map(
-								func(i int) collection.SliceLike[int] {
+								func(i int) hiter.SliceLike[int] {
 									return sliceAdapter[int](slices.Collect(limit(rng, i)))
 								},
 								xiter.Limit(rng, 5),

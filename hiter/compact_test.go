@@ -1,4 +1,4 @@
-package collection
+package hiter
 
 import (
 	"fmt"
@@ -6,16 +6,15 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
 )
 
-func Example_compact() {
+func ExampleCompact() {
 	m := xiter.Merge(
-		xiter.Map(func(i int) int { return 2 * i }, hiter.Range(1, 11)),
-		xiter.Map(func(i int) int { return 1 << i }, hiter.Range(1, 11)),
+		xiter.Map(func(i int) int { return 2 * i }, Range(1, 11)),
+		xiter.Map(func(i int) int { return 1 << i }, Range(1, 11)),
 	)
 
 	first := true
@@ -39,7 +38,7 @@ func TestCompact(t *testing.T) {
 
 	for _, tc := range []testCase{
 		{
-			input: hiter.Repeat(0, 0),
+			input: Repeat(0, 0),
 		},
 		{
 			input:    slices.Values([]int{1, 1, 2, 2, 5, 5, 2, 2, 3, 3, 4}),
@@ -64,7 +63,7 @@ func TestCompactFunc(t *testing.T) {
 
 	for _, tc := range []testCase{
 		{
-			input: hiter.Repeat(testSubject{}, 0),
+			input: Repeat(testSubject{}, 0),
 		},
 		{
 			input:    slices.Values([]testSubject{{"foo", 5}, {"foo", 6}, {"foo", 6}, {"bar", 6}, {"baz", 6}}),
@@ -84,26 +83,26 @@ func TestCompactFunc(t *testing.T) {
 func TestCompact2(t *testing.T) {
 	type testCase struct {
 		input    iter.Seq2[int, int]
-		expected []hiter.KeyValue[int, int]
+		expected []KeyValue[int, int]
 	}
 
 	for _, tc := range []testCase{
 		{
-			input: hiter.Repeat2(0, 0, 0),
+			input: Repeat2(0, 0, 0),
 		},
 		{
-			input: hiter.Pairs( // 5,5 5,5 6,5 6,6 6,6
-				xiter.Concat(hiter.Repeat(5, 2), hiter.Repeat(6, 3)),
-				xiter.Concat(hiter.Repeat(5, 3), hiter.Repeat(6, 2)),
+			input: Pairs( // 5,5 5,5 6,5 6,6 6,6
+				xiter.Concat(Repeat(5, 2), Repeat(6, 3)),
+				xiter.Concat(Repeat(5, 3), Repeat(6, 2)),
 			),
-			expected: hiter.KeyValues[int, int]{{K: 5, V: 5}, {K: 6, V: 5}, {K: 6, V: 6}},
+			expected: KeyValues[int, int]{{K: 5, V: 5}, {K: 6, V: 5}, {K: 6, V: 6}},
 		},
 	} {
 		assert.Assert(
 			t,
 			cmp.DeepEqual(
 				tc.expected,
-				hiter.Collect2(Compact2(tc.input)),
+				Collect2(Compact2(tc.input)),
 			),
 		)
 	}
@@ -117,7 +116,7 @@ func TestCompactFunc2(t *testing.T) {
 
 	type testCase struct {
 		input    iter.Seq2[int, testSubject]
-		expected []hiter.KeyValue[int, testSubject]
+		expected []KeyValue[int, testSubject]
 		eq       func(k1 int, v1 testSubject, k2 int, v2 testSubject) bool
 	}
 
@@ -125,11 +124,11 @@ func TestCompactFunc2(t *testing.T) {
 
 	for _, tc := range []testCase{
 		{
-			input: hiter.Repeat2(0, testSubject{}, 0),
+			input: Repeat2(0, testSubject{}, 0),
 		},
 		{
 			input: inputIter,
-			expected: []hiter.KeyValue[int, testSubject]{
+			expected: []KeyValue[int, testSubject]{
 				{K: 0, V: testSubject{"foo", 5}},
 				{K: 3, V: testSubject{"bar", 6}},
 				{K: 4, V: testSubject{"baz", 6}},
@@ -138,7 +137,7 @@ func TestCompactFunc2(t *testing.T) {
 		},
 		{
 			input: inputIter,
-			expected: []hiter.KeyValue[int, testSubject]{
+			expected: []KeyValue[int, testSubject]{
 				{K: 0, V: testSubject{"foo", 5}},
 				{K: 1, V: testSubject{"foo", 6}},
 			},
@@ -147,10 +146,10 @@ func TestCompactFunc2(t *testing.T) {
 
 		{
 			input:    inputIter,
-			expected: hiter.Collect2(inputIter),
+			expected: Collect2(inputIter),
 			eq:       func(k1 int, v1 testSubject, k2 int, v2 testSubject) bool { return k1 == k2 },
 		},
 	} {
-		assert.Assert(t, cmp.DeepEqual(tc.expected, hiter.Collect2(CompactFunc2(tc.input, tc.eq))))
+		assert.Assert(t, cmp.DeepEqual(tc.expected, Collect2(CompactFunc2(tc.input, tc.eq))))
 	}
 }

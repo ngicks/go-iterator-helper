@@ -17,7 +17,7 @@ func JsonDecoder(dec *json.Decoder) iter.Seq2[json.Token, error] {
 // XmlDecoder returns an iterator over xml tokens.
 // The first non-nil error encountered stops iteration after yielding it.
 // [io.EOF] is excluded from result.
-// The Caller should call [xml.CopyToken] before going to next iteration if they need to retain tokens.
+// The caller should call [xml.CopyToken] before going to next iteration if they need to retain tokens.
 func XmlDecoder(dec *xml.Decoder) iter.Seq2[xml.Token, error] {
 	return tokener(dec)
 }

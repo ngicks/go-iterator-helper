@@ -45,6 +45,10 @@ func main() {
 
 	for _, line := range hiterDoc {
 		line = strings.TrimSpace(line)
+		if strings.Contains(line, "IndexAccessible") {
+			hiterData.Source = append(hiterData.Source, line)
+			continue
+		}
 		if hasIterArg.MatchString(line) {
 			if hasIterRet.MatchString(line) {
 				hiterData.Adapter = append(hiterData.Adapter, line)

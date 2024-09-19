@@ -21,6 +21,7 @@ Iterator sources: functions that compose up iterators from data sources:
 ```go
 func Chan[V any](ctx context.Context, ch <-chan V) iter.Seq[V]
 func Heap[V any](h heap.Interface) iter.Seq[V]
+func IndexAccessible[A Atter[T], T any](a A, indices iter.Seq[int]) iter.Seq2[int, T]
 func JsonDecoder(dec *json.Decoder) iter.Seq2[json.Token, error]
 func ListAll[V any](l *list.List) iter.Seq[V]
 func ListBackward[V any](l *list.List) iter.Seq[V]
@@ -38,6 +39,7 @@ func RepeatFunc[V any](fnV func() V, n int) iter.Seq[V]
 func RepeatFunc2[K, V any](fnK func() K, fnV func() V, n int) iter.Seq2[K, V]
 func RingAll[V any](r *ring.Ring) iter.Seq[V]
 func RingBackward[V any](r *ring.Ring) iter.Seq[V]
+func RunningReduce[V, Sum any](reducer func(accumulator Sum, current V, i int) Sum, initial Sum, ...) iter.Seq[Sum]
 func Scan(scanner *bufio.Scanner) iter.Seq[string]
 func SqlRows[T any](r *sql.Rows, scanner func(*sql.Rows) (T, error)) iter.Seq2[T, error]
 func StringsChunk(s string, n int) iter.Seq[string]
@@ -55,21 +57,19 @@ func Alternate[V any](seqs ...iter.Seq[V]) iter.Seq[V]
 func Alternate2[K, V any](seqs ...iter.Seq2[K, V]) iter.Seq2[K, V]
 func Compact[V comparable](seq iter.Seq[V]) iter.Seq[V]
 func Compact2[K, V comparable](seq iter.Seq2[K, V]) iter.Seq2[K, V]
-func CompactFunc[V any](seq iter.Seq[V], eq func(i, j V) bool) iter.Seq[V]
-func CompactFunc2[K, V any](seq iter.Seq2[K, V], eq func(k1 K, v1 V, k2 K, v2 V) bool) iter.Seq2[K, V]
+func CompactFunc[V any](eq func(i, j V) bool, seq iter.Seq[V]) iter.Seq[V]
+func CompactFunc2[K, V any](eq func(k1 K, v1 V, k2 K, v2 V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func Decorate[V any](prepend, append Iterable[V], seq iter.Seq[V]) iter.Seq[V]
 func Decorate2[K, V any](prepend, append Iterable2[K, V], seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func Enumerate[T any](seq iter.Seq[T]) iter.Seq2[int, T]
 func Flatten[S ~[]E, E any](seq iter.Seq[S]) iter.Seq[E]
 func FlattenF[S1 ~[]E1, E1 any, E2 any](seq iter.Seq2[S1, E2]) iter.Seq2[E1, E2]
 func FlattenL[S2 ~[]E2, E1 any, E2 any](seq iter.Seq2[E1, S2]) iter.Seq2[E1, E2]
-func IndexAccessible[A Atter[T], T any](a A, indices iter.Seq[int]) iter.Seq2[int, T]
 func LimitUntil[V any](f func(V) bool, seq iter.Seq[V]) iter.Seq[V]
 func LimitUntil2[K, V any](f func(K, V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func OmitF[K, V any](seq iter.Seq2[K, V]) iter.Seq[V]
 func OmitL[K, V any](seq iter.Seq2[K, V]) iter.Seq[K]
 func Pairs[K, V any](seq1 iter.Seq[K], seq2 iter.Seq[V]) iter.Seq2[K, V]
-func RunningReduce[V, Sum any](seq iter.Seq[V], reducer func(accumulator Sum, current V, i int) Sum, ...) iter.Seq[Sum]
 func Skip[V any](n int, seq iter.Seq[V]) iter.Seq[V]
 func Skip2[K, V any](n int, seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func SkipLast[V any](n int, seq iter.Seq[V]) iter.Seq[V]
@@ -88,10 +88,10 @@ func AppendSeq2[S ~[]KeyValue[K, V], K, V any](s S, seq iter.Seq2[K, V]) S
 func ChanSend[V any](ctx context.Context, c chan<- V, seq iter.Seq[V]) (v V, sentAll bool)
 func Omit[K any](seq iter.Seq[K]) func(yield func() bool)
 func Omit2[K, V any](seq iter.Seq2[K, V]) func(yield func() bool)
-func ReduceGroup[K comparable, V, Sum any](seq iter.Seq2[K, V], reducer func(accumulator Sum, current V) Sum, initial Sum) map[K]Sum
+func ReduceGroup[K comparable, V, Sum any](reducer func(accumulator Sum, current V) Sum, initial Sum, seq iter.Seq2[K, V]) map[K]Sum
 func StringsCollect(sizeHint int, seq iter.Seq[string]) string
 func Sum[S Summable](seq iter.Seq[S]) S
-func SumOf[V any, S Summable](seq iter.Seq[V], selector func(ele V) S) S
+func SumOf[V any, S Summable](selector func(ele V) S, seq iter.Seq[V]) S
 func Collect2[K, V any](seq iter.Seq2[K, V]) []KeyValue[K, V]
 ```
 

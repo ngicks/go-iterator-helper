@@ -11,7 +11,7 @@ import (
 	"github.com/ngicks/go-iterator-helper/hiter/errbox"
 )
 
-func Example_encoding_xml_semantically_broken() {
+func ExampleNewXmlDecoder_semantically_broken() {
 	const semanticallyBroken = `
 	<root>
 		<self/>
@@ -58,7 +58,7 @@ func Example_encoding_xml_semantically_broken() {
 	// eof: true
 }
 
-func Example_encoding_xml_syntactically_broken() {
+func ExampleNewXmlDecoder_syntactically_broken() {
 	const syntacticallyBroken = `
 	<root>
 		<self/>
@@ -101,7 +101,7 @@ func Example_encoding_xml_syntactically_broken() {
 	// stored err: XML syntax error on line 7: unexpected EOF
 }
 
-func Example_encoding_xml_reader_broken() {
+func ExampleNewXmlDecoder_reader_broken() {
 	const readerBroken = `
 	<root>
 		<self/>

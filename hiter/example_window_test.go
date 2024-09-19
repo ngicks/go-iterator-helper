@@ -8,7 +8,7 @@ import (
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
-func Example_moving_average() {
+func ExampleWindow_moving_average() {
 	src := []int{1, 0, 1, 0, 1, 0, 5, 3, 2, 3, 4, 6, 5, 3, 6, 7, 7, 8, 9, 5, 7, 7, 8}
 	movingAverage := slices.Collect(
 		xiter.Map(

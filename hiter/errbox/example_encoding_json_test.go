@@ -11,7 +11,7 @@ import (
 	"github.com/ngicks/go-iterator-helper/hiter/errbox"
 )
 
-func Example_encoding_json_semantically_broken() {
+func ExampleNewJsonDecoder_semantically_broken() {
 	const semanticallyBroken = `{
 		"foo": "bar",
 		"baz": ["yay", "nay", 5, "wow"]
@@ -59,7 +59,7 @@ func Example_encoding_json_semantically_broken() {
 	// eof: true
 }
 
-func Example_encoding_json_syntactically_broken() {
+func ExampleNewJsonDecoder_syntactically_broken() {
 	const syntacticallyBroken = `{
 		"foo": "bar",
 		"baz": ["yay", "nay", 5, "wow"],
@@ -92,7 +92,7 @@ func Example_encoding_json_syntactically_broken() {
 	// eof: true
 }
 
-func Example_encoding_json_reader_broken() {
+func ExampleNewJsonDecoder_reader_broken() {
 	const readerBroken = `{
 		"foo": "bar",
 		"baz": ["yay", "nay", 5, "wow"]`

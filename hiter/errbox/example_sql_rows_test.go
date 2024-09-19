@@ -9,7 +9,7 @@ import (
 	"github.com/ngicks/go-iterator-helper/internal/testhelper"
 )
 
-func Example_sql_rows_successful() {
+func ExampleNewSqlRows_successful() {
 	type TestRow struct {
 		Id    int
 		Title string
@@ -42,7 +42,7 @@ func Example_sql_rows_successful() {
 	// stored err: <nil>
 }
 
-func Example_sql_rows_row_error() {
+func ExampleNewSqlRows_row_error() {
 	mock := testhelper.OpenMockDB(true)
 	defer mock.Close()
 
@@ -57,7 +57,7 @@ func Example_sql_rows_row_error() {
 	// stored err: mock error
 }
 
-func Example_sql_rows_scan_error() {
+func ExampleNewSqlRows_scan_error() {
 	scanErr := errors.New("scan")
 
 	mock := testhelper.OpenMockDB(true)

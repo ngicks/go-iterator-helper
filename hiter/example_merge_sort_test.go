@@ -73,8 +73,7 @@ func (s sliceAdapter[T]) Len() int {
 	return len(s)
 }
 
-// Example_merge_sort implements slice version merge sort and re-implements iterator version of it.
-func Example_merge_sort() {
+func ExampleMergeSort() {
 	rng := hiter.RepeatFunc(func() int { return rand.N(20) }, -1)
 	fmt.Printf("merge sort: %t\n",
 		slices.IsSorted(mergeSortFunc(slices.Collect(limit(rng, 10)), cmp.Compare)),

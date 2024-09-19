@@ -1,7 +1,6 @@
 package hiter_test
 
 import (
-	"cmp"
 	"container/heap"
 	"container/list"
 	"container/ring"
@@ -12,20 +11,6 @@ import (
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 )
-
-var _ heap.Interface = (*sliceHeap)(nil)
-
-type sliceHeap []int
-
-func (s *sliceHeap) Len() int           { return len(*s) }
-func (s *sliceHeap) Less(i, j int) bool { return cmp.Less((*s)[i], (*s)[j]) }
-func (s *sliceHeap) Swap(i, j int)      { (*s)[i], (*s)[j] = (*s)[j], (*s)[i] }
-func (s *sliceHeap) Push(x any)         { (*s) = append((*s), x.(int)) }
-func (s *sliceHeap) Pop() any {
-	p := (*s)[len(*s)-1]
-	*s = slices.Delete(*s, len(*s)-1, len(*s))
-	return p
-}
 
 func TestContainerHeap(t *testing.T) {
 	h := &sliceHeap{2, 7, 9, 0, 9, 1}

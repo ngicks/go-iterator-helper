@@ -8,7 +8,7 @@ import (
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 )
 
-func Example_decorate_string() {
+func ExampleDecorate() {
 	src := "foo bar baz"
 	var num atomic.Int32
 	numListTitle := iterable.RepeatableFunc[string]{

@@ -37,7 +37,7 @@ func ExampleChanSend() {
 				hiter.Tap(
 					func(_ string) {
 						// sleep for random duration.
-						// Ensuring moderate distribution among workers(goroutines.)
+						// Ensuring moderate task distribution among workers(goroutines.)
 						time.Sleep(rand.N[time.Duration](100))
 					},
 					xiter.Map(

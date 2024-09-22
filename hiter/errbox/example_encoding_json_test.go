@@ -11,7 +11,11 @@ import (
 	"github.com/ngicks/go-iterator-helper/hiter/errbox"
 )
 
-func ExampleNewJsonDecoder_semantically_broken() {
+// ExampleNewJsonDecoder_a_semantically_broken demonstrates raw decoder can be accessed while iterating over tokens.
+// Also calling Decode is safe and not a race condition.
+// Failing to decode does not affect its iteration.
+// After the iterator stops, no error is stored.
+func ExampleNewJsonDecoder_a_semantically_broken() {
 	const semanticallyBroken = `{
 		"foo": "bar",
 		"baz": ["yay", "nay", 5, "wow"]
@@ -22,7 +26,7 @@ func ExampleNewJsonDecoder_semantically_broken() {
 	var depth int
 	for t := range dec.IntoIter() {
 		if depth == 1 && t == "baz" {
-			// read 1 ahead.
+			// read opening [.
 			t, err := dec.Dec.Token()
 			if err != nil {
 				panic(err)
@@ -38,6 +42,14 @@ func ExampleNewJsonDecoder_semantically_broken() {
 				} else {
 					fmt.Printf("yay err = %v\n", err)
 				}
+			}
+			// read closing ].
+			t, err = dec.Dec.Token()
+			if err != nil {
+				panic(err)
+			}
+			if t != json.Delim(']') {
+				panic("??")
 			}
 		}
 		switch t {
@@ -59,14 +71,23 @@ func ExampleNewJsonDecoder_semantically_broken() {
 	// eof: true
 }
 
-func ExampleNewJsonDecoder_syntactically_broken() {
+// ExampleNewJsonDecoder_b_syntactically_broken demonstrates that
+// syntactically broken json inputs cause no error on reading.
+// Also it works well with some reader implementation where final non-empty data come with io.EOF error.
+func ExampleNewJsonDecoder_b_syntactically_broken() {
 	const syntacticallyBroken = `{
 		"foo": "bar",
 		"baz": ["yay", "nay", 5, "wow"],
 		"broken": {
 	}`
 
-	dec := errbox.NewJsonDecoder(json.NewDecoder(strings.NewReader(syntacticallyBroken)))
+	dec := errbox.NewJsonDecoder(
+		json.NewDecoder(
+			iotest.DataErrReader(
+				strings.NewReader(syntacticallyBroken),
+			),
+		),
+	)
 
 	for t := range dec.IntoIter() {
 		fmt.Printf("%v\n", t)
@@ -92,7 +113,9 @@ func ExampleNewJsonDecoder_syntactically_broken() {
 	// eof: true
 }
 
-func ExampleNewJsonDecoder_reader_broken() {
+// ExampleNewJsonDecoder_c_reader_broken demonstrates an error returned from the decoder
+// can be inspected through Err method.
+func ExampleNewJsonDecoder_c_reader_broken() {
 	const readerBroken = `{
 		"foo": "bar",
 		"baz": ["yay", "nay", 5, "wow"]`

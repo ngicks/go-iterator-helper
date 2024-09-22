@@ -11,7 +11,11 @@ import (
 	"github.com/ngicks/go-iterator-helper/hiter/errbox"
 )
 
-func ExampleNewXmlDecoder_semantically_broken() {
+// ExampleNewXmlDecoder_a_semantically_broken demonstrates raw decoder can be accessed while iterating over tokens.
+// Also calling DecodeElement is safe and not a race condition.
+// Failing to decode does not affect its iteration.
+// After the iterator stops, no error is stored.
+func ExampleNewXmlDecoder_a_semantically_broken() {
 	const semanticallyBroken = `
 	<root>
 		<self/>
@@ -58,7 +62,10 @@ func ExampleNewXmlDecoder_semantically_broken() {
 	// eof: true
 }
 
-func ExampleNewXmlDecoder_syntactically_broken() {
+// ExampleNewXmlDecoder_b_syntactically_broken demonstrates that
+// syntactically broken xml inputs cause io.UnexpectedEOF error.
+// Also it works well with some reader implementation where final non-empty data come with io.EOF error.
+func ExampleNewXmlDecoder_b_syntactically_broken() {
 	const syntacticallyBroken = `
 	<root>
 		<self/>
@@ -68,7 +75,13 @@ func ExampleNewXmlDecoder_syntactically_broken() {
 		<baz>yay</baz>
 		<baz>49`
 
-	dec := errbox.NewXmlDecoder(xml.NewDecoder(strings.NewReader(strings.TrimSpace(syntacticallyBroken))))
+	dec := errbox.NewXmlDecoder(
+		xml.NewDecoder(
+			iotest.DataErrReader(
+				strings.NewReader(strings.TrimSpace(syntacticallyBroken)),
+			),
+		),
+	)
 
 	for t := range dec.IntoIter() {
 		fmt.Printf("%#v\n", t)
@@ -101,7 +114,9 @@ func ExampleNewXmlDecoder_syntactically_broken() {
 	// stored err: XML syntax error on line 7: unexpected EOF
 }
 
-func ExampleNewXmlDecoder_reader_broken() {
+// ExampleNewXmlDecoder_c_reader_broken demonstrates an error returned from the decoder
+// can be inspected through Err method.
+func ExampleNewXmlDecoder_c_reader_broken() {
 	const readerBroken = `
 	<root>
 		<self/>

@@ -93,7 +93,7 @@ func compareRange[T any](r indexRanged[T], t int) int {
 
 func (c combiner[T]) At(i int) T {
 	// I took benchmarks and noticed that if ss is holding less than like 20 elements,
-	// linear search is slightly faster (2.5 ns vs 8 ns).
+	// linear search is slightly faster(nano sec order).
 	// At least for Go 1.23.0.
 	// But I don't care about that here.
 	found, ok := slices.BinarySearchFunc(c.ss, i, compareRange)

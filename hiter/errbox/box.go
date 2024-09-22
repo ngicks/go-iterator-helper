@@ -50,9 +50,6 @@ func (b *Box[V]) Stop() {
 func (b *Box[V]) IntoIter() iter.Seq[V] {
 	return func(yield func(V) bool) {
 		for {
-			if b.err != nil {
-				return
-			}
 			v, err, ok := b.next()
 			if !ok {
 				return

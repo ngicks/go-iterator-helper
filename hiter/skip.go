@@ -4,6 +4,52 @@ import (
 	"iter"
 )
 
+// Say we have sequence data of n size.
+// |++++++++++data++++++++++|
+// Limit limits to n elements from head.
+// |+++++++:n---------------|
+// Skip skips n elements from head
+// |--------:n++++++++++++++|
+// SkipLast skips n element from tails
+// |++++++++++++++n:--------|
+//
+// Soooo... will we have LimitLast?
+// It should skip element to ensure only size of n elements from *tail* are returned to caller.
+// |---------------n:+++++++|
+// Definitely what I should refer to is that,
+// it may block so long time.
+// Normally we should not have control how many elements the seq is supposed to yield.
+// Implementation should look like
+//
+// func LimitLast[V any](n int, seq iter.Seq[V]) iter.Seq[V] {
+// 	return func(yield func(V) bool) {
+// 		var (
+// 			buf    = make([]V, n)
+// 			cursor int
+// 			full   bool
+// 		)
+// 		for v := range seq {
+// 			buf[cursor] = v
+// 			cursor++
+// 			if cursor == n {
+// 				cursor = 0
+// 				full = true
+// 			}
+// 		}
+// 		end := cursor
+// 		if full {
+// 			end = n
+// 		}
+// 		for i := 0; i < end; i++ {
+// 			if !yield(buf[i]) {
+// 				return
+// 			}
+// 		}
+// 	}
+// }
+//
+// The uncontrolled long blocking sounds not too good to me.
+
 // Skip returns an iterator over seq that skips n elements from seq.
 func Skip[V any](n int, seq iter.Seq[V]) iter.Seq[V] {
 	return func(yield func(V) bool) {

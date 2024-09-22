@@ -79,6 +79,7 @@ func SkipWhile2[K, V any](f func(K, V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V
 func Tap[V any](tap func(V), seq iter.Seq[V]) iter.Seq[V]
 func Tap2[K, V any](tap func(K, V), seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func Transpose[K, V any](seq iter.Seq2[K, V]) iter.Seq2[V, K]
+func WindowSeq[V any](n int, seq iter.Seq[V]) iter.Seq[iter.Seq[V]]
 ```
 
 Collectors: functions that collect data from iterators and convert to other data.

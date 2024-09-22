@@ -2,7 +2,12 @@ package hiter
 
 import "iter"
 
-func RunningReduce[V, Sum any](reducer func(accumulator Sum, current V, i int) Sum, initial Sum, seq iter.Seq[V]) iter.Seq[Sum] {
+// RunningReduce returns an iterator over every intermediate reducer results.
+func RunningReduce[V, Sum any](
+	reducer func(accumulator Sum, current V, i int) Sum,
+	initial Sum,
+	seq iter.Seq[V],
+) iter.Seq[Sum] {
 	return func(yield func(Sum) bool) {
 		var i int
 		for v := range seq {

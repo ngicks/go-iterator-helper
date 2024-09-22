@@ -5,7 +5,7 @@ import (
 )
 
 // reduce is redefined to avoid xiter dependency.
-func reduce[Sum, V any](seq iter.Seq[V], reducer func(Sum, V) Sum, initial Sum) Sum {
+func reduce[Sum, V any](reducer func(Sum, V) Sum, initial Sum, seq iter.Seq[V]) Sum {
 	for v := range seq {
 		initial = reducer(initial, v)
 	}
@@ -23,16 +23,16 @@ type Summable interface {
 
 func Sum[S Summable](seq iter.Seq[S]) S {
 	return reduce(
-		seq,
 		func(e S, t S) S { return e + t },
 		*new(S),
+		seq,
 	)
 }
 
 func SumOf[V any, S Summable](selector func(ele V) S, seq iter.Seq[V]) S {
 	return reduce(
-		seq,
 		func(e S, t V) S { return e + selector(t) },
 		*new(S),
+		seq,
 	)
 }

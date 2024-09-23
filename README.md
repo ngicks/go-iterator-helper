@@ -41,6 +41,8 @@ func RingAll[V any](r *ring.Ring) iter.Seq[V]
 func RingBackward[V any](r *ring.Ring) iter.Seq[V]
 func RunningReduce[V, Sum any](reducer func(accumulator Sum, current V, i int) Sum, initial Sum, ...) iter.Seq[Sum]
 func Scan(scanner *bufio.Scanner) iter.Seq[string]
+func Single[V any](v V) iter.Seq[V]
+func Single2[K, V any](k K, v V) iter.Seq2[K, V]
 func SqlRows[T any](r *sql.Rows, scanner func(*sql.Rows) (T, error)) iter.Seq2[T, error]
 func StringsChunk(s string, n int) iter.Seq[string]
 func StringsRuneChunk(s string, n int) iter.Seq[string]
@@ -87,8 +89,10 @@ func WindowSeq[V any](n int, seq iter.Seq[V]) iter.Seq[iter.Seq[V]]
 Collectors: functions that collect data from iterators and convert to other data.
 
 ```go
+func AppendBytes(b []byte, seq iter.Seq[[]byte]) []byte
 func AppendSeq2[S ~[]KeyValue[K, V], K, V any](s S, seq iter.Seq2[K, V]) S
 func ChanSend[V any](ctx context.Context, c chan<- V, seq iter.Seq[V]) (v V, sentAll bool)
+func Encode[Enc interface{ ... }, V any](enc Enc, seq iter.Seq[V]) error
 func Find[V comparable](v V, seq iter.Seq[V]) (V, int)
 func Find2[K, V comparable](k K, v V, seq iter.Seq2[K, V]) (K, V, int)
 func FindFunc[V any](f func(V) bool, seq iter.Seq[V]) (V, int)
@@ -97,10 +101,15 @@ func FindLast[V comparable](v V, seq iter.Seq[V]) (found V, idx int)
 func FindLast2[K, V comparable](k K, v V, seq iter.Seq2[K, V]) (foundK K, foundV V, idx int)
 func FindLastFunc[V any](fn func(V) bool, seq iter.Seq[V]) (found V, idx int)
 func FindLastFunc2[K, V any](fn func(K, V) bool, seq iter.Seq2[K, V]) (foundK K, foundV V, idx int)
+func First[V any](seq iter.Seq[V]) (k V, ok bool)
+func First2[K, V any](seq iter.Seq2[K, V]) (k K, v V, ok bool)
+func Last[V any](seq iter.Seq[V]) (v V, ok bool)
+func Last2[K, V any](seq iter.Seq2[K, V]) (k K, v V, ok bool)
 func ReduceGroup[K comparable, V, Sum any](reducer func(accumulator Sum, current V) Sum, initial Sum, seq iter.Seq2[K, V]) map[K]Sum
 func StringsCollect(sizeHint int, seq iter.Seq[string]) string
 func Sum[S Summable](seq iter.Seq[S]) S
 func SumOf[V any, S Summable](selector func(ele V) S, seq iter.Seq[V]) S
+func Write[V any](w io.Writer, marshaler func(v V, written int) ([]byte, error), seq iter.Seq[V]) (n int, er error)
 func Collect2[K, V any](seq iter.Seq2[K, V]) []KeyValue[K, V]
 ```
 
@@ -129,6 +138,10 @@ type Repeatable[V any] struct{ ... }
 type Repeatable2[K, V any] struct{ ... }
 type RepeatableFunc[V any] struct{ ... }
 type RepeatableFunc2[K, V any] struct{ ... }
+type Resumable[V any] struct{ ... }
+    func NewResumable[V any](seq iter.Seq[V]) *Resumable[V]
+type Resumable2[K, V any] struct{ ... }
+    func NewResumable2[K, V any](seq iter.Seq2[K, V]) *Resumable2[K, V]
 type RingAll[T any] struct{ ... }
 type RingBackward[T any] struct{ ... }
 type Scanner struct{ ... }

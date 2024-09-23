@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"regexp"
+	"slices"
 	"strings"
 	"text/template"
 )
@@ -45,8 +46,25 @@ func main() {
 
 	for _, line := range hiterDoc {
 		line = strings.TrimSpace(line)
-		if strings.Contains(line, "IndexAccessible") {
+		if slices.ContainsFunc(
+			[]string{
+				"func IndexAccessible",
+			},
+			func(s string) bool {
+				return strings.HasPrefix(line, s)
+			},
+		) {
 			hiterData.Source = append(hiterData.Source, line)
+			continue
+		}
+		if slices.ContainsFunc(
+			[]string{
+				"func Omit[",
+				"func Omit2[",
+			},
+			func(s string) bool { return strings.HasPrefix(line, s) },
+		) {
+			hiterData.Adapter = append(hiterData.Adapter, line)
 			continue
 		}
 		if hasIterArg.MatchString(line) {

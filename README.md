@@ -67,6 +67,8 @@ func FlattenF[S1 ~[]E1, E1 any, E2 any](seq iter.Seq2[S1, E2]) iter.Seq2[E1, E2]
 func FlattenL[S2 ~[]E2, E1 any, E2 any](seq iter.Seq2[E1, S2]) iter.Seq2[E1, E2]
 func LimitUntil[V any](f func(V) bool, seq iter.Seq[V]) iter.Seq[V]
 func LimitUntil2[K, V any](f func(K, V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V]
+func Omit[K any](seq iter.Seq[K]) func(yield func() bool)
+func Omit2[K, V any](seq iter.Seq2[K, V]) func(yield func() bool)
 func OmitF[K, V any](seq iter.Seq2[K, V]) iter.Seq[V]
 func OmitL[K, V any](seq iter.Seq2[K, V]) iter.Seq[K]
 func Pairs[K, V any](seq1 iter.Seq[K], seq2 iter.Seq[V]) iter.Seq2[K, V]
@@ -87,8 +89,14 @@ Collectors: functions that collect data from iterators and convert to other data
 ```go
 func AppendSeq2[S ~[]KeyValue[K, V], K, V any](s S, seq iter.Seq2[K, V]) S
 func ChanSend[V any](ctx context.Context, c chan<- V, seq iter.Seq[V]) (v V, sentAll bool)
-func Omit[K any](seq iter.Seq[K]) func(yield func() bool)
-func Omit2[K, V any](seq iter.Seq2[K, V]) func(yield func() bool)
+func Find[V comparable](v V, seq iter.Seq[V]) (V, int)
+func Find2[K, V comparable](k K, v V, seq iter.Seq2[K, V]) (K, V, int)
+func FindFunc[V any](f func(V) bool, seq iter.Seq[V]) (V, int)
+func FindFunc2[K, V any](fn func(K, V) bool, seq iter.Seq2[K, V]) (K, V, int)
+func FindLast[V comparable](v V, seq iter.Seq[V]) (found V, idx int)
+func FindLast2[K, V comparable](k K, v V, seq iter.Seq2[K, V]) (foundK K, foundV V, idx int)
+func FindLastFunc[V any](fn func(V) bool, seq iter.Seq[V]) (found V, idx int)
+func FindLastFunc2[K, V any](fn func(K, V) bool, seq iter.Seq2[K, V]) (foundK K, foundV V, idx int)
 func ReduceGroup[K comparable, V, Sum any](reducer func(accumulator Sum, current V) Sum, initial Sum, seq iter.Seq2[K, V]) map[K]Sum
 func StringsCollect(sizeHint int, seq iter.Seq[string]) string
 func Sum[S Summable](seq iter.Seq[S]) S

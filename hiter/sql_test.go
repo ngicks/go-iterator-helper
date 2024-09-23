@@ -46,8 +46,14 @@ func TestSqliteRows(t *testing.T) {
 
 		t.Run("errbox.SqlRows", func(t *testing.T) {
 			var boxed *errbox.SqlRows[testhelper.TestRow]
+			defer func() { boxed.Stop() }()
+
 			testCase1[testhelper.TestRow]{
 				Seq: func() iter.Seq[testhelper.TestRow] {
+					if boxed != nil {
+						boxed.Stop()
+					}
+
 					mock = testhelper.OpenMockDB(false)
 					boxed = errbox.NewSqlRows(testhelper.QueryRows(mock), scanner)
 					return boxed.IntoIter()
@@ -97,8 +103,13 @@ func TestSqliteRows(t *testing.T) {
 
 		t.Run("errbox.SqlRows", func(t *testing.T) {
 			var boxed *errbox.SqlRows[testhelper.TestRow]
+			defer func() { boxed.Stop() }()
 			testCase1[testhelper.TestRow]{
 				Seq: func() iter.Seq[testhelper.TestRow] {
+					if boxed != nil {
+						boxed.Stop()
+					}
+
 					mock = testhelper.OpenMockDB(true)
 					boxed = errbox.NewSqlRows(testhelper.QueryRows(mock), scanner)
 					return boxed.IntoIter()
@@ -110,10 +121,10 @@ func TestSqliteRows(t *testing.T) {
 				BreakAt:  1,
 				Stateful: true,
 			}.Test(t, func(_, count int) {
-				if count == 0 {
-					assert.ErrorIs(t, boxed.Err(), testhelper.ErrMock)
-				} else {
+				if count == 1 {
 					assert.NilError(t, boxed.Err())
+				} else {
+					assert.ErrorIs(t, boxed.Err(), testhelper.ErrMock)
 				}
 			})
 		})
@@ -160,8 +171,14 @@ func TestSqliteRows(t *testing.T) {
 		})
 		t.Run("errbox.SqlRows", func(t *testing.T) {
 			var boxed *errbox.SqlRows[testhelper.TestRow]
+			defer func() { boxed.Stop() }()
+
 			testCase1[testhelper.TestRow]{
 				Seq: func() iter.Seq[testhelper.TestRow] {
+					if boxed != nil {
+						boxed.Stop()
+					}
+
 					count = 0
 					mock = testhelper.OpenMockDB(false)
 					boxed = errbox.NewSqlRows(testhelper.QueryRows(mock), scanner)
@@ -174,10 +191,10 @@ func TestSqliteRows(t *testing.T) {
 				BreakAt:  1,
 				Stateful: true,
 			}.Test(t, func(_, count int) {
-				if count == 0 {
-					assert.ErrorIs(t, boxed.Err(), mockErr)
-				} else {
+				if count == 1 {
 					assert.NilError(t, boxed.Err())
+				} else {
+					assert.ErrorIs(t, boxed.Err(), mockErr)
 				}
 			})
 		})

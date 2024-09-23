@@ -2,6 +2,8 @@ package errbox
 
 import (
 	"iter"
+
+	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 )
 
 // Box boxes an input [iter.Seq2][V, error] to [iter.Seq][V] by stripping nil errors from the input iterator.
@@ -16,9 +18,8 @@ import (
 //
 // The zero Box is invalid and it must be allocated by [New].
 type Box[V any] struct {
-	err  error
-	next func() (V, error, bool)
-	stop func()
+	err       error
+	resumable *iterable.Resumable2[V, error]
 }
 
 // New returns a newly allocated Box.
@@ -28,17 +29,15 @@ type Box[V any] struct {
 //
 // [*Box.Stop] must be called to release resource regardless of usage.
 func New[V any](seq iter.Seq2[V, error]) *Box[V] {
-	next, stop := iter.Pull2(seq)
 	return &Box[V]{
-		next: next,
-		stop: stop,
+		resumable: iterable.NewResumable2(seq),
 	}
 }
 
 // Stop releases resources allocated by [New].
 // After calling Stop, iterators returned from [Box.IntoIter] produce no more data.
 func (b *Box[V]) Stop() {
-	b.stop()
+	b.resumable.Stop()
 }
 
 // IntoIter returns an iterator which yields values from the input iterator.
@@ -49,14 +48,13 @@ func (b *Box[V]) Stop() {
 // In that case the error can be inspected by calling [*Box.Err].
 func (b *Box[V]) IntoIter() iter.Seq[V] {
 	return func(yield func(V) bool) {
-		for {
-			v, err, ok := b.next()
-			if !ok {
+		for v, err := range b.resumable.IntoIter2() {
+			if err != nil {
+				b.Stop()
+				b.err = err
 				return
 			}
-			if err != nil || !yield(v) {
-				b.stop()
-				b.err = err
+			if !yield(v) {
 				return
 			}
 		}

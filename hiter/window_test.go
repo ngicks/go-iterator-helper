@@ -68,7 +68,7 @@ func TestWindow(t *testing.T) {
 
 func TestWindowSeq(t *testing.T) {
 	t.Run("empty slice", func(t *testing.T) {
-		c := slices.Collect(hiter.Window[[]int](nil, 5))
+		c := slices.Collect(xiter.Map(slices.Collect, hiter.WindowSeq(5, hiter.Repeat(0, 0))))
 		assert.Assert(t, cmp.Len(c, 0))
 	})
 

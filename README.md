@@ -20,6 +20,7 @@ Iterator sources: functions that compose up iterators from data sources:
 
 ```go
 func Chan[V any](ctx context.Context, ch <-chan V) iter.Seq[V]
+func Decode[V any, Dec interface{ ... }](dec Dec) iter.Seq2[V, error]
 func Heap[V any](h heap.Interface) iter.Seq[V]
 func IndexAccessible[A Atter[T], T any](a A, indices iter.Seq[int]) iter.Seq2[int, T]
 func JsonDecoder(dec *json.Decoder) iter.Seq2[json.Token, error]
@@ -67,6 +68,9 @@ func Enumerate[T any](seq iter.Seq[T]) iter.Seq2[int, T]
 func Flatten[S ~[]E, E any](seq iter.Seq[S]) iter.Seq[E]
 func FlattenF[S1 ~[]E1, E1 any, E2 any](seq iter.Seq2[S1, E2]) iter.Seq2[E1, E2]
 func FlattenL[S2 ~[]E2, E1 any, E2 any](seq iter.Seq2[E1, S2]) iter.Seq2[E1, E2]
+func FromKeyValue[K, V any](seq iter.Seq[KeyValue[K, V]]) iter.Seq2[K, V]
+func LimitAfter[V any](f func(V) bool, seq iter.Seq[V]) iter.Seq[V]
+func LimitAfter2[K, V any](f func(K, V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func LimitUntil[V any](f func(V) bool, seq iter.Seq[V]) iter.Seq[V]
 func LimitUntil2[K, V any](f func(K, V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func Omit[K any](seq iter.Seq[K]) func(yield func() bool)
@@ -82,6 +86,7 @@ func SkipWhile[V any](f func(V) bool, seq iter.Seq[V]) iter.Seq[V]
 func SkipWhile2[K, V any](f func(K, V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func Tap[V any](tap func(V), seq iter.Seq[V]) iter.Seq[V]
 func Tap2[K, V any](tap func(K, V), seq iter.Seq2[K, V]) iter.Seq2[K, V]
+func ToKeyValue[K, V any](seq iter.Seq2[K, V]) iter.Seq[KeyValue[K, V]]
 func Transpose[K, V any](seq iter.Seq2[K, V]) iter.Seq2[V, K]
 func WindowSeq[V any](n int, seq iter.Seq[V]) iter.Seq[iter.Seq[V]]
 ```
@@ -92,7 +97,7 @@ Collectors: functions that collect data from iterators and convert to other data
 func AppendBytes(b []byte, seq iter.Seq[[]byte]) []byte
 func AppendSeq2[S ~[]KeyValue[K, V], K, V any](s S, seq iter.Seq2[K, V]) S
 func ChanSend[V any](ctx context.Context, c chan<- V, seq iter.Seq[V]) (v V, sentAll bool)
-func Encode[Enc interface{ ... }, V any](enc Enc, seq iter.Seq[V]) error
+func Encode[V any, Enc interface{ ... }](enc Enc, seq iter.Seq[V]) error
 func Find[V comparable](v V, seq iter.Seq[V]) (V, int)
 func Find2[K, V comparable](k K, v V, seq iter.Seq2[K, V]) (K, V, int)
 func FindFunc[V any](f func(V) bool, seq iter.Seq[V]) (V, int)

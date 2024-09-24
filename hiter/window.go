@@ -30,11 +30,9 @@ func Window[S ~[]E, E any](s S, n int) iter.Seq[S] {
 	}
 }
 
-// WindowSeq buffers n elements from seq, then yields an iterator over them.
-// The iterator first fills the buffer with values from seq in FIFO manner.
-// After full, it yields another iterator over buffered values.
-// Each time value is yielded from seq, the iterator pushes value to tail of the buffer
-// and yields an iterator over the updated buffer.
+// WindowSeq allocates n sized buffer and fills it with values from seq in FIFO-manner.
+// Once the buffer is full, the returned iterator yields iterator over buffered values
+// each time value is yielded from the input seq.
 //
 // n must be a positive non zero value.
 // Each iterator yields exact n size of values.

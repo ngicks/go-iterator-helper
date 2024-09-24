@@ -35,7 +35,7 @@ func Write2[K, V any](w io.Writer, marshaler func(k K, v V, written int) ([]byte
 	return n, nil
 }
 
-func Encode[Enc interface{ Encode(v any) error }, V any](enc Enc, seq iter.Seq[V]) error {
+func Encode[V any, Enc interface{ Encode(v any) error }](enc Enc, seq iter.Seq[V]) error {
 	for v := range seq {
 		if err := enc.Encode(v); err != nil {
 			return err

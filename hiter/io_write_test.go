@@ -26,6 +26,9 @@ func TestWrite(t *testing.T) {
 			return bin, err
 		}
 		bin = append(bin, []byte("\n")...)
+		// To be realistic,
+		// prepend byte offset of start of next message,
+		// and append byte offset of start of this message.
 		return append(
 			append(
 				binary.BigEndian.AppendUint64(make([]byte, 0, 8), uint64(written+len(bin)+8)),

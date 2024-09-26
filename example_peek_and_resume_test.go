@@ -50,7 +50,7 @@ func Example_peek_and_continue() {
 	fmt.Println()
 	fmt.Println("reconnect them to whole iterator.")
 	first = true
-	for v := range xiter.Concat(hiter.Single(v0), hiter.Single(v1), resumable.IntoIter()) {
+	for v := range xiter.Concat(hiter.Once(v0), hiter.Once(v1), resumable.IntoIter()) {
 		if !first {
 			fmt.Print(", ")
 		}

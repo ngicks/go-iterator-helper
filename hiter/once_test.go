@@ -10,8 +10,8 @@ import (
 )
 
 func TestSingle(t *testing.T) {
-	single := hiter.Single(5)
-	single2 := hiter.Single2(3, 5)
+	single := hiter.Once(5)
+	single2 := hiter.Once2(3, 5)
 	assert.Assert(t, cmp.DeepEqual([]int{5}, slices.Collect(single)))
 	assert.Assert(t, cmp.DeepEqual([]hiter.KeyValue[int, int]{{K: 3, V: 5}}, hiter.Collect2(single2)))
 }

@@ -24,6 +24,10 @@ func (s SliceAll[E]) Iter2() iter.Seq2[int, E] {
 	return slices.All(s)
 }
 
+func (s SliceAll[E]) Reverse() SliceBackward[E] {
+	return SliceBackward[E](s)
+}
+
 var (
 	_ hiter.Iterable2[int, any] = SliceBackward[any]{}
 	_ hiter.Iterable[any]       = SliceBackward[any]{}
@@ -45,4 +49,8 @@ func (s SliceBackward[E]) Iter() iter.Seq[E] {
 
 func (s SliceBackward[E]) Iter2() iter.Seq2[int, E] {
 	return slices.Backward(s)
+}
+
+func (s SliceBackward[E]) Reverse() SliceAll[E] {
+	return SliceAll[E](s)
 }

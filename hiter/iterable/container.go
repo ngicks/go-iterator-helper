@@ -34,6 +34,10 @@ func (l ListAll[T]) Iter() iter.Seq[T] {
 	return hiter.ListAll[T](l.List)
 }
 
+func (l ListAll[T]) Reverse() ListBackward[T] {
+	return ListBackward[T](l)
+}
+
 // ListElementAll adds Iter method to *list.Element.
 type ListElementAll[T any] struct {
 	*list.Element
@@ -41,6 +45,10 @@ type ListElementAll[T any] struct {
 
 func (l ListElementAll[T]) Iter() iter.Seq[T] {
 	return hiter.ListElementAll[T](l.Element)
+}
+
+func (l ListElementAll[T]) Reverse() ListElementBackward[T] {
+	return ListElementBackward[T](l)
 }
 
 // ListBackward adds Iter method to *list.List.
@@ -53,6 +61,10 @@ func (l ListBackward[T]) Iter() iter.Seq[T] {
 	return hiter.ListBackward[T](l.List)
 }
 
+func (l ListBackward[T]) Reverse() ListAll[T] {
+	return ListAll[T](l)
+}
+
 // ListElementBackward adds Iter method to *list.Element.
 // Iter returns an iterator that traverses list backward.
 type ListElementBackward[T any] struct {
@@ -61,6 +73,10 @@ type ListElementBackward[T any] struct {
 
 func (l ListElementBackward[T]) Iter() iter.Seq[T] {
 	return hiter.ListElementBackward[T](l.Element)
+}
+
+func (l ListElementBackward[T]) Reverse() ListElementAll[T] {
+	return ListElementAll[T](l)
 }
 
 var (
@@ -77,6 +93,10 @@ func (r RingAll[T]) Iter() iter.Seq[T] {
 	return hiter.RingAll[T](r.Ring)
 }
 
+func (r RingAll[T]) Reverse() RingBackward[T] {
+	return RingBackward[T]{r.Ring.Prev()}
+}
+
 // RingBackward adds Iter method to *ring.Ring.
 // Iter returns an iterator that traverses ring backward.
 type RingBackward[T any] struct {
@@ -85,4 +105,8 @@ type RingBackward[T any] struct {
 
 func (r RingBackward[T]) Iter() iter.Seq[T] {
 	return hiter.RingBackward[T](r.Ring)
+}
+
+func (r RingBackward[T]) Reverse() RingAll[T] {
+	return RingAll[T]{r.Ring.Next()}
 }

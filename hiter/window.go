@@ -21,7 +21,7 @@ func Window[S ~[]E, E any](s S, n int) iter.Seq[S] {
 			if end > len(s) {
 				return
 			}
-			if !yield(s[start:end]) {
+			if !yield(s[start:end:end]) {
 				return
 			}
 			start++
@@ -61,10 +61,7 @@ func WindowSeq[V any](n int, seq iter.Seq[V]) iter.Seq[iter.Seq[V]] {
 				continue
 			}
 			buf[cursor] = e
-			cursor++
-			if cursor == n {
-				cursor = 0
-			}
+			cursor = (cursor + 1) % n
 			if !yield(sliceRing(buf, cursor)) {
 				return
 			}
@@ -78,9 +75,7 @@ func sliceRing[S ~[]E, E any](s S, start int) iter.Seq[E] {
 			return
 		}
 		for i := start + 1; ; i++ {
-			if i >= len(s) {
-				i = 0
-			}
+			i = i % len(s)
 			if i == start {
 				break
 			}

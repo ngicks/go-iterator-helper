@@ -93,3 +93,39 @@ func TestOmit2(t *testing.T) {
 	}
 	assert.Assert(t, len(srcInt1) == i)
 }
+
+func TestUniteBy(t *testing.T) {
+	src := hiter.KeyValues[int, string]{{1, "foo"}, {2, "bar"}, {3, "baz"}}
+	united := hiter.UniteBy(
+		func(k int, v string) hiter.KeyValue[int, string] { return hiter.KeyValue[int, string]{k, v} },
+		src.Iter2(),
+	)
+	assert.DeepEqual(t, src, slices.AppendSeq[hiter.KeyValues[int, string]](nil, united))
+	var mid hiter.KeyValues[int, string]
+	for i, kv := range hiter.Enumerate(united) {
+		mid = append(mid, kv)
+		if i == 1 {
+			break
+		}
+	}
+	assert.DeepEqual(t, src[:2], mid)
+}
+
+func TestDivideBy(t *testing.T) {
+	src := []hiter.KeyValue[int, string]{{1, "foo"}, {2, "bar"}, {3, "baz"}}
+	divided := hiter.DivideBy(
+		func(kv hiter.KeyValue[int, string]) (int, string) { return kv.K, kv.V },
+		slices.Values(src),
+	)
+	assert.DeepEqual(t, src, hiter.Collect2(divided))
+	var mid []hiter.KeyValue[int, string]
+	var i int
+	for k, v := range divided {
+		mid = append(mid, hiter.KeyValue[int, string]{k, v})
+		if i == 1 {
+			break
+		}
+		i++
+	}
+	assert.DeepEqual(t, src[:2], mid)
+}

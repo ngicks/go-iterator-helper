@@ -36,7 +36,7 @@ func (p *Peekable[V]) Peek(n int) []V {
 	if len(p.peeked) > n {
 		return p.peeked[:n:n]
 	}
-	return p.peeked
+	return slices.Clip(p.peeked)
 }
 
 func (p *Peekable[V]) pop() V {
@@ -88,7 +88,7 @@ func (p *Peekable2[K, V]) Peek(n int) []hiter.KeyValue[K, V] {
 	if len(p.peeked) > n {
 		return p.peeked[:n:n]
 	}
-	return p.peeked
+	return slices.Clip(p.peeked)
 }
 
 func (p *Peekable2[K, V]) pop() (K, V) {

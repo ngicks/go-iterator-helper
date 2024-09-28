@@ -7,13 +7,20 @@ import (
 	"time"
 
 	"github.com/jonboulle/clockwork"
+	"github.com/ngicks/go-iterator-helper/hiter/sh"
 )
+
+// Keeping this line to let linking work.
+// hope dead code elimination works well on this.
+var _ any = sh.Clone[[]any]
 
 var (
 	clock = clockwork.NewRealClock()
 )
 
 // Chunk returns an iterator over consecutive values of up to n elements from seq.
+//
+// The returned iterator reuses the buffer it yields. Apply [sh.Clone] if the caller needs to retain slices.
 //
 // Chunk may yield slices where 0 < len(s) <= n.
 // Values may be shorter than n if timeout > 0 and the timeout duration passed since last time seq generated a value.

@@ -2,7 +2,6 @@ package hiter_test
 
 import (
 	"database/sql"
-	"errors"
 	"iter"
 	"testing"
 
@@ -200,15 +199,14 @@ func TestSqliteRows(t *testing.T) {
 
 	t.Run("scan error", func(t *testing.T) {
 		var (
-			mock    *sql.DB
-			count   int
-			mockErr = errors.New("sample")
+			mock  *sql.DB
+			count int
 		)
 		scanner := func(r *sql.Rows) (testhelper.TestRow, error) {
 			var t testhelper.TestRow
 			count++
 			if count > 2 {
-				return t, mockErr
+				return t, errSample
 			}
 			err := r.Scan(&t.Id, &t.Title, &t.Body)
 			return t, err
@@ -240,7 +238,7 @@ func TestSqliteRows(t *testing.T) {
 				Expected: []hiter.KeyValue[testhelper.TestRow, error]{
 					{testhelper.TestRow{Id: 1, Title: "post 1", Body: "hello"}, nil},
 					{testhelper.TestRow{Id: 2, Title: "post 2", Body: "world"}, nil},
-					{testhelper.TestRow{}, mockErr},
+					{testhelper.TestRow{}, errSample},
 				},
 				BreakAt:  1,
 				CmpOpt:   []goCmp.Option{compareError},
@@ -272,7 +270,7 @@ func TestSqliteRows(t *testing.T) {
 				if count == 1 {
 					assert.NilError(t, boxed.Err())
 				} else {
-					assert.ErrorIs(t, boxed.Err(), mockErr)
+					assert.ErrorIs(t, boxed.Err(), errSample)
 				}
 			})
 		})
@@ -301,7 +299,7 @@ func TestSqliteRows(t *testing.T) {
 				if count == 1 {
 					assert.NilError(t, boxed.Err())
 				} else {
-					assert.ErrorIs(t, boxed.Err(), mockErr)
+					assert.ErrorIs(t, boxed.Err(), errSample)
 				}
 			})
 		})

@@ -4,7 +4,6 @@ import (
 	"bytes"
 	"encoding/binary"
 	"encoding/json"
-	"errors"
 	"io"
 	"slices"
 	"testing"
@@ -95,8 +94,6 @@ func TestWrite(t *testing.T) {
 	})
 
 	t.Run("marshal error", func(t *testing.T) {
-		sampleErr := errors.New("sample")
-
 		var buf bytes.Buffer
 
 		var (
@@ -113,7 +110,7 @@ func TestWrite(t *testing.T) {
 				cmp.DeepEqual(expected, buf.Bytes()),
 				"diff = %s", goCmp.Diff(string(expected), buf.String()),
 			)
-			assert.ErrorIs(t, err, sampleErr)
+			assert.ErrorIs(t, err, errSample)
 			assert.Equal(t, len(expected), n)
 		}
 
@@ -122,7 +119,7 @@ func TestWrite(t *testing.T) {
 			&buf,
 			func(v testData, written int) ([]byte, error) {
 				if count == 1 {
-					return []byte("wah"), sampleErr
+					return []byte("wah"), errSample
 				}
 				count++
 				return marshal(v, written)
@@ -139,7 +136,7 @@ func TestWrite(t *testing.T) {
 			func(k int, v testData, written int) ([]byte, error) {
 				keys = append(keys, k)
 				if count == 1 {
-					return []byte("wah"), sampleErr
+					return []byte("wah"), errSample
 				}
 				count++
 				return marshal(v, written)
@@ -151,11 +148,10 @@ func TestWrite(t *testing.T) {
 	})
 
 	t.Run("writer error", func(t *testing.T) {
-		sampleErr := errors.New("sample")
 		buf := new(bytes.Buffer)
 		w := &errWriter{
 			w:   buf,
-			err: sampleErr,
+			err: errSample,
 		}
 
 		var (
@@ -170,7 +166,7 @@ func TestWrite(t *testing.T) {
 				cmp.DeepEqual(expected, buf.Bytes()),
 				"diff = %s", goCmp.Diff(string(expected), buf.String()),
 			)
-			assert.ErrorIs(t, err, sampleErr)
+			assert.ErrorIs(t, err, errSample)
 			assert.Equal(t, len(expected), n)
 		}
 
@@ -234,15 +230,14 @@ func TestEncode(t *testing.T) {
 	})
 	t.Run("encoder error", func(t *testing.T) {
 		buf := new(bytes.Buffer)
-		sampleErr := errors.New("sample")
 		w := &errWriter{
 			w:   buf,
-			err: sampleErr,
+			err: errSample,
 			n:   1,
 		}
 		enc := json.NewEncoder(w)
 		err := hiter.Encode(enc, slices.Values(src))
-		assert.ErrorIs(t, err, sampleErr)
+		assert.ErrorIs(t, err, errSample)
 		assert.DeepEqual(
 			t,
 			`{"V":"foo"}

@@ -3,7 +3,6 @@ package hiter_test
 import (
 	"bytes"
 	"encoding/json"
-	"errors"
 	"io"
 	"testing"
 	"testing/iotest"
@@ -38,8 +37,7 @@ func TestDecode(t *testing.T) {
 		)
 	})
 	t.Run("error", func(t *testing.T) {
-		sampleErr := errors.New("sample")
-		dec := json.NewDecoder(io.MultiReader(bytes.NewReader(src), iotest.ErrReader(sampleErr)))
+		dec := json.NewDecoder(io.MultiReader(bytes.NewReader(src), iotest.ErrReader(errSample)))
 
 		result := hiter.Collect2(
 			hiter.LimitAfter2(
@@ -53,7 +51,7 @@ func TestDecode(t *testing.T) {
 				{K: sample{"foo"}},
 				{K: sample{"bar"}},
 				{K: sample{"baz"}},
-				{V: sampleErr},
+				{V: errSample},
 			},
 			result,
 			compareError,

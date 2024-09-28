@@ -15,6 +15,7 @@ import (
 )
 
 var (
+	errSample    = errors.New("sample")
 	compareError = goCmp.Comparer(func(e1, e2 error) bool { return errors.Is(e1, e2) })
 )
 

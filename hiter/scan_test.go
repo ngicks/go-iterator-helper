@@ -2,7 +2,6 @@ package hiter_test
 
 import (
 	"bufio"
-	"errors"
 	"io"
 	"iter"
 	"strings"
@@ -15,17 +14,27 @@ import (
 	"gotest.tools/v3/assert"
 )
 
-func TestScan(t *testing.T) {
-	factory := func() *bufio.Scanner {
+var (
+	scannerFactory = func() *bufio.Scanner {
 		return bufio.NewScanner(strings.NewReader("foo\nbar\nbaz\n"))
 	}
+	scannerErrFactory = func() *bufio.Scanner {
+		return bufio.NewScanner(
+			io.MultiReader(
+				strings.NewReader("foo\nbar\nbaz\n"),
+				iotest.ErrReader(errSample)),
+		)
+	}
+)
+
+func TestScan(t *testing.T) {
 	testCase1[string]{
 		Seq: func() iter.Seq[string] {
-			return hiter.Scan(factory())
+			return hiter.Scan(scannerFactory())
 		},
 		Seqs: []func() iter.Seq[string]{
 			func() iter.Seq[string] {
-				return iterable.Scanner{Scanner: factory()}.IntoIter()
+				return iterable.Scanner{Scanner: scannerFactory()}.IntoIter()
 			},
 		},
 		Expected: []string{"foo", "bar", "baz"},
@@ -33,23 +42,15 @@ func TestScan(t *testing.T) {
 		Stateful: true,
 	}.Test(t)
 
-	sampleErr := errors.New("sample")
-	factory = func() *bufio.Scanner {
-		return bufio.NewScanner(
-			io.MultiReader(
-				strings.NewReader("foo\nbar\nbaz\n"),
-				iotest.ErrReader(sampleErr)),
-		)
-	}
 	var scanner *bufio.Scanner
 	testCase1[string]{
 		Seq: func() iter.Seq[string] {
-			scanner = factory()
+			scanner = scannerErrFactory()
 			return hiter.Scan(scanner)
 		},
 		Seqs: []func() iter.Seq[string]{
 			func() iter.Seq[string] {
-				scanner = factory()
+				scanner = scannerErrFactory()
 				return iterable.Scanner{Scanner: scanner}.IntoIter()
 			},
 		},
@@ -59,7 +60,33 @@ func TestScan(t *testing.T) {
 		Stateful: true,
 	}.Test(t, func(length, count int) {
 		if length != 2 {
-			assert.ErrorIs(t, scanner.Err(), sampleErr)
+			assert.ErrorIs(t, scanner.Err(), errSample)
 		}
 	})
+}
+
+func TestScanErr(t *testing.T) {
+	testCase2[string, error]{
+		Seq: func() iter.Seq2[string, error] {
+			return hiter.ScanErr(scannerFactory())
+		},
+		Expected: []hiter.KeyValue[string, error]{{"foo", nil}, {"bar", nil}, {"baz", nil}},
+		BreakAt:  2,
+		Stateful: true,
+	}.Test(t)
+
+	testCase2[string, error]{
+		Seq: func() iter.Seq2[string, error] {
+			return hiter.ScanErr(scannerErrFactory())
+		},
+		Expected: []hiter.KeyValue[string, error]{
+			{"foo", nil},
+			{"bar", nil},
+			{"baz", nil},
+			{"", errSample},
+		},
+		BreakAt:  2,
+		CmpOpt:   []goCmp.Option{compareError},
+		Stateful: true,
+	}.Test(t)
 }

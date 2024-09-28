@@ -11,9 +11,20 @@ import (
 // If the scan result or [*sql.Rows.Err] returns a non-nil error,
 // the iterator stops its iteration immediately after yielding the error.
 func SqlRows[T any](r *sql.Rows, scanner func(*sql.Rows) (T, error)) iter.Seq2[T, error] {
+	return Nexter(r, scanner)
+}
+
+// Nexter is like [SqlRows] but extends the input to arbitrary implementors, e.g. sqlx.
+func Nexter[
+	T any,
+	Nexter interface {
+		Next() bool
+		Err() error
+	},
+](n Nexter, scanner func(Nexter) (T, error)) iter.Seq2[T, error] {
 	return func(yield func(T, error) bool) {
-		for r.Next() {
-			t, err := scanner(r)
+		for n.Next() {
+			t, err := scanner(n)
 			if !yield(t, err) {
 				return
 			}
@@ -21,8 +32,8 @@ func SqlRows[T any](r *sql.Rows, scanner func(*sql.Rows) (T, error)) iter.Seq2[T
 				return
 			}
 		}
-		if r.Err() != nil {
-			yield(*new(T), r.Err())
+		if n.Err() != nil {
+			yield(*new(T), n.Err())
 			return
 		}
 	}

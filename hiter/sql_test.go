@@ -33,6 +33,14 @@ func TestSqliteRows(t *testing.T) {
 						mock = testhelper.OpenMockDB(false)
 						return iterable.SqlRows[testhelper.TestRow]{Rows: testhelper.QueryRows(mock), Scanner: scanner}.IntoIter2()
 					},
+					func() iter.Seq2[testhelper.TestRow, error] {
+						mock = testhelper.OpenMockDB(false)
+						return hiter.Nexter(testhelper.QueryRows(mock), scanner)
+					},
+					func() iter.Seq2[testhelper.TestRow, error] {
+						mock = testhelper.OpenMockDB(false)
+						return iterable.Nexter[testhelper.TestRow, *sql.Rows]{Nexter: testhelper.QueryRows(mock), Scanner: scanner}.IntoIter2()
+					},
 				},
 				Expected: []hiter.KeyValue[testhelper.TestRow, error]{
 					{testhelper.TestRow{Id: 1, Title: "post 1", Body: "hello"}, nil},
@@ -69,6 +77,31 @@ func TestSqliteRows(t *testing.T) {
 				assert.NilError(t, boxed.Err())
 			})
 		})
+		t.Run("*errbox.Nexter", func(t *testing.T) {
+			var boxed *errbox.Nexter[testhelper.TestRow]
+			defer func() { boxed.Stop() }()
+
+			testCase1[testhelper.TestRow]{
+				Seq: func() iter.Seq[testhelper.TestRow] {
+					if boxed != nil {
+						boxed.Stop()
+					}
+
+					mock = testhelper.OpenMockDB(false)
+					boxed = errbox.NewNexter(testhelper.QueryRows(mock), scanner)
+					return boxed.IntoIter()
+				},
+				Expected: []testhelper.TestRow{
+					{Id: 1, Title: "post 1", Body: "hello"},
+					{Id: 2, Title: "post 2", Body: "world"},
+					{Id: 3, Title: "post 3", Body: "iter"},
+				},
+				BreakAt:  1,
+				Stateful: true,
+			}.Test(t, func(_, _ int) {
+				assert.NilError(t, boxed.Err())
+			})
+		})
 	})
 
 	t.Run("row error", func(t *testing.T) {
@@ -89,6 +122,14 @@ func TestSqliteRows(t *testing.T) {
 						mock = testhelper.OpenMockDB(true)
 						return iterable.SqlRows[testhelper.TestRow]{Rows: testhelper.QueryRows(mock), Scanner: scanner}.IntoIter2()
 					},
+					func() iter.Seq2[testhelper.TestRow, error] {
+						mock = testhelper.OpenMockDB(true)
+						return hiter.Nexter(testhelper.QueryRows(mock), scanner)
+					},
+					func() iter.Seq2[testhelper.TestRow, error] {
+						mock = testhelper.OpenMockDB(true)
+						return iterable.Nexter[testhelper.TestRow, *sql.Rows]{Nexter: testhelper.QueryRows(mock), Scanner: scanner}.IntoIter2()
+					},
 				},
 				Expected: []hiter.KeyValue[testhelper.TestRow, error]{
 					{testhelper.TestRow{Id: 1, Title: "post 1", Body: "hello"}, nil},
@@ -101,7 +142,7 @@ func TestSqliteRows(t *testing.T) {
 			}.Test(t, func(_, _ int) { _ = mock.Close() })
 		})
 
-		t.Run("errbox.SqlRows", func(t *testing.T) {
+		t.Run("*errbox.SqlRows", func(t *testing.T) {
 			var boxed *errbox.SqlRows[testhelper.TestRow]
 			defer func() { boxed.Stop() }()
 			testCase1[testhelper.TestRow]{
@@ -112,6 +153,33 @@ func TestSqliteRows(t *testing.T) {
 
 					mock = testhelper.OpenMockDB(true)
 					boxed = errbox.NewSqlRows(testhelper.QueryRows(mock), scanner)
+					return boxed.IntoIter()
+				},
+				Expected: []testhelper.TestRow{
+					{Id: 1, Title: "post 1", Body: "hello"},
+					{Id: 2, Title: "post 2", Body: "world"},
+				},
+				BreakAt:  1,
+				Stateful: true,
+			}.Test(t, func(_, count int) {
+				if count == 1 {
+					assert.NilError(t, boxed.Err())
+				} else {
+					assert.ErrorIs(t, boxed.Err(), testhelper.ErrMock)
+				}
+			})
+		})
+		t.Run("*errbox.Nexter", func(t *testing.T) {
+			var boxed *errbox.Nexter[testhelper.TestRow]
+			defer func() { boxed.Stop() }()
+			testCase1[testhelper.TestRow]{
+				Seq: func() iter.Seq[testhelper.TestRow] {
+					if boxed != nil {
+						boxed.Stop()
+					}
+
+					mock = testhelper.OpenMockDB(true)
+					boxed = errbox.NewNexter(testhelper.QueryRows(mock), scanner)
 					return boxed.IntoIter()
 				},
 				Expected: []testhelper.TestRow{
@@ -158,6 +226,16 @@ func TestSqliteRows(t *testing.T) {
 						mock = testhelper.OpenMockDB(false)
 						return iterable.SqlRows[testhelper.TestRow]{Rows: testhelper.QueryRows(mock), Scanner: scanner}.IntoIter2()
 					},
+					func() iter.Seq2[testhelper.TestRow, error] {
+						count = 0
+						mock = testhelper.OpenMockDB(false)
+						return hiter.Nexter(testhelper.QueryRows(mock), scanner)
+					},
+					func() iter.Seq2[testhelper.TestRow, error] {
+						count = 0
+						mock = testhelper.OpenMockDB(false)
+						return iterable.Nexter[testhelper.TestRow, *sql.Rows]{Nexter: testhelper.QueryRows(mock), Scanner: scanner}.IntoIter2()
+					},
 				},
 				Expected: []hiter.KeyValue[testhelper.TestRow, error]{
 					{testhelper.TestRow{Id: 1, Title: "post 1", Body: "hello"}, nil},
@@ -169,7 +247,7 @@ func TestSqliteRows(t *testing.T) {
 				Stateful: true,
 			}.Test(t, func(_, _ int) { _ = mock.Close() })
 		})
-		t.Run("errbox.SqlRows", func(t *testing.T) {
+		t.Run("*errbox.SqlRows", func(t *testing.T) {
 			var boxed *errbox.SqlRows[testhelper.TestRow]
 			defer func() { boxed.Stop() }()
 
@@ -182,6 +260,35 @@ func TestSqliteRows(t *testing.T) {
 					count = 0
 					mock = testhelper.OpenMockDB(false)
 					boxed = errbox.NewSqlRows(testhelper.QueryRows(mock), scanner)
+					return boxed.IntoIter()
+				},
+				Expected: []testhelper.TestRow{
+					{Id: 1, Title: "post 1", Body: "hello"},
+					{Id: 2, Title: "post 2", Body: "world"},
+				},
+				BreakAt:  1,
+				Stateful: true,
+			}.Test(t, func(_, count int) {
+				if count == 1 {
+					assert.NilError(t, boxed.Err())
+				} else {
+					assert.ErrorIs(t, boxed.Err(), mockErr)
+				}
+			})
+		})
+		t.Run("*errbox.Nexter", func(t *testing.T) {
+			var boxed *errbox.Nexter[testhelper.TestRow]
+			defer func() { boxed.Stop() }()
+
+			testCase1[testhelper.TestRow]{
+				Seq: func() iter.Seq[testhelper.TestRow] {
+					if boxed != nil {
+						boxed.Stop()
+					}
+
+					count = 0
+					mock = testhelper.OpenMockDB(false)
+					boxed = errbox.NewNexter(testhelper.QueryRows(mock), scanner)
 					return boxed.IntoIter()
 				},
 				Expected: []testhelper.TestRow{

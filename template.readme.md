@@ -46,10 +46,27 @@ All of them implement 1 or 2 of `Iter() iter.Seq[V]`, `Iter2() iter.Seq[K, V]`, 
 
 ## hiter/errbox
 
-`hiter/errbox` defines an utility that wraps `iter.Seq2[V, error]` to `iter.Seq[V]` by remembering first error encountered.
+`hiter/errbox` defines an utility that wraps `iter.Seq2[V, error]` to `iter.Seq[V]` by remembering the first error encountered.
 
 ```go
 {{.GoDoc.HiterErrbox}}
+```
+
+## hiter/async
+
+`hiter/async` defines asynchronous adapters
+
+```go
+{{.GoDoc.HiterAsync}}
+```
+
+## hiter/sh
+
+Some short hands for adapters.
+These are implemented only combining other components defined in this module (including `x/exp/xiter`).
+
+```go
+{{.GoDoc.HiterSh}}
 ```
 
 ## x/exp/xiter

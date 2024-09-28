@@ -21,6 +21,8 @@ Iterator sources: functions that compose up iterators from data sources:
 ```go
 func Chan[V any](ctx context.Context, ch <-chan V) iter.Seq[V]
 func Decode[V any, Dec interface{ ... }](dec Dec) iter.Seq2[V, error]
+func Empty[V any]() iter.Seq[V]
+func Empty2[K, V any]() iter.Seq2[K, V]
 func Heap[V any](h heap.Interface) iter.Seq[V]
 func IndexAccessible[A Atter[T], T any](a A, indices iter.Seq[int]) iter.Seq2[int, T]
 func JsonDecoder(dec *json.Decoder) iter.Seq2[json.Token, error]
@@ -32,6 +34,9 @@ func MergeSort[S ~[]T, T cmp.Ordered](m S) iter.Seq[T]
 func MergeSortFunc[S ~[]T, T any](m S, cmp func(l, r T) int) iter.Seq[T]
 func MergeSortSliceLike[S SliceLike[T], T cmp.Ordered](s S) iter.Seq[T]
 func MergeSortSliceLikeFunc[S SliceLike[T], T any](s S, cmp func(l, r T) int) iter.Seq[T]
+func Nexter[T any, Nexter interface{ ... }](n Nexter, scanner func(Nexter) (T, error)) iter.Seq2[T, error]
+func Once[V any](v V) iter.Seq[V]
+func Once2[K, V any](k K, v V) iter.Seq2[K, V]
 func Permutations[S ~[]E, E any](in S) iter.Seq[S]
 func Range[T Numeric](start, end T) iter.Seq[T]
 func Repeat[V any](v V, n int) iter.Seq[V]
@@ -42,13 +47,14 @@ func RingAll[V any](r *ring.Ring) iter.Seq[V]
 func RingBackward[V any](r *ring.Ring) iter.Seq[V]
 func RunningReduce[V, Sum any](reducer func(accumulator Sum, current V, i int) Sum, initial Sum, ...) iter.Seq[Sum]
 func Scan(scanner *bufio.Scanner) iter.Seq[string]
-func Single[V any](v V) iter.Seq[V]
-func Single2[K, V any](k K, v V) iter.Seq2[K, V]
 func SqlRows[T any](r *sql.Rows, scanner func(*sql.Rows) (T, error)) iter.Seq2[T, error]
+func Step[N Numeric](initial, step N) iter.Seq[N]
+func StepBy[V any](initial, step int, v []V) iter.Seq2[int, V]
 func StringsChunk(s string, n int) iter.Seq[string]
 func StringsRuneChunk(s string, n int) iter.Seq[string]
 func StringsSplitFunc(s string, n int, splitFn StringsCutterFunc) iter.Seq[string]
 func SyncMap[K, V any](m *sync.Map) iter.Seq2[K, V]
+func Values2[S ~[]KeyValue[K, V], K, V any](s S) iter.Seq2[K, V]
 func Window[S ~[]E, E any](s S, n int) iter.Seq[S]
 func XmlDecoder(dec *xml.Decoder) iter.Seq2[xml.Token, error]
 ```
@@ -58,12 +64,19 @@ Iterator adapters: iterator that processes / modifies values from other iterator
 ```go
 func Alternate[V any](seqs ...iter.Seq[V]) iter.Seq[V]
 func Alternate2[K, V any](seqs ...iter.Seq2[K, V]) iter.Seq2[K, V]
+func Assert[V any](seq iter.Seq[any]) iter.Seq[V]
+func Assert2[K, V any](seq iter.Seq2[any, any]) iter.Seq2[K, V]
+func AssertValue[V any](seq iter.Seq[reflect.Value]) iter.Seq[V]
+func AssertValue2[K, V any](seq iter.Seq2[reflect.Value, reflect.Value]) iter.Seq2[K, V]
+func CheckEach[V any](n int, check func(v V, i int) bool, seq iter.Seq[V]) iter.Seq[V]
+func CheckEach2[K, V any](n int, check func(k K, v V, i int) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func Compact[V comparable](seq iter.Seq[V]) iter.Seq[V]
 func Compact2[K, V comparable](seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func CompactFunc[V any](eq func(i, j V) bool, seq iter.Seq[V]) iter.Seq[V]
 func CompactFunc2[K, V any](eq func(k1 K, v1 V, k2 K, v2 V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func Decorate[V any](prepend, append Iterable[V], seq iter.Seq[V]) iter.Seq[V]
 func Decorate2[K, V any](prepend, append Iterable2[K, V], seq iter.Seq2[K, V]) iter.Seq2[K, V]
+func DivideBy[K, V, U any](fn func(U) (K, V), seq iter.Seq[U]) iter.Seq2[K, V]
 func Enumerate[T any](seq iter.Seq[T]) iter.Seq2[int, T]
 func Flatten[S ~[]E, E any](seq iter.Seq[S]) iter.Seq[E]
 func FlattenF[S1 ~[]E1, E1 any, E2 any](seq iter.Seq2[S1, E2]) iter.Seq2[E1, E2]
@@ -88,6 +101,7 @@ func Tap[V any](tap func(V), seq iter.Seq[V]) iter.Seq[V]
 func Tap2[K, V any](tap func(K, V), seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func ToKeyValue[K, V any](seq iter.Seq2[K, V]) iter.Seq[KeyValue[K, V]]
 func Transpose[K, V any](seq iter.Seq2[K, V]) iter.Seq2[V, K]
+func UniteBy[K, V, U any](fn func(K, V) U, seq iter.Seq2[K, V]) iter.Seq[U]
 func WindowSeq[V any](n int, seq iter.Seq[V]) iter.Seq[iter.Seq[V]]
 ```
 
@@ -110,6 +124,8 @@ func First[V any](seq iter.Seq[V]) (k V, ok bool)
 func First2[K, V any](seq iter.Seq2[K, V]) (k K, v V, ok bool)
 func Last[V any](seq iter.Seq[V]) (v V, ok bool)
 func Last2[K, V any](seq iter.Seq2[K, V]) (k K, v V, ok bool)
+func Nth[V any](n int, seq iter.Seq[V]) (v V, ok bool)
+func Nth2[K, V any](n int, seq iter.Seq2[K, V]) (k K, v V, ok bool)
 func ReduceGroup[K comparable, V, Sum any](reducer func(accumulator Sum, current V) Sum, initial Sum, seq iter.Seq2[K, V]) map[K]Sum
 func StringsCollect(sizeHint int, seq iter.Seq[string]) string
 func Sum[S Summable](seq iter.Seq[S]) S
@@ -138,6 +154,11 @@ type ListElementBackward[T any] struct{ ... }
 type MapAll[K comparable, V any] map[K]V
 type MapSorted[K cmp.Ordered, V any] map[K]V
 type MapSortedFunc[M ~map[K]V, K comparable, V any] struct{ ... }
+type Nexter[T any, Nexter interface{ ... }] struct{ ... }
+type Peekable[V any] struct{ ... }
+    func NewPeekable[V any](seq iter.Seq[V]) *Peekable[V]
+type Peekable2[K, V any] struct{ ... }
+    func NewPeekable2[K, V any](seq iter.Seq2[K, V]) *Peekable2[K, V]
 type Range[T hiter.Numeric] struct{ ... }
 type Repeatable[V any] struct{ ... }
 type Repeatable2[K, V any] struct{ ... }
@@ -160,7 +181,7 @@ type XmlDecoder struct{ ... }
 
 ## hiter/errbox
 
-`hiter/errbox` defines an utility that wraps `iter.Seq2[V, error]` to `iter.Seq[V]` by remembering first error encountered.
+`hiter/errbox` defines an utility that wraps `iter.Seq2[V, error]` to `iter.Seq[V]` by remembering the first error encountered.
 
 ```go
 package errbox // import "github.com/ngicks/go-iterator-helper/hiter/errbox"
@@ -169,10 +190,45 @@ type Box[V any] struct{ ... }
     func New[V any](seq iter.Seq2[V, error]) *Box[V]
 type JsonDecoder struct{ ... }
     func NewJsonDecoder(dec *json.Decoder) *JsonDecoder
+type Nexter[V any] struct{ ... }
+    func NewNexter[V any, N interface{ ... }](n N, scanner func(N) (V, error)) *Nexter[V]
 type SqlRows[V any] struct{ ... }
     func NewSqlRows[V any](rows *sql.Rows, scanner func(*sql.Rows) (V, error)) *SqlRows[V]
 type XmlDecoder struct{ ... }
     func NewXmlDecoder(dec *xml.Decoder) *XmlDecoder
+
+```
+
+## hiter/async
+
+`hiter/async` defines asynchronous adapters
+
+```go
+package async // import "github.com/ngicks/go-iterator-helper/hiter/async"
+
+func Chunk[V any](timeout time.Duration, n int, seq iter.Seq[V]) iter.Seq[[]V]
+func Map[V1, V2 any](ctx context.Context, queueLimit int, workerLimit int, ...) iter.Seq2[V2, error]
+
+```
+
+## hiter/sh
+
+Some short hands for adapters.
+These are implemented only combining other components defined in this module (including `x/exp/xiter`).
+
+```go
+package sh // import "github.com/ngicks/go-iterator-helper/hiter/sh"
+
+package sh defines some short hand iterator adapters. sh only holds functions
+which only combine other elements in this module.
+
+func Cancellable[V any](n int, ctx context.Context, seq iter.Seq[V]) iter.Seq[V]
+func Cancellable2[K, V any](n int, ctx context.Context, seq iter.Seq2[K, V]) iter.Seq2[K, V]
+func Clone[S ~[]E, E any](seq iter.Seq[S]) iter.Seq[S]
+func Clone2[S1 ~[]E1, S2 ~[]E2, E1, E2 any](seq iter.Seq2[S1, S2]) iter.Seq2[S1, S2]
+func Collect[V any](seq iter.Seq[iter.Seq[V]]) iter.Seq[[]V]
+func Collect2[K, V any](seq iter.Seq2[iter.Seq[K], iter.Seq[V]]) iter.Seq2[[]K, []V]
+func HandleErr[V any](handle func(V, error) bool, seq iter.Seq2[V, error]) iter.Seq[V]
 
 ```
 

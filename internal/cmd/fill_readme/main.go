@@ -28,8 +28,10 @@ type Param struct {
 }
 type GoDoc struct {
 	Hiter         Hiter
-	HiterIterable string
+	HiterAsync    string
 	HiterErrbox   string
+	HiterIterable string
+	HiterSh       string
 }
 
 type Hiter struct {
@@ -81,8 +83,10 @@ func main() {
 	p := Param{
 		GoDoc: GoDoc{
 			Hiter:         hiterData,
-			HiterIterable: godoc("./hiter/iterable"),
+			HiterAsync:    godoc("./hiter/async"),
 			HiterErrbox:   godoc("./hiter/errbox"),
+			HiterIterable: godoc("./hiter/iterable"),
+			HiterSh:       godoc("./hiter/sh"),
 		},
 	}
 

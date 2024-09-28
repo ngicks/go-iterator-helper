@@ -9,6 +9,17 @@ type KeyValue[K, V any] struct {
 	V V
 }
 
+// Values2 returns an iterator that yields the KeyValue slice elements in order.
+func Values2[S ~[]KeyValue[K, V], K, V any](s S) iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		for _, kv := range s {
+			if !yield(kv.K, kv.V) {
+				return
+			}
+		}
+	}
+}
+
 // AppendSeq2 appends the values from seq to the KeyValue slice and
 // returns the extended slice.
 func AppendSeq2[S ~[]KeyValue[K, V], K, V any](s S, seq iter.Seq2[K, V]) S {

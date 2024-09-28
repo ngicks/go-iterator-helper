@@ -1,13 +1,20 @@
 package main
 
 import (
+	"bytes"
 	"context"
+	"go/ast"
+	"go/parser"
+	"go/printer"
+	"go/token"
 	"os"
 	"os/exec"
+	"path/filepath"
 	"regexp"
 	"slices"
 	"strings"
 	"text/template"
+	"unicode"
 )
 
 var (
@@ -44,7 +51,7 @@ func main() {
 
 	var hiterData Hiter
 
-	hiterDoc := strings.Split(godoc("./hiter"), "\n")
+	hiterDoc := strings.Split(parse("./hiter"), "\n")
 
 	for _, line := range hiterDoc {
 		line = strings.TrimSpace(line)
@@ -103,4 +110,119 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+}
+
+func parse(s string) string {
+	fset := token.NewFileSet()
+	dirents, err := os.ReadDir(s)
+	if err != nil {
+		panic(err)
+	}
+	var files []*ast.File
+	for _, dirent := range dirents {
+		if !dirent.Type().IsRegular() {
+			continue
+		}
+		if strings.HasSuffix(dirent.Name(), "_test.go") {
+			continue
+		}
+		f, err := parser.ParseFile(
+			fset,
+			filepath.Join(s, dirent.Name()),
+			nil,
+			parser.AllErrors|parser.ParseComments,
+		)
+		if err != nil {
+			panic(err)
+		}
+		files = append(files, f)
+	}
+
+	var buf bytes.Buffer
+	for _, f := range files {
+		for _, d := range f.Decls {
+			fnDec, ok := d.(*ast.FuncDecl)
+			if !ok {
+				continue
+			}
+			if !unicode.IsUpper(rune(fnDec.Name.Name[0])) {
+				continue
+			}
+			buf.WriteString("func ")
+			err := printer.Fprint(&buf, fset, fnDec.Name)
+			if err != nil {
+				panic(err)
+			}
+			fnDec.Type.Func = 0
+			zeroPos(fnDec.Type.TypeParams)
+			zeroPos(fnDec.Type.Params)
+			zeroPos(fnDec.Type.Results)
+
+			var s strings.Builder
+			err = printer.Fprint(&s, fset, fnDec.Type)
+			if err != nil {
+				panic(err)
+			}
+			buf.WriteString(foldInterface(s.String())[len("func"):])
+			buf.WriteByte('\n')
+		}
+	}
+	return buf.String()
+}
+
+func zeroPos(fl *ast.FieldList) {
+	if fl == nil {
+		return
+	}
+	fl.Opening = 0
+	for _, f := range fl.List {
+		for _, n := range f.Names {
+			n.NamePos = 0
+		}
+		i, ok := f.Type.(*ast.InterfaceType)
+		if !ok {
+			continue
+		}
+		i.Interface = 0
+		if i.Methods == nil {
+			continue
+		}
+		for _, i := range i.Methods.List {
+			for _, n := range i.Names {
+				n.NamePos = 0
+			}
+		}
+	}
+	fl.Closing = 0
+}
+
+func foldInterface(s string) string {
+	scanning := false
+	var starting, ending int
+	for i := 0; i < len(s); i++ {
+		if strings.HasPrefix(s[i:], "interface") {
+			scanning = true
+			starting = i + len("interface {")
+		}
+		if scanning && strings.HasPrefix(s[i:], "}") {
+			ending = i
+		}
+	}
+	if ending == 0 {
+		return s
+	}
+	ss := strings.TrimSpace(s[starting:ending])
+	var sss string
+	for i, line := range strings.Split(ss, "\n") {
+		line = strings.TrimSpace(line)
+		if line == "" {
+			continue
+		}
+		if i > 0 {
+			sss += "; "
+		}
+		sss += line
+	}
+
+	return s[:starting] + " " + sss + " " + s[ending:]
 }

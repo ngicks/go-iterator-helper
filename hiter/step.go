@@ -1,9 +1,11 @@
 package hiter
 
-import "iter"
+import (
+	"iter"
+)
 
 // Step returns an iterator over numerics values starting from initial and added step at each step.
-// The iterator iterates forever. The caller might want to [xiter.Limit].
+// The iterator iterates forever. The caller might want to limit it by [xiter.Limit].
 func Step[N Numeric](initial, step N) iter.Seq[N] {
 	return func(yield func(N) bool) {
 		for n := initial; ; n += step {
@@ -14,7 +16,8 @@ func Step[N Numeric](initial, step N) iter.Seq[N] {
 	}
 }
 
-// StepBy returns an iterator over indices and v starting from initial and stepping by step.
+// StepBy returns an iterator over pair of index and value associated the index.
+// The index starts from initial and steps by step.
 func StepBy[V any](initial, step int, v []V) iter.Seq2[int, V] {
 	return func(yield func(int, V) bool) {
 		if initial < 0 {

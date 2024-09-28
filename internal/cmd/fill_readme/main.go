@@ -148,6 +148,9 @@ func parse(s string) string {
 			if !unicode.IsUpper(rune(fnDec.Name.Name[0])) {
 				continue
 			}
+			if fnDec.Recv != nil {
+				continue
+			}
 			buf.WriteString("func ")
 			err := printer.Fprint(&buf, fset, fnDec.Name)
 			if err != nil {

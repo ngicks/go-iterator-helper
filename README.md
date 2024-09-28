@@ -33,12 +33,7 @@ func JsonDecoder(dec *json.Decoder) iter.Seq2[json.Token, error]
 func XmlDecoder(dec *xml.Decoder) iter.Seq2[xml.Token, error]
 func IndexAccessible[A Atter[T], T any](a A, indices iter.Seq[int]) iter.Seq2[int, T]
 func Decode[V any, Dec interface{  Decode(any) error }](dec Dec) iter.Seq2[V, error]
-func Iter() iter.Seq[V]
-func IntoIter() iter.Seq[V]
-func Iter2() iter.Seq2[K, V]
-func IntoIter2() iter.Seq2[K, V]
 func Values2[S ~[]KeyValue[K, V], K, V any](s S) iter.Seq2[K, V]
-func Iter2() iter.Seq2[K, V]
 func MergeSort[S ~[]T, T cmp.Ordered](m S) iter.Seq[T]
 func MergeSortFunc[S ~[]T, T any](m S, cmp func(l, r T) int) iter.Seq[T]
 func MergeSortSliceLike[S SliceLike[T], T cmp.Ordered](s S) iter.Seq[T]
@@ -52,6 +47,7 @@ func Repeat2[K, V any](k K, v V, n int) iter.Seq2[K, V]
 func RepeatFunc[V any](fnV func() V, n int) iter.Seq[V]
 func RepeatFunc2[K, V any](fnK func() K, fnV func() V, n int) iter.Seq2[K, V]
 func Scan(scanner *bufio.Scanner) iter.Seq[string]
+func ScanErr(scanner *bufio.Scanner) iter.Seq2[string, error]
 func SqlRows[T any](r *sql.Rows, scanner func(*sql.Rows) (T, error)) iter.Seq2[T, error]
 func Nexter[T any, Nexter interface { Next() bool; Err() error }](n Nexter, scanner func(Nexter) (T, error)) iter.Seq2[T, error]
 func Step[N Numeric](initial, step N) iter.Seq[N]
@@ -133,6 +129,9 @@ func ForEachGo[V any, G GoGroup](ctx context.Context, g G, fn func(context.Conte
 func ForEachGo2[K, V any, G GoGroup](ctx context.Context, g G, fn func(context.Context, K, V) error, seq iter.Seq2[K, V]) error
 func Discard[V any](seq iter.Seq[V])
 func Discard2[K, V any](seq iter.Seq2[K, V])
+func TryFind[V any](f func(V) bool, seq iter.Seq2[V, error]) (v V, idx int, err error)
+func TryForEach[V any](f func(V), seq iter.Seq2[V, error]) error
+func TryReduce[Sum, V any](f func(Sum, V) Sum, sum Sum, seq iter.Seq2[V, error]) (Sum, error)
 func Write[V any](w io.Writer, marshaler func(v V, written int) ([]byte, error), seq iter.Seq[V]) (n int, er error)
 func Write2[K, V any](w io.Writer, marshaler func(k K, v V, written int) ([]byte, error), seq iter.Seq2[K, V]) (n int, er error)
 func Encode[V any, Enc interface{  Encode(v any) error }](enc Enc, seq iter.Seq[V]) error

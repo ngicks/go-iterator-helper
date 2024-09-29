@@ -45,8 +45,8 @@ func ToKeyValue[K, V any](seq iter.Seq2[K, V]) iter.Seq[KeyValue[K, V]] {
 	}
 }
 
-// FromKeyValue unwraps iter.Seq[KeyValue[K, V]] into iter.Seq2[K, V] to counter-part,
-// serving a counterpart for [ToKeyValue].
+// FromKeyValue unwraps iter.Seq[KeyValue[K, V]] into iter.Seq2[K, V]
+// serving as a counterpart for [ToKeyValue].
 //
 // In case values from seq needs to be sent through some data transfer mechanism
 // that only allows data to be single value, like channels,

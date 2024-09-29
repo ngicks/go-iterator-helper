@@ -13,6 +13,9 @@ import (
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
+// Example async worker channel demonstrates usage of [hiter.Chan], [hiter.ChanSend].
+// It sends values from seq to worker running on separates goroutines.
+// Workers work on values and then send results back to the main goroutine.
 func Example_async_worker_channel() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -68,6 +71,10 @@ func Example_async_worker_channel() {
 	// result = ✨foo✨foo✨, err = <nil>
 }
 
+// Example async worker map demonstrates usage of async.Map.
+// At the surface it is similar to [xiter.Map2]. Actually it calls mapper in separate goroutine.
+// If you don't care about order of element,
+// just send values to workers through a channel and send back through another channel.
 func Example_async_worker_map() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -79,7 +86,7 @@ func Example_async_worker_map() {
 		ctx,
 		/*queueLimit*/ 10,
 		/*workerLimit*/ 5,
-		func(ctx context.Context, s string) (string, error) {
+		/*mapper*/ func(ctx context.Context, s string) (string, error) {
 			return "✨" + s + "✨" + s + "✨", nil
 		},
 		slices.Values(works),

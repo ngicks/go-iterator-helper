@@ -107,6 +107,7 @@ func TestHandleErr(t *testing.T) {
 			hiter.Pairs(hiter.Range(0, 6), xiter.Concat(hiter.Once(error(nil)), slices.Values(errs))),
 		),
 	)
-	assert.DeepEqual(t, slices.Collect(hiter.Range(0, 4)), result)
+	// values paired to error are excluded.
+	assert.DeepEqual(t, []int{0}, result)
 	assert.DeepEqual(t, []int{1, 2, 3, 4}, handleReceived)
 }

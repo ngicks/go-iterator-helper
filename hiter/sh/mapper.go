@@ -27,6 +27,16 @@ func mapIter2[K1, K2, V1, V2 any](fn func(K1, V1) (K2, V2), seq iter.Seq2[K1, V1
 	}
 }
 
+func filter2[K, V any](f func(K, V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		for k, v := range seq {
+			if f(k, v) && !yield(k, v) {
+				return
+			}
+		}
+	}
+}
+
 // Collect maps seq by [slices.Collect].
 func Collect[V any](seq iter.Seq[iter.Seq[V]]) iter.Seq[[]V] {
 	return mapIter(slices.Collect, seq)

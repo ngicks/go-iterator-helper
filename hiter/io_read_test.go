@@ -15,6 +15,9 @@ func TestDecode(t *testing.T) {
 	type sample struct {
 		V string
 	}
+	type sampleWrong struct {
+		V int
+	}
 
 	src := []byte(`
 	{"V":"foo"}
@@ -36,7 +39,21 @@ func TestDecode(t *testing.T) {
 			result,
 		)
 	})
-	t.Run("error", func(t *testing.T) {
+	t.Run("syntax error", func(t *testing.T) {
+		dec := json.NewDecoder(iotest.DataErrReader(bytes.NewReader(src)))
+		result := hiter.Collect2(hiter.Decode[sampleWrong](dec))
+		assert.DeepEqual(
+			t,
+			[]hiter.KeyValue[sampleWrong, error]{
+				{V: &json.UnmarshalTypeError{}},
+				{V: &json.UnmarshalTypeError{}},
+				{V: &json.UnmarshalTypeError{}},
+			},
+			result,
+			compareErrorsAs,
+		)
+	})
+	t.Run("reader error", func(t *testing.T) {
 		dec := json.NewDecoder(io.MultiReader(bytes.NewReader(src), iotest.ErrReader(errSample)))
 
 		result := hiter.Collect2(

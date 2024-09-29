@@ -59,6 +59,19 @@ func Example_peek_and_continue() {
 	}
 	fmt.Println()
 
+	fmt.Println("\nYou can achieve above also with iterable.Peekable")
+	peekable := iterable.NewPeekable(src)
+	fmt.Printf("%#v\n", peekable.Peek(5))
+	first = true
+	for v := range peekable.IntoIter() {
+		if !first {
+			fmt.Print(", ")
+		}
+		first = false
+		fmt.Printf("%d", v)
+	}
+	fmt.Println()
+
 	// Output:
 	// It replays data if break-ed and resumed.
 	// 0, 1, 2
@@ -70,5 +83,9 @@ func Example_peek_and_continue() {
 	// second: 1
 	//
 	// reconnect them to whole iterator.
+	// 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
+	//
+	// You can achieve above also with iterable.Peekable
+	// []int{0, 1, 2, 3, 4}
 	// 0, 1, 2, 3, 4, 5, 6, 7, 8, 9
 }

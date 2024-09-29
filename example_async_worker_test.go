@@ -8,11 +8,12 @@ import (
 	"sync"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/async"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
-func Example_worker_channels() {
+func Example_async_worker_channel() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
@@ -65,4 +66,28 @@ func Example_worker_channels() {
 	// result = ✨bar✨bar✨, err = <nil>
 	// result = ✨baz✨baz✨, err = <nil>
 	// result = ✨foo✨foo✨, err = <nil>
+}
+
+func Example_async_worker_map() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	works := []string{"foo", "bar", "baz"}
+
+	// The order is kept.
+	for result, err := range async.Map(
+		ctx,
+		/*queueLimit*/ 10,
+		/*workerLimit*/ 5,
+		func(ctx context.Context, s string) (string, error) {
+			return "✨" + s + "✨" + s + "✨", nil
+		},
+		slices.Values(works),
+	) {
+		fmt.Printf("result = %s, err = %v\n", result, err)
+	}
+	// Output:
+	// result = ✨foo✨foo✨, err = <nil>
+	// result = ✨bar✨bar✨, err = <nil>
+	// result = ✨baz✨baz✨, err = <nil>
 }

@@ -54,7 +54,7 @@ func TestDecode(t *testing.T) {
 				{V: errSample},
 			},
 			result,
-			compareError,
+			compareErrorsIs,
 		)
 	})
 }

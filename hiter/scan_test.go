@@ -56,7 +56,7 @@ func TestScan(t *testing.T) {
 		},
 		Expected: []string{"foo", "bar", "baz"},
 		BreakAt:  2,
-		CmpOpt:   []goCmp.Option{compareError},
+		CmpOpt:   []goCmp.Option{compareErrorsIs},
 		Stateful: true,
 	}.Test(t, func(length, count int) {
 		if length != 2 {
@@ -86,7 +86,7 @@ func TestScanErr(t *testing.T) {
 			{"", errSample},
 		},
 		BreakAt:  2,
-		CmpOpt:   []goCmp.Option{compareError},
+		CmpOpt:   []goCmp.Option{compareErrorsIs},
 		Stateful: true,
 	}.Test(t)
 }

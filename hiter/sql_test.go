@@ -136,7 +136,7 @@ func TestSqliteRows(t *testing.T) {
 					{testhelper.TestRow{}, testhelper.ErrMock},
 				},
 				BreakAt:  2,
-				CmpOpt:   []goCmp.Option{compareError},
+				CmpOpt:   []goCmp.Option{compareErrorsIs},
 				Stateful: true,
 			}.Test(t, func(_, _ int) { _ = mock.Close() })
 		})
@@ -241,7 +241,7 @@ func TestSqliteRows(t *testing.T) {
 					{testhelper.TestRow{}, errSample},
 				},
 				BreakAt:  1,
-				CmpOpt:   []goCmp.Option{compareError},
+				CmpOpt:   []goCmp.Option{compareErrorsIs},
 				Stateful: true,
 			}.Test(t, func(_, _ int) { _ = mock.Close() })
 		})

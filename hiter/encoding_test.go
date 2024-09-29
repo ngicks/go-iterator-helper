@@ -78,7 +78,7 @@ func TestEncoding(t *testing.T) {
 				{xml.EndElement{Name: xml.Name{Local: "bar"}}, nil},
 			},
 			BreakAt:  2,
-			CmpOpt:   []goCmp.Option{compareError},
+			CmpOpt:   []goCmp.Option{compareErrorsIs},
 			Stateful: true,
 		}.Test(t)
 	})

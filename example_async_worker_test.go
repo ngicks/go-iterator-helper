@@ -6,10 +6,12 @@ import (
 	"maps"
 	"slices"
 	"sync"
+	"time"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/async"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
+	"github.com/ngicks/go-iterator-helper/hiter/sh"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
@@ -97,4 +99,80 @@ func Example_async_worker_map() {
 	// result = ✨foo✨foo✨, err = <nil>
 	// result = ✨bar✨bar✨, err = <nil>
 	// result = ✨baz✨baz✨, err = <nil>
+}
+
+func Example_async_worker_map_graceful_cancellation() {
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	works := []string{"foo", "bar", "baz"}
+
+	workerCtx, cancelWorker := context.WithCancel(context.Background())
+	defer cancelWorker()
+
+	for result, err := range async.Map(
+		ctx,
+		/*queueLimit*/ 1,
+		/*workerLimit*/ 1,
+		/*mapper*/ func(ctx context.Context, s string) (string, error) {
+			combined, cancel := context.WithCancel(ctx)
+			defer cancel()
+			go func() {
+				select {
+				case <-ctx.Done():
+				case <-combined.Done():
+				case <-workerCtx.Done():
+				}
+				cancel()
+			}()
+			if combined.Err() != nil {
+				return "", combined.Err()
+			}
+			return "✨" + s + "✨" + s + "✨", nil
+		},
+		sh.Cancellable(1, workerCtx, slices.Values(works)),
+	) {
+		fmt.Printf("result = %s, err = %v\n", result, err)
+		cancelWorker()
+	}
+	// Output:
+	// result = ✨foo✨foo✨, err = <nil>
+	// result = ✨bar✨bar✨, err = <nil>
+}
+
+func Example_async_chunk() {
+	var (
+		wg sync.WaitGroup
+		in = make(chan int)
+	)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+
+	wg.Add(1)
+	go func() {
+		defer wg.Done()
+		ticker := time.NewTicker(500 * time.Nanosecond)
+		defer ticker.Stop()
+		_, _ = hiter.ChanSend(ctx, in, hiter.Tap(func(int) { <-ticker.C }, hiter.Range(0, 20)))
+		close(in)
+	}()
+
+	first := true
+	var count int
+	for c := range async.Chunk(time.Microsecond, 5, hiter.Chan(ctx, in)) {
+		count++
+		for _, i := range c {
+			if !first {
+				fmt.Print(", ")
+			}
+			first = false
+			fmt.Printf("%d", i)
+		}
+	}
+	fmt.Println()
+	wg.Wait()
+	fmt.Printf("count > 0 = %t\n", count > 0)
+	// Output:
+	// 0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19
+	// count > 0 = true
 }

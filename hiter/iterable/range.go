@@ -14,9 +14,10 @@ type Range[T hiter.Numeric] struct {
 	ExcludesStart, IncludesEnd bool
 }
 
-// Iter returns an iterator that yields sequential Numeric values in the interval [Start, End).
+// Iter returns an iterator that yields sequential Numeric values.
 // Values start from `start` and steps toward `end`.
 // At each step value is increased by 1 if start < end, otherwise decreased by 1.
+// By default, values are in the half open interval [Start, End).
 func (r Range[T]) Iter() iter.Seq[T] {
 	return hiter.RangeInclusive(r.Start, r.End, !r.ExcludesStart, r.ExcludesStart)
 }

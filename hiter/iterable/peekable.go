@@ -13,21 +13,29 @@ var (
 	_ hiter.IntoIterable2[any, any] = (*Peekable2[any, any])(nil)
 )
 
+// Peekable adds the read-ahead ability to [iter.Seq][V].
+//
+// The zero value of Peekable is not valid. Allocate one by [NewPeekable].
 type Peekable[V any] struct {
 	r      *Resumable[V]
 	peeked []V
 }
 
+// NewPeekable initializes a peekable iterator.
+// The caller must call [*Peekable.Stop] to release resources regardless of usage.
 func NewPeekable[V any](seq iter.Seq[V]) *Peekable[V] {
 	return &Peekable[V]{
 		r: NewResumable(seq),
 	}
 }
 
+// Stop releases resources allocated by [NewPeekable].
 func (p *Peekable[V]) Stop() {
 	p.r.Stop()
 }
 
+// Peek reads the next n elements without advancing the iterator.
+// Peeked elements are only removed through the iterator returned from IntoIter.
 func (p *Peekable[V]) Peek(n int) []V {
 	// internal behavior might need some change to use ring buffer.
 	if diff := n - len(p.peeked); diff > 0 {
@@ -46,6 +54,7 @@ func (p *Peekable[V]) pop() V {
 	return v0
 }
 
+// IntoIter returns p as an iterator form.
 func (p *Peekable[V]) IntoIter() iter.Seq[V] {
 	return func(yield func(V) bool) {
 		for len(p.peeked) > 0 {
@@ -66,21 +75,29 @@ func (p *Peekable[V]) IntoIter() iter.Seq[V] {
 	}
 }
 
+// Peekable2 adds the read-ahead ability to [iter.Seq2][K, V].
+//
+// The zero value of Peekable2 is not valid. Allocate one by [NewPeekable2].
 type Peekable2[K, V any] struct {
 	r      *Resumable2[K, V]
 	peeked []hiter.KeyValue[K, V]
 }
 
+// NewPeekable2 initializes a peekable iterator.
+// The caller must call [*Peekable2.Stop] to release resources regardless of usage.
 func NewPeekable2[K, V any](seq iter.Seq2[K, V]) *Peekable2[K, V] {
 	return &Peekable2[K, V]{
 		r: NewResumable2(seq),
 	}
 }
 
+// Stop releases resources allocated by [NewPeekable2].
 func (p *Peekable2[K, V]) Stop() {
 	p.r.Stop()
 }
 
+// Peek reads the next n key-value pairs without advancing the iterator.
+// Peeked pairs are only removed through the iterator returned from IntoIter.
 func (p *Peekable2[K, V]) Peek(n int) []hiter.KeyValue[K, V] {
 	if diff := n - len(p.peeked); diff > 0 {
 		p.peeked = hiter.AppendSeq2(p.peeked, xiter.Limit2(p.r.IntoIter2(), diff))
@@ -98,6 +115,7 @@ func (p *Peekable2[K, V]) pop() (K, V) {
 	return kv0.K, kv0.V
 }
 
+// IntoIter2 returns p as an iterator form.
 func (p *Peekable2[K, V]) IntoIter2() iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
 		for len(p.peeked) > 0 {

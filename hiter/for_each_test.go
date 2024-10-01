@@ -172,3 +172,26 @@ func TestTryReduce(t *testing.T) {
 	assert.DeepEqual(t, []string{"foo"}, sum)
 	assert.NilError(t, err)
 }
+
+func TestTryCollect(t *testing.T) {
+	var (
+		sum []string
+		err error
+	)
+
+	sum, err = hiter.TryCollect(trySrc)
+	assert.DeepEqual(t, slices.Collect(hiter.OmitL(xiter.Limit2(trySrc, 2))), sum)
+	assert.ErrorIs(t, err, errSample)
+
+	sum, err = hiter.TryCollect(xiter.Limit2(trySrc, 1))
+	assert.DeepEqual(t, []string{"foo"}, sum)
+	assert.NilError(t, err)
+
+	sum, err = hiter.TryAppendSeq([]string{"foo"}, trySrc)
+	assert.DeepEqual(t, slices.Collect(xiter.Concat(hiter.Once("foo"), hiter.OmitL(xiter.Limit2(trySrc, 2)))), sum)
+	assert.ErrorIs(t, err, errSample)
+
+	sum, err = hiter.TryAppendSeq([]string{"foo"}, xiter.Limit2(trySrc, 1))
+	assert.DeepEqual(t, []string{"foo", "foo"}, sum)
+	assert.NilError(t, err)
+}

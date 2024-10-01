@@ -3,11 +3,15 @@ package hiter
 import (
 	"context"
 	"iter"
+	"slices"
 
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
-var _ = xiter.Reduce[any, any]
+var (
+	_ = xiter.Reduce[any, any]
+	_ = slices.AppendSeq[[]any, any]
+)
 
 // ForEach iterates over seq and calls fn with every value seq yields.
 func ForEach[V any](fn func(V), seq iter.Seq[V]) {
@@ -99,4 +103,22 @@ func TryReduce[Sum, V any](f func(Sum, V) Sum, sum Sum, seq iter.Seq2[V, error])
 		sum = f(sum, v)
 	}
 	return sum, nil
+}
+
+// TryCollect is like [slices.Collect] but stops collecting at the first error and
+// returns the extended result before the error.
+func TryCollect[E any](seq iter.Seq2[E, error]) ([]E, error) {
+	return TryAppendSeq[[]E](nil, seq)
+}
+
+// TryAppendSeq is like [slices.AppendSeq] but stops collecting at the first error
+// and returns the extended result before the error.
+func TryAppendSeq[S ~[]E, E any](s S, seq iter.Seq2[E, error]) (S, error) {
+	for e, err := range seq {
+		if err != nil {
+			return s, err
+		}
+		s = append(s, e)
+	}
+	return s, nil
 }

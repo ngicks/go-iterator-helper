@@ -52,7 +52,7 @@ func TestReverse(t *testing.T) {
 		Cmp: func(i, j sample) int { return cmp.Compare(i.Key, j.Key) },
 	}
 	s := SliceAll[int](srcS)
-	ra := Range[int]{0, 5}
+	ra := Range[int]{Start: 0, End: 5}
 
 	assertReverse(t, l, l.Reverse())
 	assertReverse(t, l.Reverse(), l.Reverse().Reverse())

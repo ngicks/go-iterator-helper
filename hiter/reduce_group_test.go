@@ -34,4 +34,27 @@ func TestReduceGroup(t *testing.T) {
 			m,
 		),
 	)
+
+	m = map[string][]int{"wow": {5}}
+	m = InsertReduceGroup(
+		m,
+		func(accum []int, c []int) []int {
+			return append(accum, c...)
+		},
+		[]int{0},
+		kvs.Iter2(),
+	)
+	assert.Assert(
+		t,
+		cmp.DeepEqual(
+			map[string][]int{
+				"foo": {0, 1, 2, 3, 3, 4, 5, 12},
+				"bar": {0, 1, 2, 3, 1, 5, 5},
+				"baz": {0, 1, 2, 3},
+				"wow": {5},
+			},
+			m,
+		),
+	)
+
 }

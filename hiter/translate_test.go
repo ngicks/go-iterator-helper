@@ -96,7 +96,7 @@ func TestOmit2(t *testing.T) {
 
 func TestUniteBy(t *testing.T) {
 	src := hiter.KeyValues[int, string]{{1, "foo"}, {2, "bar"}, {3, "baz"}}
-	united := hiter.UniteBy(
+	united := hiter.Unify(
 		func(k int, v string) hiter.KeyValue[int, string] { return hiter.KeyValue[int, string]{k, v} },
 		src.Iter2(),
 	)
@@ -113,7 +113,7 @@ func TestUniteBy(t *testing.T) {
 
 func TestDivideBy(t *testing.T) {
 	src := []hiter.KeyValue[int, string]{{1, "foo"}, {2, "bar"}, {3, "baz"}}
-	divided := hiter.DivideBy(
+	divided := hiter.Divide(
 		func(kv hiter.KeyValue[int, string]) (int, string) { return kv.K, kv.V },
 		slices.Values(src),
 	)

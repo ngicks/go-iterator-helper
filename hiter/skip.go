@@ -153,7 +153,7 @@ func SkipWhile[V any](f func(V) bool, seq iter.Seq[V]) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		skipping := true
 		for v := range seq {
-			if skipping && !f(v) {
+			if skipping && f(v) {
 				continue
 			}
 			skipping = false
@@ -169,7 +169,7 @@ func SkipWhile2[K, V any](f func(K, V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V
 	return func(yield func(K, V) bool) {
 		skipping := true
 		for k, v := range seq {
-			if skipping && !f(k, v) {
+			if skipping && f(k, v) {
 				continue
 			}
 			skipping = false

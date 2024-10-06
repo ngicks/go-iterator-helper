@@ -97,6 +97,10 @@ func LimitUntil[V any](f func(V) bool, seq iter.Seq[V]) iter.Seq[V]
 func LimitUntil2[K, V any](f func(K, V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func LimitAfter[V any](f func(V) bool, seq iter.Seq[V]) iter.Seq[V]
 func LimitAfter2[K, V any](f func(K, V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V]
+func Replace[V comparable](old, new V, n int, seq iter.Seq[V]) iter.Seq[V]
+func Replace2[K, V comparable](oldK, newK K, oldV, newV V, n int, f func(k1 K, v1 V, k2 K, v2 V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V]
+func ReplaceFunc[V any](old, new V, n int, f func(i, j V) bool, seq iter.Seq[V]) iter.Seq[V]
+func ReplaceFunc2[K, V any](oldK, newK K, oldV, newV V, n int, f func(k1 K, v1 V, k2 K, v2 V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func RunningReduce[V, Sum any](reducer func(accumulator Sum, current V, i int) Sum, initial Sum, seq iter.Seq[V]) iter.Seq[Sum]
 func Skip[V any](n int, seq iter.Seq[V]) iter.Seq[V]
 func Skip2[K, V any](n int, seq iter.Seq2[K, V]) iter.Seq2[K, V]
@@ -106,6 +110,8 @@ func SkipWhile[V any](f func(V) bool, seq iter.Seq[V]) iter.Seq[V]
 func SkipWhile2[K, V any](f func(K, V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func Tap[V any](tap func(V), seq iter.Seq[V]) iter.Seq[V]
 func Tap2[K, V any](tap func(K, V), seq iter.Seq2[K, V]) iter.Seq2[K, V]
+func TapLast[V any](tap func(), seq iter.Seq[V]) iter.Seq[V]
+func TapLast2[K, V any](tap func(), seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func Enumerate[T any](seq iter.Seq[T]) iter.Seq2[int, T]
 func Pairs[K, V any](seq1 iter.Seq[K], seq2 iter.Seq[V]) iter.Seq2[K, V]
 func Transpose[K, V any](seq iter.Seq2[K, V]) iter.Seq2[V, K]
@@ -115,6 +121,8 @@ func Omit[K any](seq iter.Seq[K]) func(yield func() bool)
 func Omit2[K, V any](seq iter.Seq2[K, V]) func(yield func() bool)
 func Unify[K, V, U any](fn func(K, V) U, seq iter.Seq2[K, V]) iter.Seq[U]
 func Divide[K, V, U any](fn func(U) (K, V), seq iter.Seq[U]) iter.Seq2[K, V]
+func Unique[V comparable](seq iter.Seq[V]) iter.Seq[V]
+func Unique2[K, V comparable](seq iter.Seq2[K, V]) iter.Seq2[K, V]
 func WindowSeq[V any](n int, seq iter.Seq[V]) iter.Seq[iter.Seq[V]]
 ```
 
@@ -177,6 +185,8 @@ All of them implement 1 or 2 of `Iter() iter.Seq[V]`, `Iter2() iter.Seq[K, V]`, 
 ```go
 package iterable // import "github.com/ngicks/go-iterator-helper/hiter/iterable"
 
+func TeeSeq[V any](seq iter.Seq[V], pusher func(v V) bool) iter.Seq[V]
+func TeeSeqPipe[V any](seq iter.Seq[V]) (*Pipe[V], *Resumable[V])
 type Chan[V any] struct{ ... }
 type Heap[T any] struct{ ... }
 type IndexAccessible[A hiter.Atter[T], T any] struct{ ... }
@@ -193,6 +203,8 @@ type Peekable[V any] struct{ ... }
     func NewPeekable[V any](seq iter.Seq[V]) *Peekable[V]
 type Peekable2[K, V any] struct{ ... }
     func NewPeekable2[K, V any](seq iter.Seq2[K, V]) *Peekable2[K, V]
+type Pipe[V any] struct{ ... }
+    func NewPipe[V any](n int) *Pipe[V]
 type Range[T hiter.Numeric] struct{ ... }
 type Repeatable[V any] struct{ ... }
 type Repeatable2[K, V any] struct{ ... }
@@ -262,6 +274,7 @@ func Clone[S ~[]E, E any](seq iter.Seq[S]) iter.Seq[S]
 func Clone2[S1 ~[]E1, S2 ~[]E2, E1, E2 any](seq iter.Seq2[S1, S2]) iter.Seq2[S1, S2]
 func Collect[V any](seq iter.Seq[iter.Seq[V]]) iter.Seq[[]V]
 func Collect2[K, V any](seq iter.Seq2[iter.Seq[K], iter.Seq[V]]) iter.Seq2[[]K, []V]
+func GroupFunc[U any, K comparable, V any](f func(U) (K, V), seq iter.Seq[U]) map[K][]V
 func HandleErr[V any](handle func(V, error) bool, seq iter.Seq2[V, error]) iter.Seq[V]
 func Rng[Num intType](n Num) iter.Seq[Num]
 func RngSourced[Num intType](n Num, src rand.Source) iter.Seq[Num]

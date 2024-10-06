@@ -4,6 +4,13 @@
 
 Helpers / converters / sources for iterators.
 
+## versioning policy
+
+Before 1.0.0, sometimes packages might break anything in the module.
+The breakage should be kept as little as possible between tags.
+
+Every untagged commits break added/modified things.
+
 ## hiter
 
 Helpers for iterator.

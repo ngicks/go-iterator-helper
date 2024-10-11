@@ -38,7 +38,6 @@ var (
 
 type Pipe[V any] struct {
 	c         chan V
-	mu        sync.Mutex
 	closeOnce sync.Once
 	closed    chan struct{}
 }
@@ -58,15 +57,11 @@ func NewPipe[V any](n int) *Pipe[V] {
 func (p *Pipe[V]) Close() {
 	p.closeOnce.Do(func() {
 		close(p.closed)
-		p.mu.Lock()
-		defer p.mu.Unlock()
 		close(p.c)
 	})
 }
 
 func (p *Pipe[V]) Push(v V) bool {
-	p.mu.Lock()
-	defer p.mu.Unlock()
 	select {
 	case <-p.closed:
 		return false
@@ -77,6 +72,20 @@ func (p *Pipe[V]) Push(v V) bool {
 		return true
 	case <-p.closed:
 		return false
+	}
+}
+
+func (p *Pipe[V]) TryPush(v V) (ok, pushed bool) {
+	select {
+	case <-p.closed:
+		return false, false
+	default:
+	}
+	select {
+	case p.c <- v:
+		return true, true
+	default:
+		return true, false
 	}
 }
 

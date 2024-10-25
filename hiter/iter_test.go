@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"iter"
 	"maps"
+	"reflect"
 	"slices"
 	"testing"
 
@@ -17,9 +18,15 @@ import (
 var (
 	errSample       = errors.New("sample")
 	compareErrorsIs = goCmp.Comparer(func(e1, e2 error) bool { return errors.Is(e1, e2) })
-	compareErrorsAs = goCmp.Comparer(func(e1 error, e2 error) bool {
-		e2Any := any(e2)
-		return errors.As(e1, &e2Any)
+	compareErrorsAs = goCmp.Comparer(func(i, j error) bool {
+		e2Any := any(j)
+		return errors.As(i, &e2Any)
+	})
+	compareReflectStructField = goCmp.Comparer(func(i, j reflect.StructField) bool {
+		return i.Name == j.Name && i.PkgPath == j.PkgPath
+	})
+	compareReflectValue = goCmp.Comparer(func(i, j reflect.Value) bool {
+		return i.Interface() == j.Interface()
 	})
 )
 

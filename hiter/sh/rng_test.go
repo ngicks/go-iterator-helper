@@ -11,6 +11,7 @@ import (
 	"github.com/ngicks/go-iterator-helper/hiter/sh"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
+	"gotest.tools/v3/assert/cmp"
 )
 
 func TestRng(t *testing.T) {
@@ -36,5 +37,15 @@ func TestRngSource(t *testing.T) {
 		rng := sh.RngSourced(i, mathRand.NewChaCha8(seed))
 		numsActual := slices.Collect(xiter.Limit(rng, 100))
 		assert.DeepEqual(t, numsExpected, numsActual)
+	}
+}
+
+func TestRandBytes(t *testing.T) {
+	for bin := range xiter.Limit(sh.RandBytes(3), 10) {
+		assert.Assert(t, cmp.Len(bin, 3))
+	}
+
+	for bin := range xiter.Limit(sh.RandBytes(10), 10) {
+		assert.Assert(t, cmp.Len(bin, 10))
 	}
 }

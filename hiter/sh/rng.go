@@ -1,8 +1,10 @@
 package sh
 
 import (
+	"crypto/rand"
+	"io"
 	"iter"
-	"math/rand/v2"
+	mathRand "math/rand/v2"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 )
@@ -16,11 +18,28 @@ type intType interface {
 
 // Rng returns an iterator over an infinite sequence of pseudo-random numbers in the half-open interval [0,n).
 func Rng[Num intType](n Num) iter.Seq[Num] {
-	return hiter.RepeatFunc(func() Num { return rand.N(n) }, -1)
+	return hiter.RepeatFunc(func() Num { return mathRand.N(n) }, -1)
 }
 
-// RngSourced is like [Rng] but accepts any arbitrary [rand.Source] implementations as a pseudo-random number source.
-func RngSourced[Num intType](n Num, src rand.Source) iter.Seq[Num] {
-	rng := rand.New(src)
+// RngSourced is like [Rng] but accepts any arbitrary [mathRand.Source] implementations as a pseudo-random number source.
+func RngSourced[Num intType](n Num, src mathRand.Source) iter.Seq[Num] {
+	rng := mathRand.New(src)
 	return hiter.RepeatFunc(func() Num { return Num(rng.Uint64N(uint64(n))) }, -1)
+}
+
+// RandBytes returns an iterator over pseudo-random n bytes long slice.
+// The buffer which the iterator returns is reused and should not be retained by the callers.
+// Callers should explicitly clone the slice by [Clone] if needed.
+func RandBytes(size int) iter.Seq[[]byte] {
+	buf := make([]byte, size)
+	return hiter.RepeatFunc(
+		func() []byte {
+			_, err := io.ReadFull(rand.Reader, buf)
+			if err != nil {
+				panic(err)
+			}
+			return buf
+		},
+		-1,
+	)
 }

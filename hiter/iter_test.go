@@ -72,7 +72,7 @@ func (tc testCase1[V]) Test(t *testing.T, cb ...func(length, count int)) {
 			// call seq after breaking it to check if it is idempotence.
 			collected2 := slices.Collect(s)
 			if !tc.Stateful {
-				assert.Assert(t, cmp.DeepEqual(tc.Expected, collected2))
+				assert.Assert(t, cmp.DeepEqual(tc.Expected, collected2, tc.CmpOpt...))
 			} else {
 				assert.Assert(t, len(tc.Expected) != len(collected2), "expected not to be=\n%#v\n\nactual=\n%#v\n", tc.Expected, collected2)
 			}
@@ -129,7 +129,7 @@ func (tc testCase2[K, V]) Test(t *testing.T, cb ...func(length, count int)) {
 			// call seq after breaking it to check if it is idempotence.
 			collected2 := hiter.Collect2(s)
 			if !tc.Stateful {
-				assert.Assert(t, cmp.DeepEqual(tc.Expected, collected2))
+				assert.Assert(t, cmp.DeepEqual(tc.Expected, collected2, tc.CmpOpt...))
 			} else {
 				assert.Assert(t, len(tc.Expected) != len(collected2), "expected not to be=\n%#v\n\nactual=\n%#v\n", tc.Expected, collected2)
 			}

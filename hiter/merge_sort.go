@@ -110,7 +110,7 @@ func (c combiner[T]) Len() int {
 
 func mergeSortSubbableFunc[S SliceLike[T], T any](s subbable[S, T], cmp func(l, r T) int) iter.Seq[T] {
 	if s.Len() <= 1 {
-		return OmitF(IndexAccessible(s, Range(0, s.Len())))
+		return OmitF(AtterIndices(s, Range(0, s.Len())))
 	}
 	return func(yield func(T) bool) {
 		left, right := s.Sub(0, s.Len()/2), s.Sub(s.Len()/2, s.Len())

@@ -12,6 +12,10 @@ func (a atSliceStr) At(i int) string {
 	return a[i]
 }
 
+func (a atSliceStr) Len() int {
+	return len(a)
+}
+
 var atSliceSrc = atSliceStr{
 	"foo", "bar", "baz",
 	"qux", "quux", "corge",
@@ -20,8 +24,8 @@ var atSliceSrc = atSliceStr{
 	"thud",
 }
 
-func ExampleIndexAccessible() {
-	for i, s := range hiter.IndexAccessible(atSliceSrc, hiter.Range(3, 7)) {
+func ExampleAtterIndices() {
+	for i, s := range hiter.AtterIndices(atSliceSrc, hiter.Range(3, 7)) {
 		fmt.Printf("%d: %s\n", i, s)
 	}
 	// Output:

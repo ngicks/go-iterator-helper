@@ -17,7 +17,15 @@ import (
 
 var (
 	errSample       = errors.New("sample")
-	compareErrorsIs = goCmp.Comparer(func(e1, e2 error) bool { return errors.Is(e1, e2) })
+	compareErrorsIs = goCmp.Comparer(func(e1, e2 error) bool {
+		if e1 == nil || e2 == nil {
+			return e1 == nil && e2 == nil
+		} else {
+			// github.com/google/go-cmp/cmp panics when it detects non-symmetric comparator
+			// But by its nature, errors.Is is asymmetric.
+			return errors.Is(e1, e2) || errors.Is(e2, e1)
+		}
+	})
 	compareErrorsAs = goCmp.Comparer(func(i, j error) bool {
 		e2Any := any(j)
 		return errors.As(i, &e2Any)

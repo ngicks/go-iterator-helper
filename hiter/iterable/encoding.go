@@ -1,6 +1,7 @@
 package iterable
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"encoding/xml"
 	"iter"
@@ -29,4 +30,13 @@ type XmlDecoder struct {
 
 func (dec XmlDecoder) IntoIter2() iter.Seq2[xml.Token, error] {
 	return hiter.XmlDecoder(dec.Decoder)
+}
+
+// CsvReader adds IntoIter2 method to [*csv.Reader].
+type CsvReader struct {
+	*csv.Reader
+}
+
+func (dec CsvReader) IntoIter2() iter.Seq2[[]string, error] {
+	return hiter.CsvReader(dec.Reader)
 }

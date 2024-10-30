@@ -1,6 +1,7 @@
 package hiter_test
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"encoding/xml"
 	"iter"
@@ -18,12 +19,6 @@ import (
 func TestEncoding(t *testing.T) {
 	jsonDec := func() *json.Decoder {
 		return json.NewDecoder(strings.NewReader(`{"foo":"bar"}`))
-	}
-	xmlDec := func() *xml.Decoder {
-		return xml.NewDecoder(strings.NewReader(`<foo>yay</foo><bar>nay</bar>`))
-	}
-	copyXmlToken := func(x xml.Token, e error) (xml.Token, error) {
-		return xml.CopyToken(x), e
 	}
 	t.Run("JSON", func(t *testing.T) {
 		var box *errbox.JsonDecoder
@@ -53,7 +48,12 @@ func TestEncoding(t *testing.T) {
 			}
 		})
 	})
-
+	xmlDec := func() *xml.Decoder {
+		return xml.NewDecoder(strings.NewReader(`<foo>yay</foo><bar>nay</bar>`))
+	}
+	copyXmlToken := func(x xml.Token, e error) (xml.Token, error) {
+		return xml.CopyToken(x), e
+	}
 	t.Run("XML", func(t *testing.T) {
 		var box *errbox.XmlDecoder
 		testCase2[xml.Token, error]{
@@ -76,6 +76,35 @@ func TestEncoding(t *testing.T) {
 				{xml.StartElement{Name: xml.Name{Local: "bar"}, Attr: []xml.Attr{}}, nil},
 				{xml.CharData("nay"), nil},
 				{xml.EndElement{Name: xml.Name{Local: "bar"}}, nil},
+			},
+			BreakAt:  2,
+			CmpOpt:   []goCmp.Option{compareErrorsIs},
+			Stateful: true,
+		}.Test(t)
+	})
+	csvReader := func() *csv.Reader {
+		return csv.NewReader(strings.NewReader(
+			`foo1,bar1,baz1
+foo2,bar2,baz2
+foo3,bar3
+foo4,bar4,baz4`,
+		))
+	}
+	t.Run("CSV", func(t *testing.T) {
+		testCase2[[]string, error]{
+			Seq: func() iter.Seq2[[]string, error] {
+				return hiter.CsvReader(csvReader())
+			},
+			Seqs: []func() iter.Seq2[[]string, error]{
+				func() iter.Seq2[[]string, error] {
+					return iterable.CsvReader{Reader: csvReader()}.IntoIter2()
+				},
+			},
+			Expected: []hiter.KeyValue[[]string, error]{
+				{[]string{"foo1", "bar1", "baz1"}, nil},
+				{[]string{"foo2", "bar2", "baz2"}, nil},
+				{[]string{"foo3", "bar3"}, csv.ErrFieldCount},
+				{[]string{"foo4", "bar4", "baz4"}, nil},
 			},
 			BreakAt:  2,
 			CmpOpt:   []goCmp.Option{compareErrorsIs},

@@ -1,6 +1,7 @@
 package hiter
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"encoding/xml"
 	"io"
@@ -34,6 +35,29 @@ func tokener[Dec interface{ Token() (V, error) }, V any](dec Dec) iter.Seq2[V, e
 				return
 			}
 			if !yield(t, nil) {
+				return
+			}
+		}
+	}
+}
+
+// CsvReader returns an iterator over csv lines.
+// Unlike [JsonDecoder] or [XmlDecoder], the iterator does not stop on first error
+// since it could yield [csv.ErrFieldCount] with partial record and continue to next line.
+//
+// [io.EOF] is excluded from result.
+func CsvReader(r *csv.Reader) iter.Seq2[[]string, error] {
+	return reader(r)
+}
+
+func reader[R interface{ Read() (T, error) }, T any](r R) iter.Seq2[T, error] {
+	return func(yield func(T, error) bool) {
+		for {
+			rec, err := r.Read()
+			if err == io.EOF {
+				return
+			}
+			if !yield(rec, err) {
 				return
 			}
 		}

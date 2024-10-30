@@ -19,7 +19,7 @@ type Range[T hiter.Numeric] struct {
 // At each step value is increased by 1 if start < end, otherwise decreased by 1.
 // By default, values are in the half open interval [Start, End).
 func (r Range[T]) Iter() iter.Seq[T] {
-	return hiter.RangeInclusive(r.Start, r.End, !r.ExcludesStart, r.ExcludesStart)
+	return hiter.RangeInclusive(r.Start, r.End, !r.ExcludesStart, r.IncludesEnd)
 }
 
 func (r Range[T]) Reverse() Range[T] {

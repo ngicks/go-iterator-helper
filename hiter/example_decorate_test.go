@@ -21,7 +21,7 @@ func ExampleDecorate() {
 			1,
 			hiter.Decorate(
 				numListTitle,
-				iterable.Repeatable[string]{V: " ", N: 1},
+				hiter.WrapSeqIterable(hiter.Once(" ")),
 				hiter.StringsSplitFunc(src, -1, hiter.StringsCutWord),
 			),
 		),

@@ -39,6 +39,8 @@ var (
 	_ IntoIterable[any]       = FuncIterable[any](nil)
 	_ Iterable2[any, any]     = FuncIterable2[any, any](nil)
 	_ IntoIterable2[any, any] = FuncIterable2[any, any](nil)
+	_ Iterable2[any, any]     = SeqIterable2[any, any](nil)
+	_ IntoIterable2[any, any] = SeqIterable2[any, any](nil)
 )
 
 type FuncIterable[V any] func() iter.Seq[V]
@@ -59,4 +61,38 @@ func (f FuncIterable2[K, V]) Iter2() iter.Seq2[K, V] {
 
 func (f FuncIterable2[K, V]) IntoIter2() iter.Seq2[K, V] {
 	return f()
+}
+
+type SeqIterable[V any] iter.Seq[V]
+
+// WrapSeqIterable wraps seq into SeqIterable[V].
+//
+// This is here only for type inference; less typing, easy auto-fill.
+func WrapSeqIterable[V any](seq iter.Seq[V]) SeqIterable[V] {
+	return SeqIterable[V](seq)
+}
+
+func (f SeqIterable[V]) Iter() iter.Seq[V] {
+	return iter.Seq[V](f)
+}
+
+func (f SeqIterable[V]) IntoIter() iter.Seq[V] {
+	return iter.Seq[V](f)
+}
+
+type SeqIterable2[K, V any] iter.Seq2[K, V]
+
+// WrapSeqIterable2 wraps seq into SeqIterable2[V].
+//
+// This is here only for type inference; less typing, easy auto-fill.
+func WrapSeqIterable2[K, V any](seq iter.Seq2[K, V]) SeqIterable2[K, V] {
+	return SeqIterable2[K, V](seq)
+}
+
+func (f SeqIterable2[K, V]) Iter2() iter.Seq2[K, V] {
+	return iter.Seq2[K, V](f)
+}
+
+func (f SeqIterable2[K, V]) IntoIter2() iter.Seq2[K, V] {
+	return iter.Seq2[K, V](f)
 }

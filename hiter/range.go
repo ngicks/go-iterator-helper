@@ -27,6 +27,9 @@ func rangeInclusive[T Numeric](start, end T, includeStart, includeEnd bool) iter
 		end := end
 		switch {
 		default:
+			if includeStart && includeEnd {
+				yield(start)
+			}
 			return
 		case start < end:
 			if !includeStart {

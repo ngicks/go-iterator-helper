@@ -67,4 +67,32 @@ func TestRange(t *testing.T) {
 			Expected: nil,
 		}.Test(t)
 	})
+
+	t.Run("int, 5 -> 7, excludeStart, excludeEnd", func(t *testing.T) {
+		testCase1[int]{
+			Seq: func() iter.Seq[int] {
+				return hiter.RangeInclusive(5, 7, false, false)
+			},
+			Seqs: []func() iter.Seq[int]{
+				func() iter.Seq[int] {
+					return iterable.Range[int]{Start: 5, End: 7, ExcludesStart: true}.Iter()
+				},
+			},
+			Expected: []int{6},
+		}.Test(t)
+	})
+
+	t.Run("int, -1 -> -1, includeStart, includeEnd", func(t *testing.T) {
+		testCase1[int]{
+			Seq: func() iter.Seq[int] {
+				return hiter.RangeInclusive(-1, -1, true, true)
+			},
+			Seqs: []func() iter.Seq[int]{
+				func() iter.Seq[int] {
+					return iterable.Range[int]{Start: -1, End: -1, IncludesEnd: true}.Iter()
+				},
+			},
+			Expected: []int{-1},
+		}.Test(t)
+	})
 }

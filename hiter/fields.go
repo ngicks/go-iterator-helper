@@ -19,7 +19,6 @@ func Fields(v any) iter.Seq2[reflect.StructField, reflect.Value] {
 		rt := rv.Type()
 		for i := range rv.NumField() {
 			fty := rt.Field(i)
-			fty.IsExported()
 			fv := rv.Field(i)
 			if !yield(fty, fv) {
 				return

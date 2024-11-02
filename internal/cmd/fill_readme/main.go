@@ -57,7 +57,21 @@ func main() {
 		line = strings.TrimSpace(line)
 		if slices.ContainsFunc(
 			[]string{
-				"func IndexAccessible",
+				"func WrapSeqIterable",
+				"func WrapSeqIterable2",
+			},
+			func(s string) bool {
+				return strings.HasPrefix(line, s)
+			},
+		) {
+			continue
+		}
+		if slices.ContainsFunc(
+			[]string{
+				"func AtterIndices",
+				"func AtterAll",
+				"func AtterRange",
+				"func MapKeys",
 			},
 			func(s string) bool {
 				return strings.HasPrefix(line, s)

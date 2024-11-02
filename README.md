@@ -26,6 +26,10 @@ Some ideas are stolen from https://jsr.io/@std/collections/doc, like Permutation
 Iterator sources: functions that compose up iterators from data sources:
 
 ```go
+func AtterIndices[A Atter[T], T any](a A, indices iter.Seq[int]) iter.Seq2[int, T]
+func AtterRange[A Atter[T], T any](a A, start, end int) iter.Seq2[int, T]
+func AtterAll[A interface { Atter[T]; Lenner }, T any](a A) iter.Seq2[int, T]
+func MapKeys[M ~map[K]V, K comparable, V any](m M, keys iter.Seq[K]) iter.Seq2[K, V]
 func Chan[V any](ctx context.Context, ch <-chan V) iter.Seq[V]
 func Heap[V any](h heap.Interface) iter.Seq[V]
 func ListAll[V any](l *list.List) iter.Seq[V]
@@ -38,8 +42,10 @@ func Empty[V any]() iter.Seq[V]
 func Empty2[K, V any]() iter.Seq2[K, V]
 func JsonDecoder(dec *json.Decoder) iter.Seq2[json.Token, error]
 func XmlDecoder(dec *xml.Decoder) iter.Seq2[xml.Token, error]
-func IndexAccessible[A Atter[T], T any](a A, indices iter.Seq[int]) iter.Seq2[int, T]
+func CsvReader(r *csv.Reader) iter.Seq2[[]string, error]
+func Fields(v any) iter.Seq2[reflect.StructField, reflect.Value]
 func Decode[V any, Dec interface{  Decode(any) error }](dec Dec) iter.Seq2[V, error]
+func Readdir[R interface { Readdir(n int) ([]fs.FileInfo, error) }](r R) iter.Seq2[fs.FileInfo, error]
 func Values2[S ~[]KeyValue[K, V], K, V any](s S) iter.Seq2[K, V]
 func MergeSort[S ~[]T, T cmp.Ordered](m S) iter.Seq[T]
 func MergeSortFunc[S ~[]T, T any](m S, cmp func(l, r T) int) iter.Seq[T]
@@ -161,6 +167,7 @@ func Max[V cmp.Ordered](seq iter.Seq[V]) V
 func MaxFunc[V any](fn func(i, j V) int, seq iter.Seq[V]) V
 func Nth[V any](n int, seq iter.Seq[V]) (v V, ok bool)
 func Nth2[K, V any](n int, seq iter.Seq2[K, V]) (k K, v V, ok bool)
+func Reader[V any](marshaler func(V) ([]byte, error), seq iter.Seq[V]) io.Reader
 func ReduceGroup[K comparable, V, Sum any](reducer func(accumulator Sum, current V) Sum, initial Sum, seq iter.Seq2[K, V]) map[K]Sum
 func InsertReduceGroup[Map ~map[K]Sum, K comparable, V, Sum any](m Map, reducer func(accumulator Sum, current V) Sum, initial Sum, seq iter.Seq2[K, V]) map[K]Sum
 func StringsCollect(sizeHint int, seq iter.Seq[string]) string
@@ -177,9 +184,10 @@ All of them implement 1 or 2 of `Iter() iter.Seq[V]`, `Iter2() iter.Seq[K, V]`, 
 ```go
 package iterable // import "github.com/ngicks/go-iterator-helper/hiter/iterable"
 
+type Atter[A hiter.Atter[T], T any] struct{ ... }
 type Chan[V any] struct{ ... }
+type CsvReader struct{ ... }
 type Heap[T any] struct{ ... }
-type IndexAccessible[A hiter.Atter[T], T any] struct{ ... }
 type JsonDecoder struct{ ... }
 type ListAll[T any] struct{ ... }
 type ListBackward[T any] struct{ ... }
@@ -263,8 +271,9 @@ func Clone2[S1 ~[]E1, S2 ~[]E2, E1, E2 any](seq iter.Seq2[S1, S2]) iter.Seq2[S1,
 func Collect[V any](seq iter.Seq[iter.Seq[V]]) iter.Seq[[]V]
 func Collect2[K, V any](seq iter.Seq2[iter.Seq[K], iter.Seq[V]]) iter.Seq2[[]K, []V]
 func HandleErr[V any](handle func(V, error) bool, seq iter.Seq2[V, error]) iter.Seq[V]
+func RandBytes(size int) iter.Seq[[]byte]
 func Rng[Num intType](n Num) iter.Seq[Num]
-func RngSourced[Num intType](n Num, src rand.Source) iter.Seq[Num]
+func RngSourced[Num intType](n Num, src mathRand.Source) iter.Seq[Num]
 
 ```
 

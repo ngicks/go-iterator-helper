@@ -1,4 +1,4 @@
-package iterable
+package hiter
 
 import (
 	"io"
@@ -8,7 +8,6 @@ import (
 // Reader returns a reader which reads values from seq marshaled by marshaler.
 // seq must be stateful and one-shot; each time Read is called one or more values are yielded from seq.
 // If seq is pure and reuseable, Read reads same value repeatedly.
-// You can wrap pure seq to be stateful by wrapping it with [NewResumable] or [NewPeekable].
 func Reader[V any](marshaler func(V) ([]byte, error), seq iter.Seq[V]) io.Reader {
 	return &iterReader[V]{
 		marshaler: marshaler,

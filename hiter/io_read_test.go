@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
+	"os"
+	"slices"
 	"testing"
 	"testing/iotest"
 
@@ -74,4 +76,21 @@ func TestDecode(t *testing.T) {
 			compareErrorsIs,
 		)
 	})
+}
+
+func TestReaddir(t *testing.T) {
+	dir, err := os.Open("./testdata/readdir")
+	if err != nil {
+		panic(err)
+	}
+	var names []string
+	for dirent, err := range hiter.Readdir(dir) {
+		if err != nil {
+			panic(err)
+		}
+		names = append(names, dirent.Name())
+	}
+	// maybe unordered
+	slices.Sort(names)
+	assert.DeepEqual(t, []string{"bar", "baz", "foo"}, names)
 }

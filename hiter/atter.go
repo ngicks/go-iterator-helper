@@ -8,8 +8,9 @@ type Atter[T any] interface {
 	At(i int) T
 }
 
-// AtterIndices returns an iterator over pairs of indices and values which is accessed by the indices.
-// If indices generates an out-of-range index, the behavior is not defined and may differs among Atter implementations.
+// AtterIndices returns an iterator over pairs of indices and values retrieved from an Atter using the indices.
+// The indices sequence determines the order of access and must provide valid indices within the bounds of the Atter.
+// If an out-of-range index is supplied, the behavior is undefined and may vary based on the Atter implementation.
 func AtterIndices[A Atter[T], T any](a A, indices iter.Seq[int]) iter.Seq2[int, T] {
 	return func(yield func(int, T) bool) {
 		for i := range indices {

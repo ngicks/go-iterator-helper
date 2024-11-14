@@ -4,7 +4,6 @@ import (
 	"cmp"
 	"iter"
 	"maps"
-	"slices"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 )
@@ -29,14 +28,7 @@ func (m MapAll[K, V]) Iter2() iter.Seq2[K, V] {
 type MapSorted[K cmp.Ordered, V any] map[K]V
 
 func (m MapSorted[K, V]) Iter2() iter.Seq2[K, V] {
-	return func(yield func(K, V) bool) {
-		for _, k := range slices.Sorted(maps.Keys(m)) {
-			e, ok := m[k]
-			if ok && !yield(k, e) {
-				return
-			}
-		}
-	}
+	return hiter.MapSorted(m)
 }
 
 func (m MapSorted[K, V]) Reverse() MapSortedFunc[map[K]V, K, V] {
@@ -57,19 +49,10 @@ type MapSortedFunc[M ~map[K]V, K comparable, V any] struct {
 }
 
 func (m MapSortedFunc[M, K, V]) Iter2() iter.Seq2[K, V] {
-	return func(yield func(K, V) bool) {
-		var keys []K
-		if !m.rev {
-			keys = slices.SortedFunc(maps.Keys(m.M), m.Cmp)
-		} else {
-			keys = slices.SortedFunc(maps.Keys(m.M), func(k1, k2 K) int { return -m.Cmp(k1, k2) })
-		}
-		for _, k := range keys {
-			e, ok := m.M[k]
-			if ok && !yield(k, e) {
-				return
-			}
-		}
+	if !m.rev {
+		return hiter.MapSortedFunc(m.M, m.Cmp)
+	} else {
+		return hiter.MapSortedFunc(m.M, func(i, j K) int { return -m.Cmp(i, j) })
 	}
 }
 

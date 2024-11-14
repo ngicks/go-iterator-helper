@@ -46,7 +46,12 @@ func TestMap(t *testing.T) {
 	t.Run("MapSorted", func(t *testing.T) {
 		testCase2[string, int]{
 			Seq: func() iter.Seq2[string, int] {
-				return iterable.MapSorted[string, int](expectedSI).Iter2()
+				return hiter.MapSorted[map[string]int](expectedSI)
+			},
+			Seqs: []func() iter.Seq2[string, int]{
+				func() iter.Seq2[string, int] {
+					return iterable.MapSorted[string, int](expectedSI).Iter2()
+				},
 			},
 			BreakAt:  2,
 			Expected: []hiter.KeyValue[string, int]{{"bar", 1}, {"baz", 2}, {"foo", 0}, {"qux", 3}},
@@ -56,7 +61,12 @@ func TestMap(t *testing.T) {
 	t.Run("MapSorted nil", func(t *testing.T) {
 		testCase2[string, int]{
 			Seq: func() iter.Seq2[string, int] {
-				return iterable.MapSorted[string, int](nil).Iter2()
+				return hiter.MapSorted[map[string]int](nil)
+			},
+			Seqs: []func() iter.Seq2[string, int]{
+				func() iter.Seq2[string, int] {
+					return iterable.MapSorted[string, int](nil).Iter2()
+				},
 			},
 			Expected: nil,
 		}.Test(t)
@@ -65,10 +75,22 @@ func TestMap(t *testing.T) {
 	t.Run("MapSortedFunc", func(t *testing.T) {
 		testCase2[string, int]{
 			Seq: func() iter.Seq2[string, int] {
-				return iterable.MapSortedFunc[map[string]int, string, int]{
-					M:   expectedSI,
-					Cmp: func(s1, s2 string) int { return cmp.Compare(expectedSI[s1], expectedSI[s2]) },
-				}.Iter2()
+				return hiter.MapSortedFunc(
+					expectedSI,
+					func(s1, s2 string) int {
+						return cmp.Compare(expectedSI[s1], expectedSI[s2])
+					},
+				)
+			},
+			Seqs: []func() iter.Seq2[string, int]{
+				func() iter.Seq2[string, int] {
+					return iterable.MapSortedFunc[map[string]int, string, int]{
+						M: expectedSI,
+						Cmp: func(s1, s2 string) int {
+							return cmp.Compare(expectedSI[s1], expectedSI[s2])
+						},
+					}.Iter2()
+				},
 			},
 			BreakAt: 2,
 			Expected: []hiter.KeyValue[string, int]{
@@ -83,10 +105,18 @@ func TestMap(t *testing.T) {
 	t.Run("MapSortedFunc nil ", func(t *testing.T) {
 		testCase2[string, int]{
 			Seq: func() iter.Seq2[string, int] {
-				return iterable.MapSortedFunc[map[string]int, string, int]{
-					M:   nil,
-					Cmp: func(s1, s2 string) int { return cmp.Compare(expectedSI[s1], expectedSI[s2]) },
-				}.Iter2()
+				return hiter.MapSortedFunc[map[string]int](
+					nil,
+					func(s1, s2 string) int { return cmp.Compare(expectedSI[s1], expectedSI[s2]) },
+				)
+			},
+			Seqs: []func() iter.Seq2[string, int]{
+				func() iter.Seq2[string, int] {
+					return iterable.MapSortedFunc[map[string]int, string, int]{
+						M:   nil,
+						Cmp: func(s1, s2 string) int { return cmp.Compare(expectedSI[s1], expectedSI[s2]) },
+					}.Iter2()
+				},
 			},
 			Expected: nil,
 		}.Test(t)

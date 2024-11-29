@@ -1,4 +1,4 @@
-package hiter_test
+package goiteratorhelper_test
 
 import (
 	"fmt"
@@ -6,6 +6,7 @@ import (
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
+	"github.com/ngicks/go-iterator-helper/hiter/stringsiter"
 )
 
 func ExampleDecorate() {
@@ -15,14 +16,14 @@ func ExampleDecorate() {
 		FnV: func() string { return fmt.Sprintf("%d. ", num.Add(1)) },
 		N:   1,
 	}
-	m := hiter.StringsCollect(
+	m := stringsiter.StringsCollect(
 		9+((2 /*num*/ +2 /*. */ +1 /* */)*3),
 		hiter.SkipLast(
 			1,
 			hiter.Decorate(
 				numListTitle,
 				hiter.WrapSeqIterable(hiter.Once(" ")),
-				hiter.StringsSplitFunc(src, -1, hiter.StringsCutWord),
+				stringsiter.StringsSplitFunc(src, -1, stringsiter.StringsCutWord),
 			),
 		),
 	)

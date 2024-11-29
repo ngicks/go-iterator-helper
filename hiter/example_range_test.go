@@ -23,19 +23,3 @@ func ExampleRange_prevent_off_by_one() {
 	// Output:
 	// 0 7 14 21 28 35 42 49
 }
-
-func ExampleRange_char() {
-	fmt.Println(
-		hiter.StringsCollect(
-			27,
-			xiter.Map(
-				func(r rune) string {
-					return string(r - ('a' - 'A'))
-				},
-				hiter.Range('a', 'z'+1),
-			),
-		),
-	)
-	// Output:
-	// ABCDEFGHIJKLMNOPQRSTUVWXYZ
-}

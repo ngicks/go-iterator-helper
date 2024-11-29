@@ -15,7 +15,13 @@ var (
 	runesSrc   = ".😂😎a🙂c😫"
 )
 
-func TestStringsChunk(t *testing.T) {
+func TestCollect(t *testing.T) {
+	s := slices.Values([]string{"foo", "bar", "baz"})
+	assert.Equal(t, "foobarbaz", stringsiter.Collect(1024, s))
+	assert.Equal(t, "foo, bar, baz", stringsiter.Join(1024, ", ", s))
+}
+
+func TestChunk(t *testing.T) {
 	t.Run("divide 9 by 3", func(t *testing.T) {
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
@@ -59,6 +65,7 @@ func TestStringsChunk(t *testing.T) {
 		}.Test(t)
 
 		assert.Equal(t, runesSrc, stringsiter.Collect(len(runesSrc), slices.Values(expected)))
+		assert.Equal(t, runesSrc, stringsiter.Join(len(runesSrc), "", slices.Values(expected)))
 	})
 
 	t.Run("divide by 0", func(t *testing.T) {
@@ -80,7 +87,7 @@ func TestStringsChunk(t *testing.T) {
 	})
 }
 
-func TestStringsRuneChunk(t *testing.T) {
+func TestRuneChunk(t *testing.T) {
 	t.Run("divide 9 by 3", func(t *testing.T) {
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
@@ -135,7 +142,7 @@ func TestStringsRuneChunk(t *testing.T) {
 	})
 }
 
-func TestStringsSplitFunc(t *testing.T) {
+func TestSplitFunc(t *testing.T) {
 	const (
 		src        = "foo\nbar\nbaz"
 		srcCr      = "foo\r\nbar\r\nbaz\r\n"

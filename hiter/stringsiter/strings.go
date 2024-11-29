@@ -5,11 +5,13 @@ import (
 	"strings"
 	"unicode"
 	"unicode/utf8"
+
+	"github.com/ngicks/go-iterator-helper/hiter"
 )
 
-// Collect reduces seq to a single string.
-// sizeHint hints size of internal buffer.
-// Correctly sized sizeHint may reduce allocation.
+// Collect concatenates all values form seq to a single string.
+// sizeHint hints size of all values in bytes,
+// which will be used to pre-allocate buffer.
 func Collect(sizeHint int, seq iter.Seq[string]) string {
 	var buf strings.Builder
 	buf.Grow(sizeHint)
@@ -17,6 +19,21 @@ func Collect(sizeHint int, seq iter.Seq[string]) string {
 		buf.WriteString(s)
 	}
 	return buf.String()
+}
+
+// Join is like [Collect] but inserts sep between every 2 values from seq.
+func Join(sizeHint int, sep string, seq iter.Seq[string]) string {
+	return Collect(
+		sizeHint,
+		hiter.Skip(
+			1,
+			hiter.Decorate(
+				hiter.WrapSeqIterable(hiter.Once(sep)),
+				nil,
+				seq,
+			),
+		),
+	)
 }
 
 // Chunk returns an iterator over non overlapping sub strings of n bytes.

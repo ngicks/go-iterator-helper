@@ -10,6 +10,7 @@ import (
 
 	goCmp "github.com/google/go-cmp/cmp"
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
 )
@@ -110,7 +111,7 @@ func TestWrite(t *testing.T) {
 				cmp.DeepEqual(expected, buf.Bytes()),
 				"diff = %s", goCmp.Diff(string(expected), buf.String()),
 			)
-			assert.ErrorIs(t, err, errSample)
+			assert.ErrorIs(t, err, testcase.ErrSample)
 			assert.Equal(t, len(expected), n)
 		}
 
@@ -119,7 +120,7 @@ func TestWrite(t *testing.T) {
 			&buf,
 			func(v testData, written int) ([]byte, error) {
 				if count == 1 {
-					return []byte("wah"), errSample
+					return []byte("wah"), testcase.ErrSample
 				}
 				count++
 				return marshal(v, written)
@@ -136,7 +137,7 @@ func TestWrite(t *testing.T) {
 			func(k int, v testData, written int) ([]byte, error) {
 				keys = append(keys, k)
 				if count == 1 {
-					return []byte("wah"), errSample
+					return []byte("wah"), testcase.ErrSample
 				}
 				count++
 				return marshal(v, written)
@@ -151,7 +152,7 @@ func TestWrite(t *testing.T) {
 		buf := new(bytes.Buffer)
 		w := &errWriter{
 			w:   buf,
-			err: errSample,
+			err: testcase.ErrSample,
 		}
 
 		var (
@@ -166,7 +167,7 @@ func TestWrite(t *testing.T) {
 				cmp.DeepEqual(expected, buf.Bytes()),
 				"diff = %s", goCmp.Diff(string(expected), buf.String()),
 			)
-			assert.ErrorIs(t, err, errSample)
+			assert.ErrorIs(t, err, testcase.ErrSample)
 			assert.Equal(t, len(expected), n)
 		}
 
@@ -232,12 +233,12 @@ func TestEncode(t *testing.T) {
 		buf := new(bytes.Buffer)
 		w := &errWriter{
 			w:   buf,
-			err: errSample,
+			err: testcase.ErrSample,
 			n:   1,
 		}
 		enc := json.NewEncoder(w)
 		err := hiter.Encode(enc, slices.Values(src))
-		assert.ErrorIs(t, err, errSample)
+		assert.ErrorIs(t, err, testcase.ErrSample)
 		assert.DeepEqual(
 			t,
 			`{"V":"foo"}

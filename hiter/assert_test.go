@@ -7,13 +7,14 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 )
 
 func TestAssert(t *testing.T) {
 	src := []any{"foo", "bar", "baz"}
 	src2 := []hiter.KeyValue[any, any]{{0, "foo"}, {1, "bar"}, {2, "baz"}}
 
-	testCase1[string]{
+	testcase.TestCase1[string]{
 		Seq: func() iter.Seq[string] {
 			return hiter.Assert[string](slices.Values(src))
 		},
@@ -27,7 +28,7 @@ func TestAssert(t *testing.T) {
 		BreakAt:  2,
 	}.Test(t)
 
-	testCase2[int, string]{
+	testcase.TestCase2[int, string]{
 		Seq: func() iter.Seq2[int, string] {
 			return hiter.Assert2[int, string](hiter.Values2(src2))
 		},

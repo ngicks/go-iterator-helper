@@ -9,6 +9,7 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 	"gotest.tools/v3/assert"
 )
@@ -16,7 +17,7 @@ import (
 func TestContainerHeap(t *testing.T) {
 	h := &sliceHeap{2, 7, 9, 0, 9, 1}
 	heap.Init(h)
-	testCase1[int]{
+	testcase.TestCase1[int]{
 		Seq: func() iter.Seq[int] {
 			h := slices.Clone(*h)
 			return hiter.Heap[int](&h)
@@ -40,7 +41,7 @@ func TestContainerList(t *testing.T) {
 	}
 
 	t.Run("ListAll", func(t *testing.T) {
-		testCase1[int]{
+		testcase.TestCase1[int]{
 			Seq: func() iter.Seq[int] {
 				return hiter.ListAll[int](s)
 			},
@@ -55,7 +56,7 @@ func TestContainerList(t *testing.T) {
 	})
 
 	t.Run("ListElementAll", func(t *testing.T) {
-		testCase1[int]{
+		testcase.TestCase1[int]{
 			Seq: func() iter.Seq[int] {
 				return hiter.ListElementAll[int](s.Front().Next().Next())
 			},
@@ -70,7 +71,7 @@ func TestContainerList(t *testing.T) {
 	})
 
 	t.Run("ListBackward", func(t *testing.T) {
-		testCase1[int]{
+		testcase.TestCase1[int]{
 			Seq: func() iter.Seq[int] {
 				return hiter.ListBackward[int](s)
 			},
@@ -85,7 +86,7 @@ func TestContainerList(t *testing.T) {
 	})
 
 	t.Run("ListElementBackward", func(t *testing.T) {
-		testCase1[int]{
+		testcase.TestCase1[int]{
 			Seq: func() iter.Seq[int] {
 				return hiter.ListElementBackward[int](s.Back().Prev())
 			},
@@ -113,7 +114,7 @@ func TestContainerRing(t *testing.T) {
 	}
 
 	t.Run("RingAll", func(t *testing.T) {
-		testCase1[int]{
+		testcase.TestCase1[int]{
 			Seq: func() iter.Seq[int] {
 				return hiter.RingAll[int](r.Move(2))
 			},
@@ -128,7 +129,7 @@ func TestContainerRing(t *testing.T) {
 	})
 
 	t.Run("RingBackward", func(t *testing.T) {
-		testCase1[int]{
+		testcase.TestCase1[int]{
 			Seq: func() iter.Seq[int] {
 				return hiter.RingBackward[int](r.Move(2))
 			},

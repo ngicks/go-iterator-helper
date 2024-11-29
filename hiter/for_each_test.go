@@ -8,6 +8,7 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
 )
@@ -63,11 +64,11 @@ func TestForEachGo(t *testing.T) {
 			mu.Lock()
 			defer mu.Unlock()
 			args = append(args, i)
-			return errSample
+			return testcase.ErrSample
 		},
 		hiter.Range(0, 5),
 	)
-	assert.ErrorIs(t, err, errSample)
+	assert.ErrorIs(t, err, testcase.ErrSample)
 	mu.Lock()
 	slices.Sort(args)
 	mu.Unlock()
@@ -89,11 +90,11 @@ func TestForEachGo2(t *testing.T) {
 			mu.Lock()
 			defer mu.Unlock()
 			args = append(args, hiter.KeyValue[int, int]{k, v})
-			return errSample
+			return testcase.ErrSample
 		},
 		hiter.Pairs(hiter.Range(0, 5), hiter.Range(5, 0)),
 	)
-	assert.ErrorIs(t, err, errSample)
+	assert.ErrorIs(t, err, testcase.ErrSample)
 	mu.Lock()
 	slices.SortFunc(args, func(i, j hiter.KeyValue[int, int]) int { return cmp.Compare(i.K, j.K) })
 	mu.Unlock()
@@ -116,7 +117,7 @@ func TestDiscard2(t *testing.T) {
 var (
 	trySrc = hiter.Pairs(
 		slices.Values([]string{"foo", "bar", "baz", "qux"}),
-		slices.Values([]error{nil, nil, errSample, nil}),
+		slices.Values([]error{nil, nil, testcase.ErrSample, nil}),
 	)
 )
 
@@ -134,7 +135,7 @@ func TestTryFind(t *testing.T) {
 	v, idx, err = hiter.TryFind(func(s string) bool { return s == "baz" }, trySrc)
 	assert.Equal(t, "", v)
 	assert.Equal(t, -1, idx)
-	assert.ErrorIs(t, err, errSample)
+	assert.ErrorIs(t, err, testcase.ErrSample)
 
 	v, idx, err = hiter.TryFind(func(s string) bool { return s == "baz" }, xiter.Limit2(trySrc, 2))
 	assert.Equal(t, "", v)
@@ -156,7 +157,7 @@ func TestTryForEach(t *testing.T) {
 	args = args[:0]
 	err = hiter.TryForEach(func(s string) { args = append(args, s) }, trySrc)
 	assert.DeepEqual(t, slices.Collect(hiter.OmitL(xiter.Limit2(trySrc, 2))), args)
-	assert.ErrorIs(t, err, errSample)
+	assert.ErrorIs(t, err, testcase.ErrSample)
 }
 
 func TestTryReduce(t *testing.T) {
@@ -166,8 +167,7 @@ func TestTryReduce(t *testing.T) {
 	)
 	sum, err = hiter.TryReduce(func(ss []string, s string) []string { return append(ss, s) }, []string{}, trySrc)
 	assert.DeepEqual(t, slices.Collect(hiter.OmitL(xiter.Limit2(trySrc, 2))), sum)
-	assert.ErrorIs(t, err, errSample)
-
+	assert.ErrorIs(t, err, testcase.ErrSample)
 	sum, err = hiter.TryReduce(func(ss []string, s string) []string { return append(ss, s) }, []string{}, xiter.Limit2(trySrc, 1))
 	assert.DeepEqual(t, []string{"foo"}, sum)
 	assert.NilError(t, err)
@@ -181,7 +181,7 @@ func TestTryCollect(t *testing.T) {
 
 	sum, err = hiter.TryCollect(trySrc)
 	assert.DeepEqual(t, slices.Collect(hiter.OmitL(xiter.Limit2(trySrc, 2))), sum)
-	assert.ErrorIs(t, err, errSample)
+	assert.ErrorIs(t, err, testcase.ErrSample)
 
 	sum, err = hiter.TryCollect(xiter.Limit2(trySrc, 1))
 	assert.DeepEqual(t, []string{"foo"}, sum)
@@ -189,7 +189,7 @@ func TestTryCollect(t *testing.T) {
 
 	sum, err = hiter.TryAppendSeq([]string{"foo"}, trySrc)
 	assert.DeepEqual(t, slices.Collect(xiter.Concat(hiter.Once("foo"), hiter.OmitL(xiter.Limit2(trySrc, 2)))), sum)
-	assert.ErrorIs(t, err, errSample)
+	assert.ErrorIs(t, err, testcase.ErrSample)
 
 	sum, err = hiter.TryAppendSeq([]string{"foo"}, xiter.Limit2(trySrc, 1))
 	assert.DeepEqual(t, []string{"foo", "foo"}, sum)

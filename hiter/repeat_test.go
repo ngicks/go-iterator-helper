@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 )
 
@@ -20,7 +21,7 @@ func TestRepeat(t *testing.T) {
 	}
 
 	t.Run("Repeatable", func(t *testing.T) {
-		testCase1[uint]{
+		testcase.TestCase1[uint]{
 			Seq: func() iter.Seq[uint] {
 				return hiter.Repeat(uint(3), 5)
 			},
@@ -39,7 +40,7 @@ func TestRepeat(t *testing.T) {
 			BreakAt:  3,
 		}.Test(t)
 
-		testCase1[uint]{
+		testcase.TestCase1[uint]{
 			Seq: func() iter.Seq[uint] {
 				return limit10(hiter.Repeat(uint(3), -1))
 			},
@@ -64,7 +65,7 @@ func TestRepeat(t *testing.T) {
 	})
 
 	t.Run("Repeatable2", func(t *testing.T) {
-		testCase2[uint, string]{
+		testcase.TestCase2[uint, string]{
 			Seq: func() iter.Seq2[uint, string] {
 				return hiter.Repeat2(uint(7), "foo", 7)
 			},
@@ -87,7 +88,7 @@ func TestRepeat(t *testing.T) {
 			BreakAt: 3,
 		}.Test(t)
 
-		testCase2[uint, string]{
+		testcase.TestCase2[uint, string]{
 			Seq: func() iter.Seq2[uint, string] {
 				return limit102(hiter.Repeat2(uint(7), "foo", -1))
 			},

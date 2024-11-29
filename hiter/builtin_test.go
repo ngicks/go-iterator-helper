@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 )
 
@@ -18,7 +19,7 @@ func TestMap(t *testing.T) {
 	}
 
 	t.Run("MapAll", func(t *testing.T) {
-		testCaseMap[string, string]{
+		testcase.TestCaseMap[string, string]{
 			Seq: func() iter.Seq2[string, string] {
 				return iterable.MapAll[string, string](expected).Iter2()
 			},
@@ -28,7 +29,7 @@ func TestMap(t *testing.T) {
 	})
 
 	t.Run("MapAll nil", func(t *testing.T) {
-		testCaseMap[string, string]{
+		testcase.TestCaseMap[string, string]{
 			Seq: func() iter.Seq2[string, string] {
 				return iterable.MapAll[string, string](nil).Iter2()
 			},
@@ -44,7 +45,7 @@ func TestMap(t *testing.T) {
 	}
 
 	t.Run("MapSorted", func(t *testing.T) {
-		testCase2[string, int]{
+		testcase.TestCase2[string, int]{
 			Seq: func() iter.Seq2[string, int] {
 				return hiter.MapSorted[map[string]int](expectedSI)
 			},
@@ -59,7 +60,7 @@ func TestMap(t *testing.T) {
 	})
 
 	t.Run("MapSorted nil", func(t *testing.T) {
-		testCase2[string, int]{
+		testcase.TestCase2[string, int]{
 			Seq: func() iter.Seq2[string, int] {
 				return hiter.MapSorted[map[string]int](nil)
 			},
@@ -73,7 +74,7 @@ func TestMap(t *testing.T) {
 	})
 
 	t.Run("MapSortedFunc", func(t *testing.T) {
-		testCase2[string, int]{
+		testcase.TestCase2[string, int]{
 			Seq: func() iter.Seq2[string, int] {
 				return hiter.MapSortedFunc(
 					expectedSI,
@@ -103,7 +104,7 @@ func TestMap(t *testing.T) {
 	})
 
 	t.Run("MapSortedFunc nil ", func(t *testing.T) {
-		testCase2[string, int]{
+		testcase.TestCase2[string, int]{
 			Seq: func() iter.Seq2[string, int] {
 				return hiter.MapSortedFunc[map[string]int](
 					nil,
@@ -125,14 +126,14 @@ func TestMap(t *testing.T) {
 
 func TestSlice(t *testing.T) {
 	t.Run("SliceAll", func(t *testing.T) {
-		testCase1[int]{
+		testcase.TestCase1[int]{
 			Seq: func() iter.Seq[int] {
 				return iterable.SliceAll[int](srcInt1).Iter()
 			},
 			BreakAt:  2,
 			Expected: srcInt1,
 		}.Test(t)
-		testCase2[int, int]{
+		testcase.TestCase2[int, int]{
 			Seq: func() iter.Seq2[int, int] {
 				return iterable.SliceAll[int](srcInt1).Iter2()
 			},
@@ -142,14 +143,14 @@ func TestSlice(t *testing.T) {
 	})
 
 	t.Run("SliceBackward", func(t *testing.T) {
-		testCase1[int]{
+		testcase.TestCase1[int]{
 			Seq: func() iter.Seq[int] {
 				return iterable.SliceBackward[int](srcInt1).Iter()
 			},
 			BreakAt:  2,
 			Expected: slices.Collect(hiter.OmitF(slices.Backward(srcInt1))),
 		}.Test(t)
-		testCase2[int, int]{
+		testcase.TestCase2[int, int]{
 			Seq: func() iter.Seq2[int, int] {
 				return iterable.SliceBackward[int](srcInt1).Iter2()
 			},

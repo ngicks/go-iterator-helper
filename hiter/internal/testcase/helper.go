@@ -1,4 +1,4 @@
-package hiter_test
+package testcase
 
 import (
 	"errors"
@@ -16,8 +16,8 @@ import (
 )
 
 var (
-	errSample       = errors.New("sample")
-	compareErrorsIs = goCmp.Comparer(func(e1, e2 error) bool {
+	ErrSample       = errors.New("sample")
+	CompareErrorsIs = goCmp.Comparer(func(e1, e2 error) bool {
 		if e1 == nil || e2 == nil {
 			return e1 == nil && e2 == nil
 		} else {
@@ -26,19 +26,19 @@ var (
 			return errors.Is(e1, e2) || errors.Is(e2, e1)
 		}
 	})
-	compareErrorsAs = goCmp.Comparer(func(i, j error) bool {
+	CompareErrorsAs = goCmp.Comparer(func(i, j error) bool {
 		e2Any := any(j)
 		return errors.As(i, &e2Any)
 	})
-	compareReflectStructField = goCmp.Comparer(func(i, j reflect.StructField) bool {
+	CompareReflectStructField = goCmp.Comparer(func(i, j reflect.StructField) bool {
 		return i.Name == j.Name && i.PkgPath == j.PkgPath
 	})
-	compareReflectValue = goCmp.Comparer(func(i, j reflect.Value) bool {
+	CompareReflectValue = goCmp.Comparer(func(i, j reflect.Value) bool {
 		return i.Interface() == j.Interface()
 	})
 )
 
-type testCase1[V any] struct {
+type TestCase1[V any] struct {
 	Seq      func() iter.Seq[V]
 	Seqs     []func() iter.Seq[V]
 	Expected []V
@@ -47,7 +47,7 @@ type testCase1[V any] struct {
 	Stateful bool
 }
 
-func (tc testCase1[V]) Test(t *testing.T, cb ...func(length, count int)) {
+func (tc TestCase1[V]) Test(t *testing.T, cb ...func(length, count int)) {
 	t.Helper()
 
 	for i, seq := range append([](func() iter.Seq[V]){tc.Seq}, tc.Seqs...) {
@@ -92,7 +92,7 @@ func (tc testCase1[V]) Test(t *testing.T, cb ...func(length, count int)) {
 	}
 }
 
-type testCase2[K, V any] struct {
+type TestCase2[K, V any] struct {
 	Seq      func() iter.Seq2[K, V]
 	Seqs     []func() iter.Seq2[K, V]
 	Expected []hiter.KeyValue[K, V]
@@ -101,7 +101,7 @@ type testCase2[K, V any] struct {
 	Stateful bool
 }
 
-func (tc testCase2[K, V]) Test(t *testing.T, cb ...func(length, count int)) {
+func (tc TestCase2[K, V]) Test(t *testing.T, cb ...func(length, count int)) {
 	t.Helper()
 
 	for i, seq := range append([](func() iter.Seq2[K, V]){tc.Seq}, tc.Seqs...) {
@@ -109,7 +109,7 @@ func (tc testCase2[K, V]) Test(t *testing.T, cb ...func(length, count int)) {
 			t.Helper()
 			var collected []hiter.KeyValue[K, V]
 			for k, v := range seq() {
-				collected = append(collected, hiter.KeyValue[K, V]{k, v})
+				collected = append(collected, hiter.KeyValue[K, V]{K: k, V: v})
 			}
 
 			assert.Assert(t, cmp.DeepEqual(tc.Expected, collected, tc.CmpOpt...))
@@ -125,7 +125,7 @@ func (tc testCase2[K, V]) Test(t *testing.T, cb ...func(length, count int)) {
 				if i == tc.BreakAt {
 					break
 				}
-				collected[i] = hiter.KeyValue[K, V]{k, v}
+				collected[i] = hiter.KeyValue[K, V]{K: k, V: v}
 				i++
 			}
 			assert.Assert(t, cmp.DeepEqual(tc.Expected[:tc.BreakAt], collected, tc.CmpOpt...))
@@ -149,7 +149,7 @@ func (tc testCase2[K, V]) Test(t *testing.T, cb ...func(length, count int)) {
 	}
 }
 
-type testCaseMap[K comparable, V any] struct {
+type TestCaseMap[K comparable, V any] struct {
 	Seq      func() iter.Seq2[K, V]
 	Seqs     []func() iter.Seq2[K, V]
 	Expected map[K]V
@@ -158,7 +158,7 @@ type testCaseMap[K comparable, V any] struct {
 	Stateful bool
 }
 
-func (tc testCaseMap[K, V]) Test(t *testing.T, cb ...func()) {
+func (tc TestCaseMap[K, V]) Test(t *testing.T, cb ...func()) {
 	t.Helper()
 
 	for i, seq := range append([](func() iter.Seq2[K, V]){tc.Seq}, tc.Seqs...) {

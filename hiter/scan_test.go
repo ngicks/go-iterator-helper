@@ -10,6 +10,7 @@ import (
 
 	goCmp "github.com/google/go-cmp/cmp"
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 	"gotest.tools/v3/assert"
 )
@@ -22,13 +23,13 @@ var (
 		return bufio.NewScanner(
 			io.MultiReader(
 				strings.NewReader("foo\nbar\nbaz\n"),
-				iotest.ErrReader(errSample)),
+				iotest.ErrReader(testcase.ErrSample)),
 		)
 	}
 )
 
 func TestScan(t *testing.T) {
-	testCase1[string]{
+	testcase.TestCase1[string]{
 		Seq: func() iter.Seq[string] {
 			return hiter.Scan(scannerFactory())
 		},
@@ -43,7 +44,7 @@ func TestScan(t *testing.T) {
 	}.Test(t)
 
 	var scanner *bufio.Scanner
-	testCase1[string]{
+	testcase.TestCase1[string]{
 		Seq: func() iter.Seq[string] {
 			scanner = scannerErrFactory()
 			return hiter.Scan(scanner)
@@ -56,17 +57,17 @@ func TestScan(t *testing.T) {
 		},
 		Expected: []string{"foo", "bar", "baz"},
 		BreakAt:  2,
-		CmpOpt:   []goCmp.Option{compareErrorsIs},
+		CmpOpt:   []goCmp.Option{testcase.CompareErrorsIs},
 		Stateful: true,
 	}.Test(t, func(length, count int) {
 		if length != 2 {
-			assert.ErrorIs(t, scanner.Err(), errSample)
+			assert.ErrorIs(t, scanner.Err(), testcase.ErrSample)
 		}
 	})
 }
 
 func TestScanErr(t *testing.T) {
-	testCase2[string, error]{
+	testcase.TestCase2[string, error]{
 		Seq: func() iter.Seq2[string, error] {
 			return hiter.ScanErr(scannerFactory())
 		},
@@ -75,7 +76,7 @@ func TestScanErr(t *testing.T) {
 		Stateful: true,
 	}.Test(t)
 
-	testCase2[string, error]{
+	testcase.TestCase2[string, error]{
 		Seq: func() iter.Seq2[string, error] {
 			return hiter.ScanErr(scannerErrFactory())
 		},
@@ -83,10 +84,10 @@ func TestScanErr(t *testing.T) {
 			{"foo", nil},
 			{"bar", nil},
 			{"baz", nil},
-			{"", errSample},
+			{"", testcase.ErrSample},
 		},
 		BreakAt:  2,
-		CmpOpt:   []goCmp.Option{compareErrorsIs},
+		CmpOpt:   []goCmp.Option{testcase.CompareErrorsIs},
 		Stateful: true,
 	}.Test(t)
 }

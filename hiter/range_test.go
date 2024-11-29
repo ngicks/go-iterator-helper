@@ -5,12 +5,13 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 )
 
 func TestRange(t *testing.T) {
 	t.Run("uint, 0 -> 6", func(t *testing.T) {
-		testCase1[uint]{
+		testcase.TestCase1[uint]{
 			Seq: func() iter.Seq[uint] {
 				return hiter.Range(uint(0), uint(6))
 			},
@@ -25,7 +26,7 @@ func TestRange(t *testing.T) {
 	})
 
 	t.Run("float64, 0.5 -> 3.5", func(t *testing.T) {
-		testCase1[float64]{
+		testcase.TestCase1[float64]{
 			Seq: func() iter.Seq[float64] {
 				return hiter.Range(float64(0.5), float64(3.5))
 			},
@@ -40,7 +41,7 @@ func TestRange(t *testing.T) {
 	})
 
 	t.Run("int, 4 -> -2", func(t *testing.T) {
-		testCase1[int]{
+		testcase.TestCase1[int]{
 			Seq: func() iter.Seq[int] {
 				return hiter.Range(4, -2)
 			},
@@ -55,7 +56,7 @@ func TestRange(t *testing.T) {
 	})
 
 	t.Run("int, 1 -> 1", func(t *testing.T) {
-		testCase1[int]{
+		testcase.TestCase1[int]{
 			Seq: func() iter.Seq[int] {
 				return hiter.Range(1, 1)
 			},
@@ -69,7 +70,7 @@ func TestRange(t *testing.T) {
 	})
 
 	t.Run("int, 5 -> 7, excludeStart, excludeEnd", func(t *testing.T) {
-		testCase1[int]{
+		testcase.TestCase1[int]{
 			Seq: func() iter.Seq[int] {
 				return hiter.RangeInclusive(5, 7, false, false)
 			},
@@ -83,7 +84,7 @@ func TestRange(t *testing.T) {
 	})
 
 	t.Run("int, -1 -> -1, includeStart, includeEnd", func(t *testing.T) {
-		testCase1[int]{
+		testcase.TestCase1[int]{
 			Seq: func() iter.Seq[int] {
 				return hiter.RangeInclusive(-1, -1, true, true)
 			},

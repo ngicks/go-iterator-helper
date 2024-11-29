@@ -7,6 +7,7 @@ import (
 
 	goCmp "github.com/google/go-cmp/cmp"
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 )
 
 type fields struct {
@@ -20,7 +21,7 @@ func TestFields(t *testing.T) {
 	rv := reflect.ValueOf(fields{"A", "B", "C", "D"})
 	rt := rv.Type()
 
-	testCase2[reflect.StructField, reflect.Value]{
+	testcase.TestCase2[reflect.StructField, reflect.Value]{
 		Seq: func() iter.Seq2[reflect.StructField, reflect.Value] {
 			return hiter.Fields(fields{"A", "B", "C", "D"})
 		},
@@ -31,10 +32,10 @@ func TestFields(t *testing.T) {
 			{rt.Field(3), rv.Field(3)},
 		},
 		BreakAt: 1,
-		CmpOpt:  []goCmp.Option{compareReflectStructField, compareReflectValue},
+		CmpOpt:  []goCmp.Option{testcase.CompareReflectStructField, testcase.CompareReflectValue},
 	}.Test(t)
 
-	testCase2[reflect.StructField, reflect.Value]{
+	testcase.TestCase2[reflect.StructField, reflect.Value]{
 		Seq: func() iter.Seq2[reflect.StructField, reflect.Value] {
 			return hiter.Fields(&fields{"A", "B", "C", "D"})
 		},
@@ -45,6 +46,6 @@ func TestFields(t *testing.T) {
 			{rt.Field(3), rv.Field(3)},
 		},
 		BreakAt: 2,
-		CmpOpt:  []goCmp.Option{compareReflectStructField, compareReflectValue},
+		CmpOpt:  []goCmp.Option{testcase.CompareReflectStructField, testcase.CompareReflectValue},
 	}.Test(t)
 }

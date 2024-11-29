@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
 )
@@ -12,7 +13,7 @@ import (
 func TestTap(t *testing.T) {
 	var observed1 []int
 
-	testCase1[int]{
+	testcase.TestCase1[int]{
 		Seq: func() iter.Seq[int] {
 			observed1 = observed1[:0]
 			return hiter.Tap(
@@ -35,7 +36,7 @@ func TestTap(t *testing.T) {
 
 	var observed2 hiter.KeyValues[int, int]
 
-	testCase2[int, int]{
+	testcase.TestCase2[int, int]{
 		Seq: func() iter.Seq2[int, int] {
 			observed2 = observed2[:0]
 			return hiter.Tap2(

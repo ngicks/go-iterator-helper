@@ -6,12 +6,13 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 )
 
 func TestDecorate(t *testing.T) {
 	t.Run("Decorate both", func(t *testing.T) {
-		testCase1[int]{
+		testcase.TestCase1[int]{
 			Seq: func() iter.Seq[int] {
 				return hiter.Decorate(iterable.SliceAll[int]{1, 1}, iterable.SliceAll[int]{2}, slices.Values([]int{4, 4, 6, 9}))
 			},
@@ -21,7 +22,7 @@ func TestDecorate(t *testing.T) {
 	})
 
 	t.Run("Decorate nil", func(t *testing.T) {
-		testCase1[int]{
+		testcase.TestCase1[int]{
 			Seq: func() iter.Seq[int] {
 				return hiter.Decorate(nil, nil, slices.Values([]int{4, 4, 6, 9}))
 			},
@@ -31,7 +32,7 @@ func TestDecorate(t *testing.T) {
 	})
 
 	t.Run("Decorate2 both", func(t *testing.T) {
-		testCase2[int, int]{
+		testcase.TestCase2[int, int]{
 			Seq: func() iter.Seq2[int, int] {
 				return hiter.Decorate2(
 					hiter.KeyValues[int, int]{{2, 1}, {2, 1}},
@@ -50,7 +51,7 @@ func TestDecorate(t *testing.T) {
 	})
 
 	t.Run("Decorate2 nil", func(t *testing.T) {
-		testCase2[int, int]{
+		testcase.TestCase2[int, int]{
 			Seq: func() iter.Seq2[int, int] {
 				return hiter.Decorate2(nil, nil, slices.All([]int{4, 4, 6, 9}))
 			},

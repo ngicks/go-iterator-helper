@@ -6,13 +6,14 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 )
 
 func TestAtter(t *testing.T) {
 	indices := iterable.Range[int]{Start: 4, End: 10}
 
-	testCase2[int, string]{
+	testcase.TestCase2[int, string]{
 		Seq: func() iter.Seq2[int, string] {
 			return hiter.AtterIndices(atSliceSrc, slices.Values([]int{2, 6, 1, 2}))
 		},
@@ -25,7 +26,7 @@ func TestAtter(t *testing.T) {
 		BreakAt: 3,
 	}.Test(t)
 
-	testCase2[int, string]{
+	testcase.TestCase2[int, string]{
 		Seq: func() iter.Seq2[int, string] {
 			return iterable.Atter[atSliceStr, string]{
 				Atter:   atSliceSrc,
@@ -48,7 +49,7 @@ func TestAtter(t *testing.T) {
 		BreakAt: 3,
 	}.Test(t)
 
-	testCase2[int, string]{
+	testcase.TestCase2[int, string]{
 		Seq: func() iter.Seq2[int, string] {
 			return hiter.AtterAll(atSliceSrc)
 		},

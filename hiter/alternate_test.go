@@ -6,12 +6,13 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 )
 
 func TestAlternate(t *testing.T) {
 	t.Run("Alternate", func(t *testing.T) {
 		t.Run("0", func(t *testing.T) {
-			testCase1[int]{
+			testcase.TestCase1[int]{
 				Seq: func() iter.Seq[int] {
 					return hiter.Alternate[int]()
 				},
@@ -19,7 +20,7 @@ func TestAlternate(t *testing.T) {
 		})
 
 		t.Run("only 1", func(t *testing.T) {
-			testCase1[int]{
+			testcase.TestCase1[int]{
 				Seq: func() iter.Seq[int] {
 					return hiter.Alternate(
 						slices.Values([]int{1, 2, 3}),
@@ -31,7 +32,7 @@ func TestAlternate(t *testing.T) {
 		})
 
 		t.Run("2", func(t *testing.T) {
-			testCase1[int]{
+			testcase.TestCase1[int]{
 				Seq: func() iter.Seq[int] {
 					return hiter.Alternate(
 						slices.Values([]int{1, 2, 3}),
@@ -44,7 +45,7 @@ func TestAlternate(t *testing.T) {
 		})
 
 		t.Run("3", func(t *testing.T) {
-			testCase1[int]{
+			testcase.TestCase1[int]{
 				Seq: func() iter.Seq[int] {
 					return hiter.Alternate(
 						slices.Values([]int{1, 2, 3}),
@@ -58,7 +59,7 @@ func TestAlternate(t *testing.T) {
 		})
 
 		t.Run("first shorter", func(t *testing.T) {
-			testCase1[int]{
+			testcase.TestCase1[int]{
 				Seq: func() iter.Seq[int] {
 					return hiter.Alternate(
 						slices.Values([]int{1}),
@@ -71,7 +72,7 @@ func TestAlternate(t *testing.T) {
 		})
 
 		t.Run("second shorter", func(t *testing.T) {
-			testCase1[int]{
+			testcase.TestCase1[int]{
 				Seq: func() iter.Seq[int] {
 					return hiter.Alternate(
 						slices.Values([]int{1, 2, 3}),
@@ -86,7 +87,7 @@ func TestAlternate(t *testing.T) {
 
 	t.Run("Alternate2", func(t *testing.T) {
 		t.Run("0", func(t *testing.T) {
-			testCase2[int, int]{
+			testcase.TestCase2[int, int]{
 				Seq: func() iter.Seq2[int, int] {
 					return hiter.Alternate2[int, int]()
 				},
@@ -94,7 +95,7 @@ func TestAlternate(t *testing.T) {
 		})
 
 		t.Run("only 1", func(t *testing.T) {
-			testCase2[int, int]{
+			testcase.TestCase2[int, int]{
 				Seq: func() iter.Seq2[int, int] {
 					return hiter.Alternate2(
 						slices.All([]int{1, 2, 3}),
@@ -106,7 +107,7 @@ func TestAlternate(t *testing.T) {
 		})
 
 		t.Run("2", func(t *testing.T) {
-			testCase2[int, int]{
+			testcase.TestCase2[int, int]{
 				Seq: func() iter.Seq2[int, int] {
 					return hiter.Alternate2(
 						slices.All([]int{1, 2, 3}),
@@ -119,7 +120,7 @@ func TestAlternate(t *testing.T) {
 		})
 
 		t.Run("3", func(t *testing.T) {
-			testCase2[int, int]{
+			testcase.TestCase2[int, int]{
 				Seq: func() iter.Seq2[int, int] {
 					return hiter.Alternate2(
 						slices.All([]int{1, 2, 3}),
@@ -137,7 +138,7 @@ func TestAlternate(t *testing.T) {
 		})
 
 		t.Run("first shorter", func(t *testing.T) {
-			testCase2[int, int]{
+			testcase.TestCase2[int, int]{
 				Seq: func() iter.Seq2[int, int] {
 					return hiter.Alternate2(
 						slices.All([]int{1}),
@@ -150,7 +151,7 @@ func TestAlternate(t *testing.T) {
 		})
 
 		t.Run("second shorter", func(t *testing.T) {
-			testCase2[int, int]{
+			testcase.TestCase2[int, int]{
 				Seq: func() iter.Seq2[int, int] {
 					return hiter.Alternate2(
 						slices.All([]int{1, 2, 3}),

@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
@@ -55,7 +56,7 @@ func TestWindow(t *testing.T) {
 
 	for _, tc := range windowTestCases {
 		t.Run(tc.name, func(t *testing.T) {
-			testCase1[[]int]{
+			testcase.TestCase1[[]int]{
 				Seq: func() iter.Seq[[]int] {
 					return hiter.Window(widowSrc, tc.size)
 				},
@@ -74,7 +75,7 @@ func TestWindowSeq(t *testing.T) {
 
 	for _, tc := range windowTestCases {
 		t.Run(tc.name, func(t *testing.T) {
-			testCase1[[]int]{
+			testcase.TestCase1[[]int]{
 				Seq: func() iter.Seq[[]int] {
 					return xiter.Map(
 						slices.Collect,

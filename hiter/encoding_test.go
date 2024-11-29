@@ -11,6 +11,7 @@ import (
 	goCmp "github.com/google/go-cmp/cmp"
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/errbox"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
@@ -22,7 +23,7 @@ func TestEncoding(t *testing.T) {
 	}
 	t.Run("JSON", func(t *testing.T) {
 		var box *errbox.JsonDecoder
-		testCase2[json.Token, error]{
+		testcase.TestCase2[json.Token, error]{
 			Seq: func() iter.Seq2[json.Token, error] {
 				return hiter.JsonDecoder(jsonDec())
 			},
@@ -56,7 +57,7 @@ func TestEncoding(t *testing.T) {
 	}
 	t.Run("XML", func(t *testing.T) {
 		var box *errbox.XmlDecoder
-		testCase2[xml.Token, error]{
+		testcase.TestCase2[xml.Token, error]{
 			Seq: func() iter.Seq2[xml.Token, error] {
 				return xiter.Map2(copyXmlToken, hiter.XmlDecoder(xmlDec()))
 			},
@@ -78,7 +79,7 @@ func TestEncoding(t *testing.T) {
 				{xml.EndElement{Name: xml.Name{Local: "bar"}}, nil},
 			},
 			BreakAt:  2,
-			CmpOpt:   []goCmp.Option{compareErrorsIs},
+			CmpOpt:   []goCmp.Option{testcase.CompareErrorsIs},
 			Stateful: true,
 		}.Test(t)
 	})
@@ -91,7 +92,7 @@ foo4,bar4,baz4`,
 		))
 	}
 	t.Run("CSV", func(t *testing.T) {
-		testCase2[[]string, error]{
+		testcase.TestCase2[[]string, error]{
 			Seq: func() iter.Seq2[[]string, error] {
 				return hiter.CsvReader(csvReader())
 			},
@@ -107,7 +108,7 @@ foo4,bar4,baz4`,
 				{[]string{"foo4", "bar4", "baz4"}, nil},
 			},
 			BreakAt:  2,
-			CmpOpt:   []goCmp.Option{compareErrorsIs},
+			CmpOpt:   []goCmp.Option{testcase.CompareErrorsIs},
 			Stateful: true,
 		}.Test(t)
 	})

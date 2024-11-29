@@ -10,6 +10,7 @@ import (
 	"testing/iotest"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"gotest.tools/v3/assert"
 )
 
@@ -52,11 +53,11 @@ func TestDecode(t *testing.T) {
 				{V: &json.UnmarshalTypeError{}},
 			},
 			result,
-			compareErrorsAs,
+			testcase.CompareErrorsAs,
 		)
 	})
 	t.Run("reader error", func(t *testing.T) {
-		dec := json.NewDecoder(io.MultiReader(bytes.NewReader(src), iotest.ErrReader(errSample)))
+		dec := json.NewDecoder(io.MultiReader(bytes.NewReader(src), iotest.ErrReader(testcase.ErrSample)))
 
 		result := hiter.Collect2(
 			hiter.LimitAfter2(
@@ -70,10 +71,10 @@ func TestDecode(t *testing.T) {
 				{K: sample{"foo"}},
 				{K: sample{"bar"}},
 				{K: sample{"baz"}},
-				{V: errSample},
+				{V: testcase.ErrSample},
 			},
 			result,
-			compareErrorsIs,
+			testcase.CompareErrorsIs,
 		)
 	})
 }

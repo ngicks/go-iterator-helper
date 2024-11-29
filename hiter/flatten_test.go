@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
@@ -19,7 +20,7 @@ func TestFlatten(t *testing.T) {
 
 	flattenResult := []int{0, 1, 2, 3, 4, 5}
 	t.Run("Flatten", func(t *testing.T) {
-		testCase1[int]{
+		testcase.TestCase1[int]{
 			Seq: func() iter.Seq[int] {
 				return hiter.Flatten(nested1)
 			},
@@ -28,7 +29,7 @@ func TestFlatten(t *testing.T) {
 		}.Test(t)
 	})
 	t.Run("Flatten", func(t *testing.T) {
-		testCase1[int]{
+		testcase.TestCase1[int]{
 			Seq: func() iter.Seq[int] {
 				return hiter.FlattenSeq(xiter.Map(slices.Values, nested1))
 			},
@@ -38,7 +39,7 @@ func TestFlatten(t *testing.T) {
 	})
 
 	t.Run("FlattenSeq2", func(t *testing.T) {
-		testCase2[int, int]{
+		testcase.TestCase2[int, int]{
 			Seq: func() iter.Seq2[int, int] {
 				return hiter.FlattenSeq2(slices.Values(
 					[]iter.Seq2[int, int]{
@@ -54,7 +55,7 @@ func TestFlatten(t *testing.T) {
 
 	flattenFResult := []hiter.KeyValue[int, int]{{0, 10}, {1, 10}, {2, 10}, {3, 7}, {4, 7}, {5, 8}}
 	t.Run("FlattenF", func(t *testing.T) {
-		testCase2[int, int]{
+		testcase.TestCase2[int, int]{
 			Seq: func() iter.Seq2[int, int] {
 				return hiter.FlattenF(hiter.Pairs(
 					nested1,
@@ -66,7 +67,7 @@ func TestFlatten(t *testing.T) {
 		}.Test(t)
 	})
 	t.Run("FlattenSeqF", func(t *testing.T) {
-		testCase2[int, int]{
+		testcase.TestCase2[int, int]{
 			Seq: func() iter.Seq2[int, int] {
 				return hiter.FlattenSeqF(hiter.Pairs(
 					xiter.Map(slices.Values, nested1),
@@ -80,7 +81,7 @@ func TestFlatten(t *testing.T) {
 
 	flattenLResult := []hiter.KeyValue[int, int]{{0, 10}, {1, 7}, {1, 8}, {2, 1}}
 	t.Run("FlattenL", func(t *testing.T) {
-		testCase2[int, int]{
+		testcase.TestCase2[int, int]{
 			Seq: func() iter.Seq2[int, int] {
 				return hiter.FlattenL(hiter.Pairs(
 					flat2,
@@ -92,7 +93,7 @@ func TestFlatten(t *testing.T) {
 		}.Test(t)
 	})
 	t.Run("FlattenSeqL", func(t *testing.T) {
-		testCase2[int, int]{
+		testcase.TestCase2[int, int]{
 			Seq: func() iter.Seq2[int, int] {
 				return hiter.FlattenSeqL(hiter.Pairs(
 					flat2,

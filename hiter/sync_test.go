@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 )
 
@@ -21,7 +22,7 @@ func TestSyncMap(t *testing.T) {
 		m.Store(k, v)
 	}
 
-	testCaseMap[string, string]{
+	testcase.TestCaseMap[string, string]{
 		Seq: func() iter.Seq2[string, string] {
 			return hiter.SyncMap[string, string](&m)
 		},
@@ -34,7 +35,7 @@ func TestSyncMap(t *testing.T) {
 		BreakAt:  2,
 	}.Test(t)
 
-	testCaseMap[string, string]{
+	testcase.TestCaseMap[string, string]{
 		Seq: func() iter.Seq2[string, string] {
 			return hiter.SyncMap[string, string](&sync.Map{})
 		},

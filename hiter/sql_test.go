@@ -8,6 +8,7 @@ import (
 	goCmp "github.com/google/go-cmp/cmp"
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/errbox"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 	"github.com/ngicks/go-iterator-helper/internal/testhelper"
 	"gotest.tools/v3/assert"
@@ -22,7 +23,7 @@ func TestSqliteRows(t *testing.T) {
 			return t, err
 		}
 		t.Run("hiter.SqlRows", func(t *testing.T) {
-			testCase2[testhelper.TestRow, error]{
+			testcase.TestCase2[testhelper.TestRow, error]{
 				Seq: func() iter.Seq2[testhelper.TestRow, error] {
 					mock = testhelper.OpenMockDB(false)
 					return hiter.SqlRows(testhelper.QueryRows(mock), scanner)
@@ -55,7 +56,7 @@ func TestSqliteRows(t *testing.T) {
 			var boxed *errbox.SqlRows[testhelper.TestRow]
 			defer func() { boxed.Stop() }()
 
-			testCase1[testhelper.TestRow]{
+			testcase.TestCase1[testhelper.TestRow]{
 				Seq: func() iter.Seq[testhelper.TestRow] {
 					if boxed != nil {
 						boxed.Stop()
@@ -80,7 +81,7 @@ func TestSqliteRows(t *testing.T) {
 			var boxed *errbox.Nexter[testhelper.TestRow]
 			defer func() { boxed.Stop() }()
 
-			testCase1[testhelper.TestRow]{
+			testcase.TestCase1[testhelper.TestRow]{
 				Seq: func() iter.Seq[testhelper.TestRow] {
 					if boxed != nil {
 						boxed.Stop()
@@ -111,7 +112,7 @@ func TestSqliteRows(t *testing.T) {
 			return t, err
 		}
 		t.Run("hiter.SqlRows", func(t *testing.T) {
-			testCase2[testhelper.TestRow, error]{
+			testcase.TestCase2[testhelper.TestRow, error]{
 				Seq: func() iter.Seq2[testhelper.TestRow, error] {
 					mock = testhelper.OpenMockDB(true)
 					return hiter.SqlRows(testhelper.QueryRows(mock), scanner)
@@ -136,7 +137,7 @@ func TestSqliteRows(t *testing.T) {
 					{testhelper.TestRow{}, testhelper.ErrMock},
 				},
 				BreakAt:  2,
-				CmpOpt:   []goCmp.Option{compareErrorsIs},
+				CmpOpt:   []goCmp.Option{testcase.CompareErrorsIs},
 				Stateful: true,
 			}.Test(t, func(_, _ int) { _ = mock.Close() })
 		})
@@ -144,7 +145,7 @@ func TestSqliteRows(t *testing.T) {
 		t.Run("*errbox.SqlRows", func(t *testing.T) {
 			var boxed *errbox.SqlRows[testhelper.TestRow]
 			defer func() { boxed.Stop() }()
-			testCase1[testhelper.TestRow]{
+			testcase.TestCase1[testhelper.TestRow]{
 				Seq: func() iter.Seq[testhelper.TestRow] {
 					if boxed != nil {
 						boxed.Stop()
@@ -171,7 +172,7 @@ func TestSqliteRows(t *testing.T) {
 		t.Run("*errbox.Nexter", func(t *testing.T) {
 			var boxed *errbox.Nexter[testhelper.TestRow]
 			defer func() { boxed.Stop() }()
-			testCase1[testhelper.TestRow]{
+			testcase.TestCase1[testhelper.TestRow]{
 				Seq: func() iter.Seq[testhelper.TestRow] {
 					if boxed != nil {
 						boxed.Stop()
@@ -206,13 +207,13 @@ func TestSqliteRows(t *testing.T) {
 			var t testhelper.TestRow
 			count++
 			if count > 2 {
-				return t, errSample
+				return t, testcase.ErrSample
 			}
 			err := r.Scan(&t.Id, &t.Title, &t.Body)
 			return t, err
 		}
 		t.Run("hiter.SqlRows", func(t *testing.T) {
-			testCase2[testhelper.TestRow, error]{
+			testcase.TestCase2[testhelper.TestRow, error]{
 				Seq: func() iter.Seq2[testhelper.TestRow, error] {
 					count = 0
 					mock = testhelper.OpenMockDB(false)
@@ -238,10 +239,10 @@ func TestSqliteRows(t *testing.T) {
 				Expected: []hiter.KeyValue[testhelper.TestRow, error]{
 					{testhelper.TestRow{Id: 1, Title: "post 1", Body: "hello"}, nil},
 					{testhelper.TestRow{Id: 2, Title: "post 2", Body: "world"}, nil},
-					{testhelper.TestRow{}, errSample},
+					{testhelper.TestRow{}, testcase.ErrSample},
 				},
 				BreakAt:  1,
-				CmpOpt:   []goCmp.Option{compareErrorsIs},
+				CmpOpt:   []goCmp.Option{testcase.CompareErrorsIs},
 				Stateful: true,
 			}.Test(t, func(_, _ int) { _ = mock.Close() })
 		})
@@ -249,7 +250,7 @@ func TestSqliteRows(t *testing.T) {
 			var boxed *errbox.SqlRows[testhelper.TestRow]
 			defer func() { boxed.Stop() }()
 
-			testCase1[testhelper.TestRow]{
+			testcase.TestCase1[testhelper.TestRow]{
 				Seq: func() iter.Seq[testhelper.TestRow] {
 					if boxed != nil {
 						boxed.Stop()
@@ -270,7 +271,7 @@ func TestSqliteRows(t *testing.T) {
 				if count == 1 {
 					assert.NilError(t, boxed.Err())
 				} else {
-					assert.ErrorIs(t, boxed.Err(), errSample)
+					assert.ErrorIs(t, boxed.Err(), testcase.ErrSample)
 				}
 			})
 		})
@@ -278,7 +279,7 @@ func TestSqliteRows(t *testing.T) {
 			var boxed *errbox.Nexter[testhelper.TestRow]
 			defer func() { boxed.Stop() }()
 
-			testCase1[testhelper.TestRow]{
+			testcase.TestCase1[testhelper.TestRow]{
 				Seq: func() iter.Seq[testhelper.TestRow] {
 					if boxed != nil {
 						boxed.Stop()
@@ -299,7 +300,7 @@ func TestSqliteRows(t *testing.T) {
 				if count == 1 {
 					assert.NilError(t, boxed.Err())
 				} else {
-					assert.ErrorIs(t, boxed.Err(), errSample)
+					assert.ErrorIs(t, boxed.Err(), testcase.ErrSample)
 				}
 			})
 		})

@@ -1,4 +1,4 @@
-package hiter_test
+package containeriter_test
 
 import (
 	"container/ring"
@@ -7,6 +7,7 @@ import (
 	"slices"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/containeriter"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
@@ -19,8 +20,8 @@ func ExampleRingAll() {
 		r = r.Next()
 	}
 
-	fmt.Printf("all:      %#v\n", slices.Collect(hiter.RingAll[int](r)))
-	fmt.Printf("backward: %#v\n", slices.Collect(hiter.RingBackward[int](r.Prev())))
+	fmt.Printf("all:      %#v\n", slices.Collect(containeriter.RingAll[int](r)))
+	fmt.Printf("backward: %#v\n", slices.Collect(containeriter.RingBackward[int](r.Prev())))
 
 	// Now, we'll demonstrate buffer like usage of ring.
 
@@ -31,13 +32,13 @@ func ExampleRingAll() {
 
 	pushBack(12)
 	pushBack(5)
-	fmt.Printf("1:        %#v\n", slices.Collect(hiter.RingAll[int](r)))
+	fmt.Printf("1:        %#v\n", slices.Collect(containeriter.RingAll[int](r)))
 
 	pushBack(8)
-	fmt.Printf("2:        %#v\n", slices.Collect(hiter.RingAll[int](r)))
+	fmt.Printf("2:        %#v\n", slices.Collect(containeriter.RingAll[int](r)))
 
 	pushBack(36)
-	fmt.Printf("3:        %#v\n", slices.Collect(hiter.RingAll[int](r)))
+	fmt.Printf("3:        %#v\n", slices.Collect(containeriter.RingAll[int](r)))
 
 	// Output:
 	// all:      []int{0, 1, 2, 3, 4}
@@ -60,7 +61,7 @@ func dynamicWindow[V any](size int, seq iter.Seq[V]) iter.Seq[iter.Seq[V]] {
 				buf = buf.Next()
 				if buf == bufStart {
 					full = true
-					if !yield(hiter.RingAll[V](buf)) {
+					if !yield(containeriter.RingAll[V](buf)) {
 						return
 					}
 				}
@@ -68,7 +69,7 @@ func dynamicWindow[V any](size int, seq iter.Seq[V]) iter.Seq[iter.Seq[V]] {
 			}
 			buf.Value = v
 			buf = buf.Next()
-			if !yield(hiter.RingAll[V](buf)) {
+			if !yield(containeriter.RingAll[V](buf)) {
 				return
 			}
 		}

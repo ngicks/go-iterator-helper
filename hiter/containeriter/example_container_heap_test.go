@@ -1,11 +1,11 @@
-package hiter_test
+package containeriter_test
 
 import (
 	"cmp"
 	"container/heap"
 	"fmt"
 
-	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/containeriter"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
@@ -32,20 +32,20 @@ func ExampleHeap() {
 	h := &sliceHeap{0, 6, 1, 3, 2, 8, 210, 3, 7, 9, 2, 1, 54, 7}
 	heap.Init(h)
 
-	for num := range xiter.Limit(hiter.Heap[int](h), 5) {
+	for num := range xiter.Limit(containeriter.Heap[int](h), 5) {
 		fmt.Printf("%d, ", num)
 	}
 
 	fmt.Println("...stopped here. and...")
 
-	for num := range hiter.Heap[int](h) {
+	for num := range containeriter.Heap[int](h) {
 		fmt.Printf("%d, ", num)
 		if h.Len() == 1 {
 			break
 		}
 	}
 
-	for num := range hiter.Heap[int](h) {
+	for num := range containeriter.Heap[int](h) {
 		fmt.Printf("%d\n", num)
 	}
 

@@ -7,6 +7,7 @@ import (
 	"iter"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/containeriter"
 )
 
 var _ hiter.IntoIterable[any] = Heap[any]{}
@@ -17,7 +18,7 @@ type Heap[T any] struct {
 }
 
 func (h Heap[T]) IntoIter() iter.Seq[T] {
-	return hiter.Heap[T](h.Interface)
+	return containeriter.Heap[T](h.Interface)
 }
 
 var (
@@ -31,7 +32,7 @@ type ListAll[T any] struct {
 }
 
 func (l ListAll[T]) Iter() iter.Seq[T] {
-	return hiter.ListAll[T](l.List)
+	return containeriter.ListAll[T](l.List)
 }
 
 func (l ListAll[T]) Reverse() ListBackward[T] {
@@ -44,7 +45,7 @@ type ListElementAll[T any] struct {
 }
 
 func (l ListElementAll[T]) Iter() iter.Seq[T] {
-	return hiter.ListElementAll[T](l.Element)
+	return containeriter.ListElementAll[T](l.Element)
 }
 
 func (l ListElementAll[T]) Reverse() ListElementBackward[T] {
@@ -58,7 +59,7 @@ type ListBackward[T any] struct {
 }
 
 func (l ListBackward[T]) Iter() iter.Seq[T] {
-	return hiter.ListBackward[T](l.List)
+	return containeriter.ListBackward[T](l.List)
 }
 
 func (l ListBackward[T]) Reverse() ListAll[T] {
@@ -72,7 +73,7 @@ type ListElementBackward[T any] struct {
 }
 
 func (l ListElementBackward[T]) Iter() iter.Seq[T] {
-	return hiter.ListElementBackward[T](l.Element)
+	return containeriter.ListElementBackward[T](l.Element)
 }
 
 func (l ListElementBackward[T]) Reverse() ListElementAll[T] {
@@ -90,7 +91,7 @@ type RingAll[T any] struct {
 }
 
 func (r RingAll[T]) Iter() iter.Seq[T] {
-	return hiter.RingAll[T](r.Ring)
+	return containeriter.RingAll[T](r.Ring)
 }
 
 func (r RingAll[T]) Reverse() RingBackward[T] {
@@ -104,7 +105,7 @@ type RingBackward[T any] struct {
 }
 
 func (r RingBackward[T]) Iter() iter.Seq[T] {
-	return hiter.RingBackward[T](r.Ring)
+	return containeriter.RingBackward[T](r.Ring)
 }
 
 func (r RingBackward[T]) Reverse() RingAll[T] {

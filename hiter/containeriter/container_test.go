@@ -1,4 +1,4 @@
-package hiter_test
+package containeriter_test
 
 import (
 	"container/heap"
@@ -8,10 +8,9 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/containeriter"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
-	"gotest.tools/v3/assert"
 )
 
 func TestContainerHeap(t *testing.T) {
@@ -20,7 +19,7 @@ func TestContainerHeap(t *testing.T) {
 	testcase.One[int]{
 		Seq: func() iter.Seq[int] {
 			h := slices.Clone(*h)
-			return hiter.Heap[int](&h)
+			return containeriter.Heap[int](&h)
 		},
 		Seqs: []func() iter.Seq[int]{
 			func() iter.Seq[int] {
@@ -43,7 +42,7 @@ func TestContainerList(t *testing.T) {
 	t.Run("ListAll", func(t *testing.T) {
 		testcase.One[int]{
 			Seq: func() iter.Seq[int] {
-				return hiter.ListAll[int](s)
+				return containeriter.ListAll[int](s)
 			},
 			Seqs: []func() iter.Seq[int]{
 				func() iter.Seq[int] {
@@ -58,7 +57,7 @@ func TestContainerList(t *testing.T) {
 	t.Run("ListElementAll", func(t *testing.T) {
 		testcase.One[int]{
 			Seq: func() iter.Seq[int] {
-				return hiter.ListElementAll[int](s.Front().Next().Next())
+				return containeriter.ListElementAll[int](s.Front().Next().Next())
 			},
 			Seqs: []func() iter.Seq[int]{
 				func() iter.Seq[int] {
@@ -73,7 +72,7 @@ func TestContainerList(t *testing.T) {
 	t.Run("ListBackward", func(t *testing.T) {
 		testcase.One[int]{
 			Seq: func() iter.Seq[int] {
-				return hiter.ListBackward[int](s)
+				return containeriter.ListBackward[int](s)
 			},
 			Seqs: []func() iter.Seq[int]{
 				func() iter.Seq[int] {
@@ -88,7 +87,7 @@ func TestContainerList(t *testing.T) {
 	t.Run("ListElementBackward", func(t *testing.T) {
 		testcase.One[int]{
 			Seq: func() iter.Seq[int] {
-				return hiter.ListElementBackward[int](s.Back().Prev())
+				return containeriter.ListElementBackward[int](s.Back().Prev())
 			},
 			Seqs: []func() iter.Seq[int]{
 				func() iter.Seq[int] {
@@ -116,7 +115,7 @@ func TestContainerRing(t *testing.T) {
 	t.Run("RingAll", func(t *testing.T) {
 		testcase.One[int]{
 			Seq: func() iter.Seq[int] {
-				return hiter.RingAll[int](r.Move(2))
+				return containeriter.RingAll[int](r.Move(2))
 			},
 			Seqs: []func() iter.Seq[int]{
 				func() iter.Seq[int] {
@@ -131,7 +130,7 @@ func TestContainerRing(t *testing.T) {
 	t.Run("RingBackward", func(t *testing.T) {
 		testcase.One[int]{
 			Seq: func() iter.Seq[int] {
-				return hiter.RingBackward[int](r.Move(2))
+				return containeriter.RingBackward[int](r.Move(2))
 			},
 			Seqs: []func() iter.Seq[int]{
 				func() iter.Seq[int] {
@@ -142,36 +141,4 @@ func TestContainerRing(t *testing.T) {
 			BreakAt:  3,
 		}.Test(t)
 	})
-}
-
-func TestContainerCollect(t *testing.T) {
-	seq := hiter.Range(0, 10)
-
-	h1 := &sliceHeap{}
-	h2 := hiter.AppendHeapSeq(h1, seq)
-	assert.Assert(t, h1 == h2)
-	assert.DeepEqual(t, slices.Collect(seq), slices.Collect(hiter.Heap[int](h2)))
-
-	l1 := list.New()
-	for i := range hiter.Range(0, 3) {
-		l1.PushBack(i)
-	}
-	l2 := hiter.AppendListSeq(l1, hiter.Range(3, 10))
-	assert.Assert(t, l1 == l2)
-	assert.DeepEqual(t, slices.Collect(seq), slices.Collect(hiter.ListAll[int](l2)))
-	l3 := hiter.CollectList(hiter.Range(3, 10))
-	assert.Assert(t, l3 != nil)
-	assert.DeepEqual(t, slices.Collect(hiter.Range(3, 10)), slices.Collect(hiter.ListAll[int](l3)))
-
-	r1 := ring.New(3)
-	for i := range hiter.Range(0, 3) {
-		r1.Value = i
-		r1 = r1.Next()
-	}
-	r2 := hiter.AppendRingSeq(r1.Prev(), hiter.Range(3, 10))
-	assert.Assert(t, r1 == r2)
-	assert.DeepEqual(t, slices.Collect(seq), slices.Collect(hiter.RingAll[int](r2)))
-	r3 := hiter.CollectRing(hiter.Range(3, 10))
-	assert.Assert(t, r3 != nil)
-	assert.DeepEqual(t, slices.Collect(hiter.Range(3, 10)), slices.Collect(hiter.RingAll[int](r3)))
 }

@@ -10,7 +10,7 @@ import (
 
 func ExampleRange_char() {
 	fmt.Println(
-		stringsiter.StringsCollect(
+		stringsiter.Collect(
 			27,
 			xiter.Map(
 				func(r rune) string {

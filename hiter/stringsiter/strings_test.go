@@ -19,7 +19,7 @@ func TestStringsChunk(t *testing.T) {
 	t.Run("divide 9 by 3", func(t *testing.T) {
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsChunk(stringsSrc, 3)
+				return stringsiter.Chunk(stringsSrc, 3)
 			},
 			Expected: []string{"foo", "bar", "baz"},
 			BreakAt:  2,
@@ -29,7 +29,7 @@ func TestStringsChunk(t *testing.T) {
 	t.Run("divide 9 by 4", func(t *testing.T) {
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsChunk(stringsSrc, 4)
+				return stringsiter.Chunk(stringsSrc, 4)
 			},
 			Expected: []string{"foob", "arba", "z"},
 			BreakAt:  2,
@@ -52,19 +52,19 @@ func TestStringsChunk(t *testing.T) {
 
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsChunk(runesSrc, 2)
+				return stringsiter.Chunk(runesSrc, 2)
 			},
 			Expected: expected,
 			BreakAt:  2,
 		}.Test(t)
 
-		assert.Equal(t, runesSrc, stringsiter.StringsCollect(len(runesSrc), slices.Values(expected)))
+		assert.Equal(t, runesSrc, stringsiter.Collect(len(runesSrc), slices.Values(expected)))
 	})
 
 	t.Run("divide by 0", func(t *testing.T) {
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsChunk(runesSrc, 0)
+				return stringsiter.Chunk(runesSrc, 0)
 			},
 			Expected: nil,
 		}.Test(t)
@@ -73,7 +73,7 @@ func TestStringsChunk(t *testing.T) {
 	t.Run("divide by -1", func(t *testing.T) {
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsChunk(runesSrc, -1)
+				return stringsiter.Chunk(runesSrc, -1)
 			},
 			Expected: nil,
 		}.Test(t)
@@ -84,7 +84,7 @@ func TestStringsRuneChunk(t *testing.T) {
 	t.Run("divide 9 by 3", func(t *testing.T) {
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsRuneChunk(stringsSrc, 3)
+				return stringsiter.RuneChunk(stringsSrc, 3)
 			},
 			Expected: []string{"foo", "bar", "baz"},
 			BreakAt:  2,
@@ -94,7 +94,7 @@ func TestStringsRuneChunk(t *testing.T) {
 	t.Run("divide 9 by 4", func(t *testing.T) {
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsRuneChunk(stringsSrc, 4)
+				return stringsiter.RuneChunk(stringsSrc, 4)
 			},
 			Expected: []string{"foob", "arba", "z"},
 			BreakAt:  2,
@@ -104,7 +104,7 @@ func TestStringsRuneChunk(t *testing.T) {
 	t.Run("divide emoji by 2", func(t *testing.T) {
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsRuneChunk(runesSrc, 2)
+				return stringsiter.RuneChunk(runesSrc, 2)
 			},
 			Expected: []string{
 				".😂",
@@ -119,7 +119,7 @@ func TestStringsRuneChunk(t *testing.T) {
 	t.Run("divide emoji by 0", func(t *testing.T) {
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsRuneChunk(runesSrc, 0)
+				return stringsiter.RuneChunk(runesSrc, 0)
 			},
 			Expected: nil,
 		}.Test(t)
@@ -128,7 +128,7 @@ func TestStringsRuneChunk(t *testing.T) {
 	t.Run("divide emoji by -1", func(t *testing.T) {
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsRuneChunk(runesSrc, -1)
+				return stringsiter.RuneChunk(runesSrc, -1)
 			},
 			Expected: nil,
 		}.Test(t)
@@ -147,7 +147,7 @@ func TestStringsSplitFunc(t *testing.T) {
 	t.Run("nil cutter", func(t *testing.T) {
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsSplitFunc(src, -1, nil)
+				return stringsiter.SplitFunc(src, -1, nil)
 			},
 			Expected: []string{"foo", "bar", "baz"},
 			BreakAt:  2,
@@ -155,7 +155,7 @@ func TestStringsSplitFunc(t *testing.T) {
 
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsSplitFunc("", -1, nil)
+				return stringsiter.SplitFunc("", -1, nil)
 			},
 			Expected: nil,
 		}.Test(t)
@@ -164,7 +164,7 @@ func TestStringsSplitFunc(t *testing.T) {
 	t.Run("limit by n", func(t *testing.T) {
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsSplitFunc(src, 1, nil)
+				return stringsiter.SplitFunc(src, 1, nil)
 			},
 			Expected: []string{"foo", "bar\nbaz"},
 			BreakAt:  1,
@@ -174,11 +174,11 @@ func TestStringsSplitFunc(t *testing.T) {
 	t.Run("StringsCutNewLine", func(t *testing.T) {
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsSplitFunc(src, -1, stringsiter.StringsCutNewLine)
+				return stringsiter.SplitFunc(src, -1, stringsiter.CutNewLine)
 			},
 			Seqs: []func() iter.Seq[string]{
 				func() iter.Seq[string] {
-					return stringsiter.StringsSplitFunc(srcCr, -1, stringsiter.StringsCutNewLine)
+					return stringsiter.SplitFunc(srcCr, -1, stringsiter.CutNewLine)
 				},
 			},
 			Expected: []string{"foo", "bar", "baz"},
@@ -187,7 +187,7 @@ func TestStringsSplitFunc(t *testing.T) {
 
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsSplitFunc(longSingle, -1, stringsiter.StringsCutNewLine)
+				return stringsiter.SplitFunc(longSingle, -1, stringsiter.CutNewLine)
 			},
 			Expected: []string{longSingle},
 		}.Test(t)
@@ -196,28 +196,28 @@ func TestStringsSplitFunc(t *testing.T) {
 	t.Run("StringsCutUpperCase", func(t *testing.T) {
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsSplitFunc("a", -1, stringsiter.StringsCutUpperCase)
+				return stringsiter.SplitFunc("a", -1, stringsiter.CutUpperCase)
 			},
 			Expected: []string{"a"},
 		}.Test(t)
 
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsSplitFunc(src, -1, stringsiter.StringsCutUpperCase)
+				return stringsiter.SplitFunc(src, -1, stringsiter.CutUpperCase)
 			},
 			Expected: []string{"foo\nbar\nbaz"},
 		}.Test(t)
 
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsSplitFunc(srcCase, -1, stringsiter.StringsCutUpperCase)
+				return stringsiter.SplitFunc(srcCase, -1, stringsiter.CutUpperCase)
 			},
 			Expected: []string{"New", "Http", "Request"},
 		}.Test(t)
 
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsSplitFunc(allCapital, -1, stringsiter.StringsCutUpperCase)
+				return stringsiter.SplitFunc(allCapital, -1, stringsiter.CutUpperCase)
 			},
 			Expected: []string{"S", "T", "O", "P ", "A", "L", "L ", "C", "A", "P", "I", "T", "A", "L"},
 		}.Test(t)
@@ -226,13 +226,13 @@ func TestStringsSplitFunc(t *testing.T) {
 	t.Run("StringsCutWord", func(t *testing.T) {
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsSplitFunc(allCapital, -1, stringsiter.StringsCutWord)
+				return stringsiter.SplitFunc(allCapital, -1, stringsiter.CutWord)
 			},
 			Expected: []string{"STOP", "ALL", "CAPITAL"},
 		}.Test(t)
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return stringsiter.StringsSplitFunc("AAA\t\tBBB    CCC    ", -1, stringsiter.StringsCutWord)
+				return stringsiter.SplitFunc("AAA\t\tBBB    CCC    ", -1, stringsiter.CutWord)
 			},
 			Expected: []string{"AAA", "BBB", "CCC"},
 		}.Test(t)

@@ -7,6 +7,7 @@ import (
 	"iter"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/encodingiter"
 )
 
 var (
@@ -20,7 +21,7 @@ type JsonDecoder struct {
 }
 
 func (dec JsonDecoder) IntoIter2() iter.Seq2[json.Token, error] {
-	return hiter.JsonDecoder(dec.Decoder)
+	return encodingiter.JsonDecoder(dec.Decoder)
 }
 
 // XmlDecoder adds IntoIter2 to [*xml.Decoder].
@@ -29,7 +30,7 @@ type XmlDecoder struct {
 }
 
 func (dec XmlDecoder) IntoIter2() iter.Seq2[xml.Token, error] {
-	return hiter.XmlDecoder(dec.Decoder)
+	return encodingiter.XmlDecoder(dec.Decoder)
 }
 
 // CsvReader adds IntoIter2 method to [*csv.Reader].
@@ -38,5 +39,5 @@ type CsvReader struct {
 }
 
 func (dec CsvReader) IntoIter2() iter.Seq2[[]string, error] {
-	return hiter.CsvReader(dec.Reader)
+	return encodingiter.CsvReader(dec.Reader)
 }

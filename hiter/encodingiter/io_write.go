@@ -1,4 +1,4 @@
-package hiter
+package encodingiter
 
 import (
 	"io"

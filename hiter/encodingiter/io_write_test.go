@@ -1,4 +1,4 @@
-package hiter_test
+package encodingiter_test
 
 import (
 	"bytes"
@@ -10,6 +10,7 @@ import (
 
 	goCmp "github.com/google/go-cmp/cmp"
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/encodingiter"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
@@ -72,7 +73,7 @@ func TestWrite(t *testing.T) {
 			assert.Equal(t, len(expected), n)
 		}
 
-		n, err = hiter.Write(
+		n, err = encodingiter.Write(
 			&buf,
 			marshal,
 			slices.Values(src),
@@ -81,7 +82,7 @@ func TestWrite(t *testing.T) {
 
 		buf.Reset()
 		var keys []int
-		n, err = hiter.Write2(
+		n, err = encodingiter.Write2(
 			&buf,
 			func(k int, v testData, written int) ([]byte, error) {
 				keys = append(keys, k)
@@ -116,7 +117,7 @@ func TestWrite(t *testing.T) {
 		}
 
 		count = 0
-		n, err = hiter.Write(
+		n, err = encodingiter.Write(
 			&buf,
 			func(v testData, written int) ([]byte, error) {
 				if count == 1 {
@@ -132,7 +133,7 @@ func TestWrite(t *testing.T) {
 		count = 0
 		buf.Reset()
 		var keys []int
-		n, err = hiter.Write2(
+		n, err = encodingiter.Write2(
 			&buf,
 			func(k int, v testData, written int) ([]byte, error) {
 				keys = append(keys, k)
@@ -173,7 +174,7 @@ func TestWrite(t *testing.T) {
 
 		buf.Reset()
 		w.n = 1
-		n, err = hiter.Write(
+		n, err = encodingiter.Write(
 			w,
 			marshal,
 			slices.Values(src),
@@ -183,7 +184,7 @@ func TestWrite(t *testing.T) {
 		buf.Reset()
 		w.n = 1
 		var keys []int
-		n, err = hiter.Write2(
+		n, err = encodingiter.Write2(
 			w,
 			func(k int, v testData, written int) ([]byte, error) {
 				keys = append(keys, k)
@@ -218,7 +219,7 @@ func TestEncode(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
 		buf := new(bytes.Buffer)
 		enc := json.NewEncoder(buf)
-		err := hiter.Encode(enc, slices.Values(src))
+		err := encodingiter.Encode(enc, slices.Values(src))
 		assert.NilError(t, err)
 		assert.DeepEqual(
 			t,
@@ -237,7 +238,7 @@ func TestEncode(t *testing.T) {
 			n:   1,
 		}
 		enc := json.NewEncoder(w)
-		err := hiter.Encode(enc, slices.Values(src))
+		err := encodingiter.Encode(enc, slices.Values(src))
 		assert.ErrorIs(t, err, testcase.ErrSample)
 		assert.DeepEqual(
 			t,

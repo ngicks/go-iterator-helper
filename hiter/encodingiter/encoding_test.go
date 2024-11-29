@@ -1,4 +1,4 @@
-package hiter_test
+package encodingiter_test
 
 import (
 	"encoding/csv"
@@ -10,6 +10,7 @@ import (
 
 	goCmp "github.com/google/go-cmp/cmp"
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/encodingiter"
 	"github.com/ngicks/go-iterator-helper/hiter/errbox"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
@@ -25,7 +26,7 @@ func TestEncoding(t *testing.T) {
 		var box *errbox.JsonDecoder
 		testcase.Two[json.Token, error]{
 			Seq: func() iter.Seq2[json.Token, error] {
-				return hiter.JsonDecoder(jsonDec())
+				return encodingiter.JsonDecoder(jsonDec())
 			},
 			Seqs: []func() iter.Seq2[json.Token, error]{
 				func() iter.Seq2[json.Token, error] {
@@ -37,9 +38,9 @@ func TestEncoding(t *testing.T) {
 				},
 			},
 			Expected: []hiter.KeyValue[json.Token, error]{
-				{json.Delim('{'), nil},
-				{json.Token("foo"), nil}, {json.Token("bar"), nil},
-				{json.Delim('}'), nil},
+				{K: json.Delim('{'), V: nil},
+				{K: json.Token("foo"), V: nil}, {K: json.Token("bar"), V: nil},
+				{K: json.Delim('}'), V: nil},
 			},
 			BreakAt:  2,
 			Stateful: true,
@@ -59,7 +60,7 @@ func TestEncoding(t *testing.T) {
 		var box *errbox.XmlDecoder
 		testcase.Two[xml.Token, error]{
 			Seq: func() iter.Seq2[xml.Token, error] {
-				return xiter.Map2(copyXmlToken, hiter.XmlDecoder(xmlDec()))
+				return xiter.Map2(copyXmlToken, encodingiter.XmlDecoder(xmlDec()))
 			},
 			Seqs: []func() iter.Seq2[xml.Token, error]{
 				func() iter.Seq2[xml.Token, error] {
@@ -71,12 +72,12 @@ func TestEncoding(t *testing.T) {
 				},
 			},
 			Expected: []hiter.KeyValue[xml.Token, error]{
-				{xml.StartElement{Name: xml.Name{Local: "foo"}, Attr: []xml.Attr{}}, nil},
-				{xml.CharData("yay"), nil},
-				{xml.EndElement{Name: xml.Name{Local: "foo"}}, nil},
-				{xml.StartElement{Name: xml.Name{Local: "bar"}, Attr: []xml.Attr{}}, nil},
-				{xml.CharData("nay"), nil},
-				{xml.EndElement{Name: xml.Name{Local: "bar"}}, nil},
+				{K: xml.StartElement{Name: xml.Name{Local: "foo"}, Attr: []xml.Attr{}}, V: nil},
+				{K: xml.CharData("yay"), V: nil},
+				{K: xml.EndElement{Name: xml.Name{Local: "foo"}}, V: nil},
+				{K: xml.StartElement{Name: xml.Name{Local: "bar"}, Attr: []xml.Attr{}}, V: nil},
+				{K: xml.CharData("nay"), V: nil},
+				{K: xml.EndElement{Name: xml.Name{Local: "bar"}}, V: nil},
 			},
 			BreakAt:  2,
 			CmpOpt:   []goCmp.Option{testcase.CompareErrorsIs},
@@ -94,7 +95,7 @@ foo4,bar4,baz4`,
 	t.Run("CSV", func(t *testing.T) {
 		testcase.Two[[]string, error]{
 			Seq: func() iter.Seq2[[]string, error] {
-				return hiter.CsvReader(csvReader())
+				return encodingiter.CsvReader(csvReader())
 			},
 			Seqs: []func() iter.Seq2[[]string, error]{
 				func() iter.Seq2[[]string, error] {
@@ -102,10 +103,10 @@ foo4,bar4,baz4`,
 				},
 			},
 			Expected: []hiter.KeyValue[[]string, error]{
-				{[]string{"foo1", "bar1", "baz1"}, nil},
-				{[]string{"foo2", "bar2", "baz2"}, nil},
-				{[]string{"foo3", "bar3"}, csv.ErrFieldCount},
-				{[]string{"foo4", "bar4", "baz4"}, nil},
+				{K: []string{"foo1", "bar1", "baz1"}, V: nil},
+				{K: []string{"foo2", "bar2", "baz2"}, V: nil},
+				{K: []string{"foo3", "bar3"}, V: csv.ErrFieldCount},
+				{K: []string{"foo4", "bar4", "baz4"}, V: nil},
 			},
 			BreakAt:  2,
 			CmpOpt:   []goCmp.Option{testcase.CompareErrorsIs},

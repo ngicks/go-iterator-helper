@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"encoding/xml"
 
-	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/encodingiter"
 )
 
 type JsonDecoder struct {
@@ -14,7 +14,7 @@ type JsonDecoder struct {
 
 func NewJsonDecoder(dec *json.Decoder) *JsonDecoder {
 	return &JsonDecoder{
-		Box: New(hiter.JsonDecoder(dec)),
+		Box: New(encodingiter.JsonDecoder(dec)),
 		Dec: dec,
 	}
 }
@@ -26,7 +26,7 @@ type XmlDecoder struct {
 
 func NewXmlDecoder(dec *xml.Decoder) *XmlDecoder {
 	return &XmlDecoder{
-		Box: New(hiter.XmlDecoder(dec)),
+		Box: New(encodingiter.XmlDecoder(dec)),
 		Dec: dec,
 	}
 }

@@ -7,7 +7,7 @@ import (
 	"maps"
 	"os"
 
-	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/encodingiter"
 	"github.com/ngicks/go-iterator-helper/hiter/errbox"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
@@ -20,12 +20,12 @@ func Example_dec_enc_round_trip() {
 	`)
 
 	rawDec := json.NewDecoder(bytes.NewReader(src))
-	dec := errbox.New(hiter.Decode[map[string]string](rawDec))
+	dec := errbox.New(encodingiter.Decode[map[string]string](rawDec))
 	defer dec.Stop()
 
 	enc := json.NewEncoder(os.Stdout)
 
-	err := hiter.Encode(
+	err := encodingiter.Encode(
 		enc,
 		xiter.Map(
 			func(m map[string]string) map[string]string {

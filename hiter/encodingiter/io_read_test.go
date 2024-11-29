@@ -1,15 +1,14 @@
-package hiter_test
+package encodingiter_test
 
 import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"os"
-	"slices"
 	"testing"
 	"testing/iotest"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/encodingiter"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"gotest.tools/v3/assert"
 )
@@ -31,7 +30,7 @@ func TestDecode(t *testing.T) {
 	t.Run("ok", func(t *testing.T) {
 		dec := json.NewDecoder(iotest.DataErrReader(bytes.NewReader(src)))
 
-		result := hiter.Collect2(hiter.Decode[sample](dec))
+		result := hiter.Collect2(encodingiter.Decode[sample](dec))
 		assert.DeepEqual(
 			t,
 			[]hiter.KeyValue[sample, error]{
@@ -44,7 +43,7 @@ func TestDecode(t *testing.T) {
 	})
 	t.Run("syntax error", func(t *testing.T) {
 		dec := json.NewDecoder(iotest.DataErrReader(bytes.NewReader(src)))
-		result := hiter.Collect2(hiter.Decode[sampleWrong](dec))
+		result := hiter.Collect2(encodingiter.Decode[sampleWrong](dec))
 		assert.DeepEqual(
 			t,
 			[]hiter.KeyValue[sampleWrong, error]{
@@ -62,7 +61,7 @@ func TestDecode(t *testing.T) {
 		result := hiter.Collect2(
 			hiter.LimitAfter2(
 				func(_ sample, err error) bool { return err == nil },
-				hiter.Decode[sample](dec),
+				encodingiter.Decode[sample](dec),
 			),
 		)
 		assert.DeepEqual(
@@ -77,21 +76,4 @@ func TestDecode(t *testing.T) {
 			testcase.CompareErrorsIs,
 		)
 	})
-}
-
-func TestReaddir(t *testing.T) {
-	dir, err := os.Open("./testdata/readdir")
-	if err != nil {
-		panic(err)
-	}
-	var names []string
-	for dirent, err := range hiter.Readdir(dir) {
-		if err != nil {
-			panic(err)
-		}
-		names = append(names, dirent.Name())
-	}
-	// maybe unordered
-	slices.Sort(names)
-	assert.DeepEqual(t, []string{"bar", "baz", "foo"}, names)
 }

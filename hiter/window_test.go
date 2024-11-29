@@ -56,7 +56,7 @@ func TestWindow(t *testing.T) {
 
 	for _, tc := range windowTestCases {
 		t.Run(tc.name, func(t *testing.T) {
-			testcase.TestCase1[[]int]{
+			testcase.One[[]int]{
 				Seq: func() iter.Seq[[]int] {
 					return hiter.Window(widowSrc, tc.size)
 				},
@@ -75,7 +75,7 @@ func TestWindowSeq(t *testing.T) {
 
 	for _, tc := range windowTestCases {
 		t.Run(tc.name, func(t *testing.T) {
-			testcase.TestCase1[[]int]{
+			testcase.One[[]int]{
 				Seq: func() iter.Seq[[]int] {
 					return xiter.Map(
 						slices.Collect,

@@ -16,7 +16,7 @@ var (
 )
 
 func TestEnumerate(t *testing.T) {
-	testcase.TestCase2[int, int]{
+	testcase.Two[int, int]{
 		Seq: func() iter.Seq2[int, int] {
 			return hiter.Enumerate(slices.Values(srcInt1))
 		},
@@ -26,21 +26,21 @@ func TestEnumerate(t *testing.T) {
 }
 
 func TestPairs(t *testing.T) {
-	testcase.TestCase2[int, int]{
+	testcase.Two[int, int]{
 		Seq: func() iter.Seq2[int, int] {
 			return hiter.Pairs(slices.Values(srcInt1), slices.Values(srcInt2))
 		},
 		BreakAt:  2,
 		Expected: []hiter.KeyValue[int, int]{{12, 567}, {76, 2}, {8, 8}, {9, 0}, {923, 3}},
 	}.Test(t)
-	testcase.TestCase2[int, int]{
+	testcase.Two[int, int]{
 		Seq: func() iter.Seq2[int, int] {
 			return hiter.Pairs(slices.Values(srcInt1[:len(srcInt1)-1]), slices.Values(srcInt2))
 		},
 		BreakAt:  2,
 		Expected: []hiter.KeyValue[int, int]{{12, 567}, {76, 2}, {8, 8}, {9, 0}},
 	}.Test(t)
-	testcase.TestCase2[int, int]{
+	testcase.Two[int, int]{
 		Seq: func() iter.Seq2[int, int] {
 			return hiter.Pairs(slices.Values(srcInt1), slices.Values(srcInt2[:len(srcInt2)-1]))
 		},
@@ -50,7 +50,7 @@ func TestPairs(t *testing.T) {
 }
 
 func TestTranspose(t *testing.T) {
-	testcase.TestCase2[int, int]{
+	testcase.Two[int, int]{
 		Seq: func() iter.Seq2[int, int] {
 			return hiter.Transpose(hiter.Pairs(slices.Values(srcInt1[:len(srcInt1)-1]), slices.Values(srcInt2)))
 		},
@@ -60,7 +60,7 @@ func TestTranspose(t *testing.T) {
 }
 
 func TestOmitL(t *testing.T) {
-	testcase.TestCase1[int]{
+	testcase.One[int]{
 		Seq: func() iter.Seq[int] {
 			return hiter.OmitL(hiter.Pairs(slices.Values(srcInt1), slices.Values(srcInt2)))
 		},
@@ -70,7 +70,7 @@ func TestOmitL(t *testing.T) {
 }
 
 func TestOmitF(t *testing.T) {
-	testcase.TestCase1[int]{
+	testcase.One[int]{
 		Seq: func() iter.Seq[int] {
 			return hiter.OmitF(hiter.Pairs(slices.Values(srcInt1), slices.Values(srcInt2)))
 		},

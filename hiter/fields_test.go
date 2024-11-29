@@ -21,7 +21,7 @@ func TestFields(t *testing.T) {
 	rv := reflect.ValueOf(fields{"A", "B", "C", "D"})
 	rt := rv.Type()
 
-	testcase.TestCase2[reflect.StructField, reflect.Value]{
+	testcase.Two[reflect.StructField, reflect.Value]{
 		Seq: func() iter.Seq2[reflect.StructField, reflect.Value] {
 			return hiter.Fields(fields{"A", "B", "C", "D"})
 		},
@@ -35,7 +35,7 @@ func TestFields(t *testing.T) {
 		CmpOpt:  []goCmp.Option{testcase.CompareReflectStructField, testcase.CompareReflectValue},
 	}.Test(t)
 
-	testcase.TestCase2[reflect.StructField, reflect.Value]{
+	testcase.Two[reflect.StructField, reflect.Value]{
 		Seq: func() iter.Seq2[reflect.StructField, reflect.Value] {
 			return hiter.Fields(&fields{"A", "B", "C", "D"})
 		},

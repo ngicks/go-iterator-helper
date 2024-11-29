@@ -21,7 +21,7 @@ func TestRepeat(t *testing.T) {
 	}
 
 	t.Run("Repeatable", func(t *testing.T) {
-		testcase.TestCase1[uint]{
+		testcase.One[uint]{
 			Seq: func() iter.Seq[uint] {
 				return hiter.Repeat(uint(3), 5)
 			},
@@ -40,7 +40,7 @@ func TestRepeat(t *testing.T) {
 			BreakAt:  3,
 		}.Test(t)
 
-		testcase.TestCase1[uint]{
+		testcase.One[uint]{
 			Seq: func() iter.Seq[uint] {
 				return limit10(hiter.Repeat(uint(3), -1))
 			},
@@ -65,7 +65,7 @@ func TestRepeat(t *testing.T) {
 	})
 
 	t.Run("Repeatable2", func(t *testing.T) {
-		testcase.TestCase2[uint, string]{
+		testcase.Two[uint, string]{
 			Seq: func() iter.Seq2[uint, string] {
 				return hiter.Repeat2(uint(7), "foo", 7)
 			},
@@ -88,7 +88,7 @@ func TestRepeat(t *testing.T) {
 			BreakAt: 3,
 		}.Test(t)
 
-		testcase.TestCase2[uint, string]{
+		testcase.Two[uint, string]{
 			Seq: func() iter.Seq2[uint, string] {
 				return limit102(hiter.Repeat2(uint(7), "foo", -1))
 			},

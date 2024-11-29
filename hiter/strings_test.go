@@ -17,7 +17,7 @@ var (
 
 func TestStringsChunk(t *testing.T) {
 	t.Run("divide 9 by 3", func(t *testing.T) {
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsChunk(stringsSrc, 3)
 			},
@@ -27,7 +27,7 @@ func TestStringsChunk(t *testing.T) {
 	})
 
 	t.Run("divide 9 by 4", func(t *testing.T) {
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsChunk(stringsSrc, 4)
 			},
@@ -50,7 +50,7 @@ func TestStringsChunk(t *testing.T) {
 			"\xab",
 		}
 
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsChunk(runesSrc, 2)
 			},
@@ -62,7 +62,7 @@ func TestStringsChunk(t *testing.T) {
 	})
 
 	t.Run("divide by 0", func(t *testing.T) {
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsChunk(runesSrc, 0)
 			},
@@ -71,7 +71,7 @@ func TestStringsChunk(t *testing.T) {
 	})
 
 	t.Run("divide by -1", func(t *testing.T) {
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsChunk(runesSrc, -1)
 			},
@@ -82,7 +82,7 @@ func TestStringsChunk(t *testing.T) {
 
 func TestStringsRuneChunk(t *testing.T) {
 	t.Run("divide 9 by 3", func(t *testing.T) {
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsRuneChunk(stringsSrc, 3)
 			},
@@ -92,7 +92,7 @@ func TestStringsRuneChunk(t *testing.T) {
 	})
 
 	t.Run("divide 9 by 4", func(t *testing.T) {
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsRuneChunk(stringsSrc, 4)
 			},
@@ -102,7 +102,7 @@ func TestStringsRuneChunk(t *testing.T) {
 	})
 
 	t.Run("divide emoji by 2", func(t *testing.T) {
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsRuneChunk(runesSrc, 2)
 			},
@@ -117,7 +117,7 @@ func TestStringsRuneChunk(t *testing.T) {
 	})
 
 	t.Run("divide emoji by 0", func(t *testing.T) {
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsRuneChunk(runesSrc, 0)
 			},
@@ -126,7 +126,7 @@ func TestStringsRuneChunk(t *testing.T) {
 	})
 
 	t.Run("divide emoji by -1", func(t *testing.T) {
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsRuneChunk(runesSrc, -1)
 			},
@@ -145,7 +145,7 @@ func TestStringsSplitFunc(t *testing.T) {
 	)
 
 	t.Run("nil cutter", func(t *testing.T) {
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsSplitFunc(src, -1, nil)
 			},
@@ -153,7 +153,7 @@ func TestStringsSplitFunc(t *testing.T) {
 			BreakAt:  2,
 		}.Test(t)
 
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsSplitFunc("", -1, nil)
 			},
@@ -162,7 +162,7 @@ func TestStringsSplitFunc(t *testing.T) {
 	})
 
 	t.Run("limit by n", func(t *testing.T) {
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsSplitFunc(src, 1, nil)
 			},
@@ -172,7 +172,7 @@ func TestStringsSplitFunc(t *testing.T) {
 	})
 
 	t.Run("StringsCutNewLine", func(t *testing.T) {
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsSplitFunc(src, -1, hiter.StringsCutNewLine)
 			},
@@ -185,7 +185,7 @@ func TestStringsSplitFunc(t *testing.T) {
 			BreakAt:  2,
 		}.Test(t)
 
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsSplitFunc(longSingle, -1, hiter.StringsCutNewLine)
 			},
@@ -194,28 +194,28 @@ func TestStringsSplitFunc(t *testing.T) {
 	})
 
 	t.Run("StringsCutUpperCase", func(t *testing.T) {
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsSplitFunc("a", -1, hiter.StringsCutUpperCase)
 			},
 			Expected: []string{"a"},
 		}.Test(t)
 
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsSplitFunc(src, -1, hiter.StringsCutUpperCase)
 			},
 			Expected: []string{"foo\nbar\nbaz"},
 		}.Test(t)
 
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsSplitFunc(srcCase, -1, hiter.StringsCutUpperCase)
 			},
 			Expected: []string{"New", "Http", "Request"},
 		}.Test(t)
 
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsSplitFunc(allCapital, -1, hiter.StringsCutUpperCase)
 			},
@@ -224,13 +224,13 @@ func TestStringsSplitFunc(t *testing.T) {
 	})
 
 	t.Run("StringsCutWord", func(t *testing.T) {
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsSplitFunc(allCapital, -1, hiter.StringsCutWord)
 			},
 			Expected: []string{"STOP", "ALL", "CAPITAL"},
 		}.Test(t)
-		testcase.TestCase1[string]{
+		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
 				return hiter.StringsSplitFunc("AAA\t\tBBB    CCC    ", -1, hiter.StringsCutWord)
 			},

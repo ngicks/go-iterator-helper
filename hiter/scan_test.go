@@ -29,7 +29,7 @@ var (
 )
 
 func TestScan(t *testing.T) {
-	testcase.TestCase1[string]{
+	testcase.One[string]{
 		Seq: func() iter.Seq[string] {
 			return hiter.Scan(scannerFactory())
 		},
@@ -44,7 +44,7 @@ func TestScan(t *testing.T) {
 	}.Test(t)
 
 	var scanner *bufio.Scanner
-	testcase.TestCase1[string]{
+	testcase.One[string]{
 		Seq: func() iter.Seq[string] {
 			scanner = scannerErrFactory()
 			return hiter.Scan(scanner)
@@ -67,7 +67,7 @@ func TestScan(t *testing.T) {
 }
 
 func TestScanErr(t *testing.T) {
-	testcase.TestCase2[string, error]{
+	testcase.Two[string, error]{
 		Seq: func() iter.Seq2[string, error] {
 			return hiter.ScanErr(scannerFactory())
 		},
@@ -76,7 +76,7 @@ func TestScanErr(t *testing.T) {
 		Stateful: true,
 	}.Test(t)
 
-	testcase.TestCase2[string, error]{
+	testcase.Two[string, error]{
 		Seq: func() iter.Seq2[string, error] {
 			return hiter.ScanErr(scannerErrFactory())
 		},

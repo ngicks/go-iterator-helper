@@ -14,7 +14,7 @@ var (
 )
 
 func TestLimitUntil(t *testing.T) {
-	testcase.TestCase1[int]{
+	testcase.One[int]{
 		Seq: func() iter.Seq[int] {
 			return hiter.LimitUntil(func(e int) bool { return e < 6 }, slices.Values(limitUntilSrc))
 		},
@@ -24,7 +24,7 @@ func TestLimitUntil(t *testing.T) {
 }
 
 func TestLimitAfter(t *testing.T) {
-	testcase.TestCase1[int]{
+	testcase.One[int]{
 		Seq: func() iter.Seq[int] {
 			return hiter.LimitAfter(func(e int) bool { return e < 6 }, slices.Values(limitUntilSrc))
 		},
@@ -36,7 +36,7 @@ func TestLimitAfter(t *testing.T) {
 func TestLimitUntil2(t *testing.T) {
 
 	t.Run("limit by value", func(t *testing.T) {
-		testcase.TestCase2[int, int]{
+		testcase.Two[int, int]{
 			Seq: func() iter.Seq2[int, int] {
 				return hiter.LimitUntil2(func(i, e int) bool { return e < 6 }, slices.All(limitUntilSrc))
 			},
@@ -46,7 +46,7 @@ func TestLimitUntil2(t *testing.T) {
 	})
 
 	t.Run("limit by key", func(t *testing.T) {
-		testcase.TestCase2[int, int]{
+		testcase.Two[int, int]{
 			Seq: func() iter.Seq2[int, int] {
 				return hiter.LimitUntil2(func(i, e int) bool { return i < 3 }, slices.All(limitUntilSrc))
 			},
@@ -59,7 +59,7 @@ func TestLimitUntil2(t *testing.T) {
 func TestLimitAfter2(t *testing.T) {
 
 	t.Run("limit by value", func(t *testing.T) {
-		testcase.TestCase2[int, int]{
+		testcase.Two[int, int]{
 			Seq: func() iter.Seq2[int, int] {
 				return hiter.LimitAfter2(func(i, e int) bool { return e < 4 }, slices.All(limitUntilSrc))
 			},
@@ -69,7 +69,7 @@ func TestLimitAfter2(t *testing.T) {
 	})
 
 	t.Run("limit by key", func(t *testing.T) {
-		testcase.TestCase2[int, int]{
+		testcase.Two[int, int]{
 			Seq: func() iter.Seq2[int, int] {
 				return hiter.LimitAfter2(func(i, e int) bool { return i < 3 }, slices.All(limitUntilSrc))
 			},

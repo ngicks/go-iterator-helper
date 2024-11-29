@@ -38,7 +38,7 @@ var (
 	})
 )
 
-type TestCase1[V any] struct {
+type One[V any] struct {
 	Seq      func() iter.Seq[V]
 	Seqs     []func() iter.Seq[V]
 	Expected []V
@@ -47,7 +47,7 @@ type TestCase1[V any] struct {
 	Stateful bool
 }
 
-func (tc TestCase1[V]) Test(t *testing.T, cb ...func(length, count int)) {
+func (tc One[V]) Test(t *testing.T, cb ...func(length, count int)) {
 	t.Helper()
 
 	for i, seq := range append([](func() iter.Seq[V]){tc.Seq}, tc.Seqs...) {
@@ -92,7 +92,7 @@ func (tc TestCase1[V]) Test(t *testing.T, cb ...func(length, count int)) {
 	}
 }
 
-type TestCase2[K, V any] struct {
+type Two[K, V any] struct {
 	Seq      func() iter.Seq2[K, V]
 	Seqs     []func() iter.Seq2[K, V]
 	Expected []hiter.KeyValue[K, V]
@@ -101,7 +101,7 @@ type TestCase2[K, V any] struct {
 	Stateful bool
 }
 
-func (tc TestCase2[K, V]) Test(t *testing.T, cb ...func(length, count int)) {
+func (tc Two[K, V]) Test(t *testing.T, cb ...func(length, count int)) {
 	t.Helper()
 
 	for i, seq := range append([](func() iter.Seq2[K, V]){tc.Seq}, tc.Seqs...) {
@@ -149,7 +149,7 @@ func (tc TestCase2[K, V]) Test(t *testing.T, cb ...func(length, count int)) {
 	}
 }
 
-type TestCaseMap[K comparable, V any] struct {
+type Map[K comparable, V any] struct {
 	Seq      func() iter.Seq2[K, V]
 	Seqs     []func() iter.Seq2[K, V]
 	Expected map[K]V
@@ -158,7 +158,7 @@ type TestCaseMap[K comparable, V any] struct {
 	Stateful bool
 }
 
-func (tc TestCaseMap[K, V]) Test(t *testing.T, cb ...func()) {
+func (tc Map[K, V]) Test(t *testing.T, cb ...func()) {
 	t.Helper()
 
 	for i, seq := range append([](func() iter.Seq2[K, V]){tc.Seq}, tc.Seqs...) {

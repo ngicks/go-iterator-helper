@@ -14,7 +14,7 @@ func TestAssert(t *testing.T) {
 	src := []any{"foo", "bar", "baz"}
 	src2 := []hiter.KeyValue[any, any]{{0, "foo"}, {1, "bar"}, {2, "baz"}}
 
-	testcase.TestCase1[string]{
+	testcase.One[string]{
 		Seq: func() iter.Seq[string] {
 			return hiter.Assert[string](slices.Values(src))
 		},
@@ -28,7 +28,7 @@ func TestAssert(t *testing.T) {
 		BreakAt:  2,
 	}.Test(t)
 
-	testcase.TestCase2[int, string]{
+	testcase.Two[int, string]{
 		Seq: func() iter.Seq2[int, string] {
 			return hiter.Assert2[int, string](hiter.Values2(src2))
 		},

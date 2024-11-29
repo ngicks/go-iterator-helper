@@ -22,7 +22,7 @@ func TestSyncMap(t *testing.T) {
 		m.Store(k, v)
 	}
 
-	testcase.TestCaseMap[string, string]{
+	testcase.Map[string, string]{
 		Seq: func() iter.Seq2[string, string] {
 			return hiter.SyncMap[string, string](&m)
 		},
@@ -35,7 +35,7 @@ func TestSyncMap(t *testing.T) {
 		BreakAt:  2,
 	}.Test(t)
 
-	testcase.TestCaseMap[string, string]{
+	testcase.Map[string, string]{
 		Seq: func() iter.Seq2[string, string] {
 			return hiter.SyncMap[string, string](&sync.Map{})
 		},

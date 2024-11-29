@@ -23,7 +23,7 @@ func TestEncoding(t *testing.T) {
 	}
 	t.Run("JSON", func(t *testing.T) {
 		var box *errbox.JsonDecoder
-		testcase.TestCase2[json.Token, error]{
+		testcase.Two[json.Token, error]{
 			Seq: func() iter.Seq2[json.Token, error] {
 				return hiter.JsonDecoder(jsonDec())
 			},
@@ -57,7 +57,7 @@ func TestEncoding(t *testing.T) {
 	}
 	t.Run("XML", func(t *testing.T) {
 		var box *errbox.XmlDecoder
-		testcase.TestCase2[xml.Token, error]{
+		testcase.Two[xml.Token, error]{
 			Seq: func() iter.Seq2[xml.Token, error] {
 				return xiter.Map2(copyXmlToken, hiter.XmlDecoder(xmlDec()))
 			},
@@ -92,7 +92,7 @@ foo4,bar4,baz4`,
 		))
 	}
 	t.Run("CSV", func(t *testing.T) {
-		testcase.TestCase2[[]string, error]{
+		testcase.Two[[]string, error]{
 			Seq: func() iter.Seq2[[]string, error] {
 				return hiter.CsvReader(csvReader())
 			},

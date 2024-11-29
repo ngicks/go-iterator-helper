@@ -33,13 +33,13 @@ func TestStepBy(t *testing.T) {
 			hiter.Range(0, 15),
 		),
 	)
-	testcase.TestCase2[int, string]{
+	testcase.Two[int, string]{
 		Seq:      func() iter.Seq2[int, string] { return hiter.StepBy(3, 4, src) },
 		Expected: []hiter.KeyValue[int, string]{{3, "3"}, {7, "7"}, {11, "11"}},
 		BreakAt:  2,
 	}.Test(t)
 
-	testcase.TestCase2[int, string]{
+	testcase.Two[int, string]{
 		Seq:      func() iter.Seq2[int, string] { return hiter.StepBy(14, -4, src) },
 		Expected: []hiter.KeyValue[int, string]{{14, "14"}, {10, "10"}, {6, "6"}, {2, "2"}},
 		BreakAt:  2,

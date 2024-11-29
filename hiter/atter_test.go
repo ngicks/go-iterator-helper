@@ -13,7 +13,7 @@ import (
 func TestAtter(t *testing.T) {
 	indices := iterable.Range[int]{Start: 4, End: 10}
 
-	testcase.TestCase2[int, string]{
+	testcase.Two[int, string]{
 		Seq: func() iter.Seq2[int, string] {
 			return hiter.AtterIndices(atSliceSrc, slices.Values([]int{2, 6, 1, 2}))
 		},
@@ -26,7 +26,7 @@ func TestAtter(t *testing.T) {
 		BreakAt: 3,
 	}.Test(t)
 
-	testcase.TestCase2[int, string]{
+	testcase.Two[int, string]{
 		Seq: func() iter.Seq2[int, string] {
 			return iterable.Atter[atSliceStr, string]{
 				Atter:   atSliceSrc,
@@ -49,7 +49,7 @@ func TestAtter(t *testing.T) {
 		BreakAt: 3,
 	}.Test(t)
 
-	testcase.TestCase2[int, string]{
+	testcase.Two[int, string]{
 		Seq: func() iter.Seq2[int, string] {
 			return hiter.AtterAll(atSliceSrc)
 		},

@@ -39,7 +39,7 @@ func TestCollect2(t *testing.T) {
 }
 
 func TestKeyValues(t *testing.T) {
-	testcase.TestCase2[int, int]{
+	testcase.Two[int, int]{
 		Seq: func() iter.Seq2[int, int] {
 			return hiter.KeyValues[int, int]{
 				{2, 1}, {2, 1}, {0, 4}, {-1, 2},

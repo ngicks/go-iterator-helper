@@ -13,7 +13,7 @@ import (
 func TestTap(t *testing.T) {
 	var observed1 []int
 
-	testcase.TestCase1[int]{
+	testcase.One[int]{
 		Seq: func() iter.Seq[int] {
 			observed1 = observed1[:0]
 			return hiter.Tap(
@@ -36,7 +36,7 @@ func TestTap(t *testing.T) {
 
 	var observed2 hiter.KeyValues[int, int]
 
-	testcase.TestCase2[int, int]{
+	testcase.Two[int, int]{
 		Seq: func() iter.Seq2[int, int] {
 			observed2 = observed2[:0]
 			return hiter.Tap2(

@@ -37,7 +37,7 @@ func TestChan(t *testing.T) {
 		return c
 	}
 
-	testcase.TestCase1[int]{
+	testcase.One[int]{
 		Seq: func() iter.Seq[int] {
 			return hiter.Chan(context.Background(), chanAll())
 		},
@@ -51,7 +51,7 @@ func TestChan(t *testing.T) {
 		Stateful: true,
 	}.Test(t, func(_, _ int) { (*cancelP.Load())() })
 
-	testcase.TestCase1[int]{
+	testcase.One[int]{
 		Seq: func() iter.Seq[int] {
 			ctx, cancel := context.WithCancel(context.Background())
 			var count int

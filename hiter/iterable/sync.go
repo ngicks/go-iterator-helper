@@ -15,5 +15,5 @@ type SyncMap[K comparable, V any] struct {
 }
 
 func (s SyncMap[K, V]) Iter2() iter.Seq2[K, V] {
-	return hiter.SyncMap[K, V](s.Map)
+	return hiter.Assert2[K, V](s.Map.Range)
 }

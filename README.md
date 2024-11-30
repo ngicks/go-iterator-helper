@@ -4,12 +4,20 @@
 
 Helpers / converters / sources for iterators.
 
-## versioning policy
+## NOTE: things that are already iterator
 
-Before 1.0.0, sometimes packages might break anything in the module.
-The breakage should be kept as little as possible between tags.
+Listed below are already iterator.
+This module will not defines iterator sources for these kind.
+(in case older version of this modules has defined those, it should already be removed.)
 
-Every untagged commits break added/modified things.
+```go
+// https://pkg.go.dev/go/token@go1.23.2#FileSet.Iterate
+func (s *FileSet) Iterate(f func(*File) bool)
+// https://pkg.go.dev/log/slog@go1.23.2#Record.Attrs
+func (r Record) Attrs(f func(Attr) bool)
+// https://pkg.go.dev/sync@go1.23.2#Map.Range
+func (m *Map) Range(f func(key, value any) bool)
+```
 
 ## hiter
 

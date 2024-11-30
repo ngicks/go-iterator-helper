@@ -1,3 +1,4 @@
+// errbox boxes iter.Seq[V, error] and converts to iter.Seq[V]. The occurrence of the error stops the boxed iterator. The error can be later inspected through method.
 package errbox
 
 import (

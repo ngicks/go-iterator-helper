@@ -1,11 +1,11 @@
-package hiter_test
+package ioiter_test
 
 import (
 	"os"
 	"slices"
 	"testing"
 
-	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/ioiter"
 	"gotest.tools/v3/assert"
 )
 
@@ -15,7 +15,7 @@ func TestReaddir(t *testing.T) {
 		panic(err)
 	}
 	var names []string
-	for dirent, err := range hiter.Readdir(dir) {
+	for dirent, err := range ioiter.Readdir(dir) {
 		if err != nil {
 			panic(err)
 		}

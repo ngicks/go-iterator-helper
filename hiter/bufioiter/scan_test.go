@@ -1,4 +1,4 @@
-package hiter_test
+package bufioiter_test
 
 import (
 	"bufio"
@@ -10,6 +10,7 @@ import (
 
 	goCmp "github.com/google/go-cmp/cmp"
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/bufioiter"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 	"gotest.tools/v3/assert"
@@ -31,7 +32,7 @@ var (
 func TestScan(t *testing.T) {
 	testcase.One[string]{
 		Seq: func() iter.Seq[string] {
-			return hiter.Scan(scannerFactory())
+			return bufioiter.Scan(scannerFactory())
 		},
 		Seqs: []func() iter.Seq[string]{
 			func() iter.Seq[string] {
@@ -47,7 +48,7 @@ func TestScan(t *testing.T) {
 	testcase.One[string]{
 		Seq: func() iter.Seq[string] {
 			scanner = scannerErrFactory()
-			return hiter.Scan(scanner)
+			return bufioiter.Scan(scanner)
 		},
 		Seqs: []func() iter.Seq[string]{
 			func() iter.Seq[string] {
@@ -69,22 +70,26 @@ func TestScan(t *testing.T) {
 func TestScanErr(t *testing.T) {
 	testcase.Two[string, error]{
 		Seq: func() iter.Seq2[string, error] {
-			return hiter.ScanErr(scannerFactory())
+			return bufioiter.ScanErr(scannerFactory())
 		},
-		Expected: []hiter.KeyValue[string, error]{{"foo", nil}, {"bar", nil}, {"baz", nil}},
+		Expected: []hiter.KeyValue[string, error]{
+			{K: "foo", V: nil},
+			{K: "bar", V: nil},
+			{K: "baz", V: nil},
+		},
 		BreakAt:  2,
 		Stateful: true,
 	}.Test(t)
 
 	testcase.Two[string, error]{
 		Seq: func() iter.Seq2[string, error] {
-			return hiter.ScanErr(scannerErrFactory())
+			return bufioiter.ScanErr(scannerErrFactory())
 		},
 		Expected: []hiter.KeyValue[string, error]{
-			{"foo", nil},
-			{"bar", nil},
-			{"baz", nil},
-			{"", testcase.ErrSample},
+			{K: "foo", V: nil},
+			{K: "bar", V: nil},
+			{K: "baz", V: nil},
+			{K: "", V: testcase.ErrSample},
 		},
 		BreakAt:  2,
 		CmpOpt:   []goCmp.Option{testcase.CompareErrorsIs},

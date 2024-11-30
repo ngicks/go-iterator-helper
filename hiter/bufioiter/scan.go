@@ -1,4 +1,4 @@
-package hiter
+package bufioiter
 
 import (
 	"bufio"

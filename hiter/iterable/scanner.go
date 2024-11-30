@@ -5,6 +5,7 @@ import (
 	"iter"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/bufioiter"
 )
 
 var _ hiter.IntoIterable[string] = (*Scanner)(nil)
@@ -14,5 +15,5 @@ type Scanner struct {
 }
 
 func (s Scanner) IntoIter() iter.Seq[string] {
-	return hiter.Scan(s.Scanner)
+	return bufioiter.Scan(s.Scanner)
 }

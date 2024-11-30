@@ -24,11 +24,11 @@ func TestFields(t *testing.T) {
 
 	testcase.Two[reflect.StructField, reflect.Value]{
 		Seq: func() iter.Seq2[reflect.StructField, reflect.Value] {
-			return reflectiter.Fields(fields{"A", "B", "C", "D"})
+			return reflectiter.Field(fields{"A", "B", "C", "D"})
 		},
 		Seqs: []func() iter.Seq2[reflect.StructField, reflect.Value]{
 			func() iter.Seq2[reflect.StructField, reflect.Value] {
-				return reflectiter.FieldsRv(reflect.ValueOf(fields{"A", "B", "C", "D"}))
+				return reflectiter.FieldRv(reflect.ValueOf(fields{"A", "B", "C", "D"}))
 			},
 		},
 		Expected: []hiter.KeyValue[reflect.StructField, reflect.Value]{
@@ -43,11 +43,11 @@ func TestFields(t *testing.T) {
 
 	testcase.Two[reflect.StructField, reflect.Value]{
 		Seq: func() iter.Seq2[reflect.StructField, reflect.Value] {
-			return reflectiter.Fields(&fields{"A", "B", "C", "D"})
+			return reflectiter.Field(&fields{"A", "B", "C", "D"})
 		},
 		Seqs: []func() iter.Seq2[reflect.StructField, reflect.Value]{
 			func() iter.Seq2[reflect.StructField, reflect.Value] {
-				return reflectiter.FieldsRv(reflect.ValueOf(fields{"A", "B", "C", "D"}))
+				return reflectiter.FieldRv(reflect.ValueOf(fields{"A", "B", "C", "D"}))
 			},
 		},
 		Expected: []hiter.KeyValue[reflect.StructField, reflect.Value]{

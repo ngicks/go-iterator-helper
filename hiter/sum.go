@@ -2,15 +2,9 @@ package hiter
 
 import (
 	"iter"
-)
 
-// reduce is redefined to avoid xiter dependency.
-func reduce[Sum, V any](reducer func(Sum, V) Sum, initial Sum, seq iter.Seq[V]) Sum {
-	for v := range seq {
-		initial = reducer(initial, v)
-	}
-	return initial
-}
+	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
+)
 
 // as per https://go.dev/ref/spec#arithmetic_operators
 type Summable interface {
@@ -22,7 +16,7 @@ type Summable interface {
 }
 
 func Sum[S Summable](seq iter.Seq[S]) S {
-	return reduce(
+	return adapter.Reduce(
 		func(e S, t S) S { return e + t },
 		*new(S),
 		seq,
@@ -30,7 +24,7 @@ func Sum[S Summable](seq iter.Seq[S]) S {
 }
 
 func SumOf[V any, S Summable](selector func(ele V) S, seq iter.Seq[V]) S {
-	return reduce(
+	return adapter.Reduce(
 		func(e S, t V) S { return e + selector(t) },
 		*new(S),
 		seq,

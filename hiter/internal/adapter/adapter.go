@@ -31,3 +31,11 @@ func Filter2[K, V any](f func(K, V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 		}
 	}
 }
+
+// reduce is redefined to avoid xiter dependency.
+func Reduce[Sum, V any](reducer func(Sum, V) Sum, initial Sum, seq iter.Seq[V]) Sum {
+	for v := range seq {
+		initial = reducer(initial, v)
+	}
+	return initial
+}

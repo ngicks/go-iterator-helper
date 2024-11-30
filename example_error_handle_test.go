@@ -7,7 +7,7 @@ import (
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/errbox"
-	"github.com/ngicks/go-iterator-helper/hiter/sh"
+	"github.com/ngicks/go-iterator-helper/hiter/mapper"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
@@ -48,7 +48,7 @@ func Example_error_handle() {
 	fmt.Println("HandleErr:")
 	var handled error
 	collected = slices.Collect(
-		sh.HandleErr(
+		mapper.HandleErr(
 			func(i int, err error) bool {
 				handled = err
 				return errors.Is(err, errSample2)

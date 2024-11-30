@@ -7,12 +7,12 @@ import (
 	"time"
 
 	"github.com/jonboulle/clockwork"
-	"github.com/ngicks/go-iterator-helper/hiter/sh"
+	"github.com/ngicks/go-iterator-helper/hiter/mapper"
 )
 
 // Keeping this line to let linking work.
 // hope dead code elimination works well on this.
-var _ any = sh.Clone[[]any]
+var _ any = mapper.Clone[[]any]
 
 var (
 	clock = clockwork.NewRealClock()

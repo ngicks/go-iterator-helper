@@ -11,7 +11,7 @@ import (
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/async"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
-	"github.com/ngicks/go-iterator-helper/hiter/sh"
+	"github.com/ngicks/go-iterator-helper/hiter/mapper"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
@@ -130,7 +130,7 @@ func Example_async_worker_map_graceful_cancellation() {
 			}
 			return "✨" + s + "✨" + s + "✨", nil
 		},
-		sh.Cancellable(1, workerCtx, slices.Values(works)),
+		mapper.Cancellable(1, workerCtx, slices.Values(works)),
 	) {
 		fmt.Printf("result = %s, err = %v\n", result, err)
 		cancelWorker()

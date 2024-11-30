@@ -1,6 +1,6 @@
 // package sh defines some short hand iterator adapters.
 // sh only holds functions which only combine other elements in this module.
-package sh
+package mapper
 
 import (
 	"iter"

@@ -8,7 +8,7 @@ import (
 
 	"github.com/jonboulle/clockwork"
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/hiter/sh"
+	"github.com/ngicks/go-iterator-helper/hiter/mapper"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
@@ -52,17 +52,17 @@ func TestChunk_successful(t *testing.T) {
 	assert.DeepEqual(
 		t,
 		[][]int{{0, 1, 2}, {3, 4, 5}, {6, 7, 8}, {9}},
-		slices.Collect(sh.Clone(Chunk(0, 3, src))),
+		slices.Collect(mapper.Clone(Chunk(0, 3, src))),
 	)
 	assert.DeepEqual(
 		t,
 		[][]int{{0, 1, 2}, {3, 4, 5}},
-		slices.Collect(sh.Clone(xiter.Limit(Chunk(0, 3, src), 2))),
+		slices.Collect(mapper.Clone(xiter.Limit(Chunk(0, 3, src), 2))),
 	)
 	assert.DeepEqual(
 		t,
 		[][]int(nil),
-		slices.Collect(sh.Clone(Chunk(0, 3, hiter.Empty[int]()))),
+		slices.Collect(mapper.Clone(Chunk(0, 3, hiter.Empty[int]()))),
 	)
 }
 
@@ -131,7 +131,7 @@ func TestChunk_panic_propagation(t *testing.T) {
 				rec := recover()
 				assert.Assert(t, rec == errSample)
 			}()
-			for v := range sh.Clone(
+			for v := range mapper.Clone(
 				Chunk(
 					0,
 					4,
@@ -157,7 +157,7 @@ func TestChunk_panic_propagation(t *testing.T) {
 				rec := recover()
 				assert.Assert(t, rec == errSample)
 			}()
-			for i, v := range hiter.Enumerate(sh.Clone(Chunk(0, 4, src))) {
+			for i, v := range hiter.Enumerate(mapper.Clone(Chunk(0, 4, src))) {
 				result = append(result, v)
 				if i == 1 {
 					panic(errSample)

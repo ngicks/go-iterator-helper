@@ -7,7 +7,7 @@ import (
 	"slices"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/hiter/sh"
+	"github.com/ngicks/go-iterator-helper/hiter/mathiter"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
@@ -74,7 +74,7 @@ func (s sliceAdapter[T]) Len() int {
 }
 
 func ExampleMergeSort() {
-	rng := sh.Rng(20)
+	rng := mathiter.Rng(20)
 	fmt.Printf("merge sort: %t\n",
 		slices.IsSorted(mergeSortFunc(slices.Collect(limit(rng, 10)), cmp.Compare)),
 	)

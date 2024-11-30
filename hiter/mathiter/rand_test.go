@@ -1,4 +1,4 @@
-package sh_test
+package mathiter_test
 
 import (
 	"crypto/rand"
@@ -8,16 +8,15 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/hiter/sh"
+	"github.com/ngicks/go-iterator-helper/hiter/mathiter"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
-	"gotest.tools/v3/assert/cmp"
 )
 
 func TestRng(t *testing.T) {
 	for i := range 10 {
 		i = i + 1
-		assert.Assert(t, hiter.Every(func(j int) bool { return 0 <= j && j < i }, xiter.Limit(sh.Rng(i), 100)))
+		assert.Assert(t, hiter.Every(func(j int) bool { return 0 <= j && j < i }, xiter.Limit(mathiter.Rng(i), 100)))
 	}
 }
 
@@ -34,18 +33,8 @@ func TestRngSource(t *testing.T) {
 		for idx := range 100 {
 			numsExpected[idx] = int(r.Uint64N(uint64(i)))
 		}
-		rng := sh.RngSourced(i, mathRand.NewChaCha8(seed))
+		rng := mathiter.RngSourced(i, mathRand.NewChaCha8(seed))
 		numsActual := slices.Collect(xiter.Limit(rng, 100))
 		assert.DeepEqual(t, numsExpected, numsActual)
-	}
-}
-
-func TestRandBytes(t *testing.T) {
-	for bin := range xiter.Limit(sh.RandBytes(3), 10) {
-		assert.Assert(t, cmp.Len(bin, 3))
-	}
-
-	for bin := range xiter.Limit(sh.RandBytes(10), 10) {
-		assert.Assert(t, cmp.Len(bin, 10))
 	}
 }

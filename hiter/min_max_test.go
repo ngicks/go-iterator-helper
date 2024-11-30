@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/hiter/sh"
+	"github.com/ngicks/go-iterator-helper/hiter/mathiter"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
 )
@@ -16,7 +16,7 @@ func TestMinMax(t *testing.T) {
 		i int
 	}
 
-	rng := xiter.Map(func(i int) int { return i + 5 }, sh.Rng(100))
+	rng := xiter.Map(func(i int) int { return i + 5 }, mathiter.Rng(100))
 
 	for i := range 5 {
 		nums := slices.Collect(xiter.Limit(rng, 2))

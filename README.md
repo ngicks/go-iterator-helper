@@ -31,6 +31,9 @@ For example, `Zip`, `Reduce` are not defined since they will be implemented in `
 
 Some ideas are stolen from https://jsr.io/@std/collections/doc, like Permutation and SumOf.
 
+Each package named `*iter` corresponds to same name of std library.
+Packages nested under other package are flattened, e.g. `encodingiter` defines helpers for `encoding/json`, `encoding/xml`, `encoding/csv` and so on.
+
 ## x/exp/xiter
 
 Those listed in [#61898](https://github.com/golang/go/issues/61898).

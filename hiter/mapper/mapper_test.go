@@ -93,3 +93,19 @@ func TestClone2(t *testing.T) {
 		resultWoClone,
 	)
 }
+
+func TestSprintf(t *testing.T) {
+	assert.DeepEqual(
+		t,
+		[]string{"000", "001", "002"},
+		slices.Collect(Sprintf("%03d", hiter.Range(0, 3))),
+	)
+}
+
+func TestSprintf2(t *testing.T) {
+	assert.DeepEqual(
+		t,
+		[]string{"002, 000", "001, 001", "000, 002"},
+		slices.Collect(Sprintf2("%03[2]d, %03[1]d", hiter.Enumerate(hiter.Range(2, -1)))),
+	)
+}

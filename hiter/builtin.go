@@ -23,7 +23,7 @@ func MapKeys[M ~map[K]V, K comparable, V any](m M, keys iter.Seq[K]) iter.Seq2[K
 // The iterator takes snapshot of keys from m at invocation and sorts keys in ascending order,
 // which determines the order of paris.
 //
-// Larger the map are, more the memory is consumed.
+// Larger the map is, more the memory is consumed.
 func MapSorted[M ~map[K]V, K cmp.Ordered, V any](m M) iter.Seq2[K, V] {
 	return MapSortedFunc(m, cmp.Compare)
 }

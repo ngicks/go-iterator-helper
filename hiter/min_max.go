@@ -41,7 +41,7 @@ func Max[V cmp.Ordered](seq iter.Seq[V]) V {
 // MaxFunc returns the maximum value of seq using comparison function fn.
 // fn must return -1 if x is less than y, 0 if x equals y, and +1 x is greater than y (as [cmp.Compare] does.)
 // MaxFunc returns the zero value if seq is empty.
-func MaxFunc[V any](fn func(i, j V) int, seq iter.Seq[V]) V {
+func MaxFunc[V any](fn func(x, y V) int, seq iter.Seq[V]) V {
 	var (
 		max   V
 		first = true

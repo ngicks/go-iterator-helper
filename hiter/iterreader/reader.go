@@ -1,7 +1,8 @@
-// iterreader defines a function that converts an iterator to io.Reader.
+// iterreader defines functions that converts an iterator to io.Reader.
 package iterreader
 
 import (
+	"encoding"
 	"io"
 	"iter"
 
@@ -22,6 +23,30 @@ func Reader[V any](marshaler func(V) ([]byte, error), seq iter.Seq[V]) io.Reader
 		marshaler: marshaler,
 		seq:       seq,
 	}
+}
+
+// TextMarshaler is [Reader] where marshaler is [encoding.TextMarshaler.MarshalText].
+// sep is appended to every result of the invocation.
+func TextMarshaler[Enc encoding.TextMarshaler](sep []byte, seq iter.Seq[Enc]) io.Reader {
+	return Reader(
+		func(e Enc) ([]byte, error) {
+			bin, err := e.MarshalText()
+			return append(bin, sep...), err
+		},
+		seq,
+	)
+}
+
+// BinaryMarshaler is [Reader] where marshaler is [encoding.BinaryMarshaler.MarshalBinary].
+// sep is appended to every result of the invocation.
+func BinaryMarshaler[Enc encoding.BinaryMarshaler](sep []byte, seq iter.Seq[Enc]) io.Reader {
+	return Reader(
+		func(e Enc) ([]byte, error) {
+			bin, err := e.MarshalBinary()
+			return append(bin, sep...), err
+		},
+		seq,
+	)
 }
 
 type iterReader[V any] struct {

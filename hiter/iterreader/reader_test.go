@@ -7,6 +7,7 @@ import (
 	"strings"
 	"testing"
 	"testing/iotest"
+	"time"
 
 	"github.com/ngicks/go-iterator-helper/hiter/cryptoiter"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
@@ -54,4 +55,44 @@ func TestReader(t *testing.T) {
 	)
 	err = iotest.TestReader(r, []byte(strings.Join(src, "")))
 	assert.NilError(t, err)
+}
+
+func TestMarshalerReader(t *testing.T) {
+	times := []time.Time{
+		time.Date(2024, 10, 20, 11, 20, 47, 0, time.UTC),
+		time.Date(2024, 9, 23, 2, 45, 21, 0, time.UTC),
+		time.Date(2024, 8, 4, 20, 1, 36, 0, time.UTC),
+	}
+	expectedStr := `2024-10-20T11:20:47Z
+2024-09-23T02:45:21Z
+2024-08-04T20:01:36Z
+`
+	expectedBytes := append(
+		append(
+			append(
+				[]byte(nil),
+				must(times[0].MarshalBinary())...,
+			),
+			must(times[1].MarshalBinary())...,
+		),
+		must(times[2].MarshalBinary())...,
+	)
+
+	var (
+		bin []byte
+		err error
+	)
+	bin, err = io.ReadAll(iterreader.TextMarshaler([]byte("\n"), slices.Values(times)))
+	assert.NilError(t, err)
+	assert.DeepEqual(t, expectedStr, string(bin))
+	bin, err = io.ReadAll(iterreader.BinaryMarshaler(nil, slices.Values(times)))
+	assert.NilError(t, err)
+	assert.DeepEqual(t, expectedBytes, bin)
+}
+
+func must[V any](v V, err error) V {
+	if err != nil {
+		panic(err)
+	}
+	return v
 }

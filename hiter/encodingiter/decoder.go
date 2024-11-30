@@ -23,3 +23,7 @@ func Decode[V any, Dec interface{ Decode(any) error }](dec Dec) iter.Seq2[V, err
 		}
 	}
 }
+
+// There won't be counter parts for [WriteTextMarshaler]/[WriteBinaryMarshaler]
+// since the implementation of [encoding.TextUnmarshaler]/[encoding.TextUnmarshaler] might not know about boundary between
+// 2 values from input byte stream.

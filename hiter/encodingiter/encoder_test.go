@@ -7,6 +7,7 @@ import (
 	"io"
 	"slices"
 	"testing"
+	"time"
 
 	goCmp "github.com/google/go-cmp/cmp"
 	"github.com/ngicks/go-iterator-helper/hiter"
@@ -195,6 +196,58 @@ func TestWrite(t *testing.T) {
 		assertResult()
 		assert.DeepEqual(t, slices.Collect(hiter.Range(0, 3)), keys)
 	})
+}
+
+func TestTextBinaryMarshaler(t *testing.T) {
+	times := []time.Time{
+		time.Date(2024, 10, 20, 11, 20, 47, 0, time.UTC),
+		time.Date(2024, 9, 23, 2, 45, 21, 0, time.UTC),
+		time.Date(2024, 8, 4, 20, 1, 36, 0, time.UTC),
+	}
+
+	var (
+		buf *bytes.Buffer
+		n   int
+		err error
+	)
+	buf = new(bytes.Buffer)
+	n, err = encodingiter.WriteTextMarshaler(buf, []byte("\n"), slices.Values(times))
+	assert.NilError(t, err)
+	// Wah no boundary! The implementation should emit
+	assert.DeepEqual(
+		t,
+		`2024-10-20T11:20:47Z
+2024-09-23T02:45:21Z
+2024-08-04T20:01:36Z
+`, buf.String())
+	assert.Equal(t, 63, n)
+
+	buf = new(bytes.Buffer)
+	n, err = encodingiter.WriteBinaryMarshaler(buf, nil, slices.Values(times))
+	assert.NilError(t, err)
+	// Wah no boundary! The implementation should emit
+	assert.DeepEqual(
+		t,
+		append(
+			append(
+				append(
+					[]byte(nil),
+					must(times[0].MarshalBinary())...,
+				),
+				must(times[1].MarshalBinary())...,
+			),
+			must(times[2].MarshalBinary())...,
+		),
+		buf.Bytes(),
+	)
+	assert.Equal(t, 45, n)
+}
+
+func must[V any](v V, err error) V {
+	if err != nil {
+		panic(err)
+	}
+	return v
 }
 
 type errWriter struct {

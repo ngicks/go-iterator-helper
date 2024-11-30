@@ -1,21 +1,22 @@
-package hiter_test
+package reflectiter_test
 
 import (
 	"iter"
-	"slices"
+	"reflect"
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
+	"github.com/ngicks/go-iterator-helper/hiter/reflectiter"
 )
 
 func TestAssert(t *testing.T) {
 	src := []any{"foo", "bar", "baz"}
-	src2 := []hiter.KeyValue[any, any]{{0, "foo"}, {1, "bar"}, {2, "baz"}}
 
 	testcase.One[string]{
 		Seq: func() iter.Seq[string] {
-			return hiter.Assert[string](slices.Values(src))
+			rv := reflect.ValueOf(src)
+			return reflectiter.AssertValue[string](hiter.OmitF(rv.Seq2()))
 		},
 		Expected: []string{"foo", "bar", "baz"},
 		BreakAt:  2,
@@ -23,9 +24,10 @@ func TestAssert(t *testing.T) {
 
 	testcase.Two[int, string]{
 		Seq: func() iter.Seq2[int, string] {
-			return hiter.Assert2[int, string](hiter.Values2(src2))
+			rv := reflect.ValueOf(src)
+			return reflectiter.AssertValue2[int, string](rv.Seq2())
 		},
-		Expected: []hiter.KeyValue[int, string]{{0, "foo"}, {1, "bar"}, {2, "baz"}},
+		Expected: []hiter.KeyValue[int, string]{{K: 0, V: "foo"}, {K: 1, V: "bar"}, {K: 2, V: "baz"}},
 		BreakAt:  2,
 	}.Test(t)
 }

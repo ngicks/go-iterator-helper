@@ -1,13 +1,22 @@
-package hiter
+// iterreader defines a function that converts an iterator to io.Reader.
+package iterreader
 
 import (
 	"io"
 	"iter"
+
+	"github.com/ngicks/go-iterator-helper/hiter/iterable"
+)
+
+var (
+	_ = iterable.Resumable[any]{} // let linking work.
+	_ = iterable.Peekable[any]{}
 )
 
 // Reader returns a reader which reads values from seq marshaled by marshaler.
 // seq must be stateful and one-shot; each time Read is called one or more values are yielded from seq.
 // If seq is pure and reuseable, Read reads same value repeatedly.
+// You can use [iterable.Resumable] or [iterable.Peekable] to convert a pure iterator to one-shot.
 func Reader[V any](marshaler func(V) ([]byte, error), seq iter.Seq[V]) io.Reader {
 	return &iterReader[V]{
 		marshaler: marshaler,

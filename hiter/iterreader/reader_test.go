@@ -1,4 +1,4 @@
-package hiter_test
+package iterreader_test
 
 import (
 	"encoding/hex"
@@ -8,8 +8,8 @@ import (
 	"testing"
 	"testing/iotest"
 
-	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
+	"github.com/ngicks/go-iterator-helper/hiter/iterreader"
 	"github.com/ngicks/go-iterator-helper/hiter/sh"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
@@ -32,7 +32,7 @@ func TestReader(t *testing.T) {
 		bin []byte
 	)
 
-	r = hiter.Reader(
+	r = iterreader.Reader(
 		func(s string) ([]byte, error) { return []byte(s), nil },
 		iterable.NewResumable(slices.Values(src)).IntoIter(),
 	)
@@ -40,7 +40,7 @@ func TestReader(t *testing.T) {
 	assert.NilError(t, err)
 	assert.Equal(t, strings.Join(src, ""), string(bin))
 
-	r = hiter.Reader(
+	r = iterreader.Reader(
 		func(s string) ([]byte, error) { return []byte(s + "\n"), nil },
 		iterable.NewResumable(slices.Values(src)).IntoIter(),
 	)
@@ -48,7 +48,7 @@ func TestReader(t *testing.T) {
 	assert.NilError(t, err)
 	assert.Equal(t, strings.Join(src, "\n")+"\n", string(bin))
 
-	r = hiter.Reader(
+	r = iterreader.Reader(
 		func(s string) ([]byte, error) { return []byte(s), nil },
 		iterable.NewResumable(slices.Values(src)).IntoIter(),
 	)

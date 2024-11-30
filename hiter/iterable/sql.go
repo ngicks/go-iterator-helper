@@ -5,6 +5,7 @@ import (
 	"iter"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/databaseiter"
 )
 
 var (
@@ -19,7 +20,7 @@ type SqlRows[T any] struct {
 }
 
 func (s SqlRows[T]) IntoIter2() iter.Seq2[T, error] {
-	return hiter.SqlRows[T](s.Rows, s.Scanner)
+	return databaseiter.SqlRows(s.Rows, s.Scanner)
 }
 
 // SqlRows adds IntoIter2 to [*sql.Rows].

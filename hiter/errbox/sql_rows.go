@@ -4,6 +4,7 @@ import (
 	"database/sql"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/databaseiter"
 )
 
 type SqlRows[V any] struct {
@@ -12,7 +13,7 @@ type SqlRows[V any] struct {
 
 func NewSqlRows[V any](rows *sql.Rows, scanner func(*sql.Rows) (V, error)) *SqlRows[V] {
 	return &SqlRows[V]{
-		Box: New(hiter.SqlRows(rows, scanner)),
+		Box: New(databaseiter.SqlRows(rows, scanner)),
 	}
 }
 

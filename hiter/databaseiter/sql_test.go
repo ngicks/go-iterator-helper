@@ -1,4 +1,4 @@
-package hiter_test
+package databaseiter_test
 
 import (
 	"database/sql"
@@ -7,6 +7,7 @@ import (
 
 	goCmp "github.com/google/go-cmp/cmp"
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/databaseiter"
 	"github.com/ngicks/go-iterator-helper/hiter/errbox"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
@@ -26,7 +27,7 @@ func TestSqliteRows(t *testing.T) {
 			testcase.Two[testhelper.TestRow, error]{
 				Seq: func() iter.Seq2[testhelper.TestRow, error] {
 					mock = testhelper.OpenMockDB(false)
-					return hiter.SqlRows(testhelper.QueryRows(mock), scanner)
+					return databaseiter.SqlRows(testhelper.QueryRows(mock), scanner)
 				},
 				Seqs: []func() iter.Seq2[testhelper.TestRow, error]{
 					func() iter.Seq2[testhelper.TestRow, error] {
@@ -43,9 +44,9 @@ func TestSqliteRows(t *testing.T) {
 					},
 				},
 				Expected: []hiter.KeyValue[testhelper.TestRow, error]{
-					{testhelper.TestRow{Id: 1, Title: "post 1", Body: "hello"}, nil},
-					{testhelper.TestRow{Id: 2, Title: "post 2", Body: "world"}, nil},
-					{testhelper.TestRow{Id: 3, Title: "post 3", Body: "iter"}, nil},
+					{K: testhelper.TestRow{Id: 1, Title: "post 1", Body: "hello"}, V: nil},
+					{K: testhelper.TestRow{Id: 2, Title: "post 2", Body: "world"}, V: nil},
+					{K: testhelper.TestRow{Id: 3, Title: "post 3", Body: "iter"}, V: nil},
 				},
 				BreakAt:  2,
 				Stateful: true,
@@ -115,7 +116,7 @@ func TestSqliteRows(t *testing.T) {
 			testcase.Two[testhelper.TestRow, error]{
 				Seq: func() iter.Seq2[testhelper.TestRow, error] {
 					mock = testhelper.OpenMockDB(true)
-					return hiter.SqlRows(testhelper.QueryRows(mock), scanner)
+					return databaseiter.SqlRows(testhelper.QueryRows(mock), scanner)
 				},
 				Seqs: []func() iter.Seq2[testhelper.TestRow, error]{
 					func() iter.Seq2[testhelper.TestRow, error] {
@@ -132,9 +133,9 @@ func TestSqliteRows(t *testing.T) {
 					},
 				},
 				Expected: []hiter.KeyValue[testhelper.TestRow, error]{
-					{testhelper.TestRow{Id: 1, Title: "post 1", Body: "hello"}, nil},
-					{testhelper.TestRow{Id: 2, Title: "post 2", Body: "world"}, nil},
-					{testhelper.TestRow{}, testhelper.ErrMock},
+					{K: testhelper.TestRow{Id: 1, Title: "post 1", Body: "hello"}, V: nil},
+					{K: testhelper.TestRow{Id: 2, Title: "post 2", Body: "world"}, V: nil},
+					{K: testhelper.TestRow{}, V: testhelper.ErrMock},
 				},
 				BreakAt:  2,
 				CmpOpt:   []goCmp.Option{testcase.CompareErrorsIs},
@@ -217,7 +218,7 @@ func TestSqliteRows(t *testing.T) {
 				Seq: func() iter.Seq2[testhelper.TestRow, error] {
 					count = 0
 					mock = testhelper.OpenMockDB(false)
-					return hiter.SqlRows(testhelper.QueryRows(mock), scanner)
+					return databaseiter.SqlRows(testhelper.QueryRows(mock), scanner)
 				},
 				Seqs: []func() iter.Seq2[testhelper.TestRow, error]{
 					func() iter.Seq2[testhelper.TestRow, error] {
@@ -237,9 +238,9 @@ func TestSqliteRows(t *testing.T) {
 					},
 				},
 				Expected: []hiter.KeyValue[testhelper.TestRow, error]{
-					{testhelper.TestRow{Id: 1, Title: "post 1", Body: "hello"}, nil},
-					{testhelper.TestRow{Id: 2, Title: "post 2", Body: "world"}, nil},
-					{testhelper.TestRow{}, testcase.ErrSample},
+					{K: testhelper.TestRow{Id: 1, Title: "post 1", Body: "hello"}, V: nil},
+					{K: testhelper.TestRow{Id: 2, Title: "post 2", Body: "world"}, V: nil},
+					{K: testhelper.TestRow{}, V: testcase.ErrSample},
 				},
 				BreakAt:  1,
 				CmpOpt:   []goCmp.Option{testcase.CompareErrorsIs},

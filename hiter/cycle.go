@@ -8,10 +8,15 @@ import "iter"
 func Cycle[V any](seq iter.Seq[V]) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		for {
+			atLeastOne := false
 			for v := range seq {
+				atLeastOne = true
 				if !yield(v) {
 					return
 				}
+			}
+			if !atLeastOne {
+				break
 			}
 		}
 	}
@@ -23,10 +28,15 @@ func Cycle[V any](seq iter.Seq[V]) iter.Seq[V] {
 func Cycle2[K, V any](seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
 		for {
+			atLeastOne := false
 			for k, v := range seq {
+				atLeastOne = true
 				if !yield(k, v) {
 					return
 				}
+			}
+			if !atLeastOne {
+				break
 			}
 		}
 	}

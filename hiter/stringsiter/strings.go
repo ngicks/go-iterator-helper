@@ -21,7 +21,7 @@ func Collect(sizeHint int, seq iter.Seq[string]) string {
 	return buf.String()
 }
 
-// Join is like [Collect] but inserts sep between every 2 values from seq.
+// Join is like [Collect] but inserts sep between every 2 values from seq, corresponds to [strings.Join].
 func Join(sizeHint int, sep string, seq iter.Seq[string]) string {
 	return Collect(
 		sizeHint,

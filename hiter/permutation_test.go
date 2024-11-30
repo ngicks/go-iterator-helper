@@ -13,7 +13,7 @@ import (
 func TestPermutations(t *testing.T) {
 	m := maps.Collect(
 		Pairs(
-			adapter.MapIter(
+			adapter.Map(
 				func(v []int) [5]int { return [5]int(slices.Clone(v)) },
 				Permutations([]int{1, 2, 3, 4, 5}),
 			),

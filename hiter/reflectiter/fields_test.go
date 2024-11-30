@@ -1,4 +1,4 @@
-package hiter_test
+package reflectiter_test
 
 import (
 	"iter"
@@ -8,6 +8,7 @@ import (
 	goCmp "github.com/google/go-cmp/cmp"
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
+	"github.com/ngicks/go-iterator-helper/hiter/reflectiter"
 )
 
 type fields struct {
@@ -23,13 +24,18 @@ func TestFields(t *testing.T) {
 
 	testcase.Two[reflect.StructField, reflect.Value]{
 		Seq: func() iter.Seq2[reflect.StructField, reflect.Value] {
-			return hiter.Fields(fields{"A", "B", "C", "D"})
+			return reflectiter.Fields(fields{"A", "B", "C", "D"})
+		},
+		Seqs: []func() iter.Seq2[reflect.StructField, reflect.Value]{
+			func() iter.Seq2[reflect.StructField, reflect.Value] {
+				return reflectiter.FieldsRv(reflect.ValueOf(fields{"A", "B", "C", "D"}))
+			},
 		},
 		Expected: []hiter.KeyValue[reflect.StructField, reflect.Value]{
-			{rt.Field(0), rv.Field(0)},
-			{rt.Field(1), rv.Field(1)},
-			{rt.Field(2), rv.Field(2)},
-			{rt.Field(3), rv.Field(3)},
+			{K: rt.Field(0), V: rv.Field(0)},
+			{K: rt.Field(1), V: rv.Field(1)},
+			{K: rt.Field(2), V: rv.Field(2)},
+			{K: rt.Field(3), V: rv.Field(3)},
 		},
 		BreakAt: 1,
 		CmpOpt:  []goCmp.Option{testcase.CompareReflectStructField, testcase.CompareReflectValue},
@@ -37,13 +43,18 @@ func TestFields(t *testing.T) {
 
 	testcase.Two[reflect.StructField, reflect.Value]{
 		Seq: func() iter.Seq2[reflect.StructField, reflect.Value] {
-			return hiter.Fields(&fields{"A", "B", "C", "D"})
+			return reflectiter.Fields(&fields{"A", "B", "C", "D"})
+		},
+		Seqs: []func() iter.Seq2[reflect.StructField, reflect.Value]{
+			func() iter.Seq2[reflect.StructField, reflect.Value] {
+				return reflectiter.FieldsRv(reflect.ValueOf(fields{"A", "B", "C", "D"}))
+			},
 		},
 		Expected: []hiter.KeyValue[reflect.StructField, reflect.Value]{
-			{rt.Field(0), rv.Field(0)},
-			{rt.Field(1), rv.Field(1)},
-			{rt.Field(2), rv.Field(2)},
-			{rt.Field(3), rv.Field(3)},
+			{K: rt.Field(0), V: rv.Field(0)},
+			{K: rt.Field(1), V: rv.Field(1)},
+			{K: rt.Field(2), V: rv.Field(2)},
+			{K: rt.Field(3), V: rv.Field(3)},
 		},
 		BreakAt: 2,
 		CmpOpt:  []goCmp.Option{testcase.CompareReflectStructField, testcase.CompareReflectValue},

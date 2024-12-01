@@ -14,7 +14,8 @@ type intType interface {
 		~uint | ~uint8 | ~uint16 | ~uint32 | ~uint64 | ~uintptr
 }
 
-// Rng returns an iterator over an infinite sequence of pseudo-random numbers in the half-open interval [0,n).
+// Rng returns an iterator over an infinite sequence of pseudo-random numbers.
+// Numbers are distributed in the half-open interval [0,n).
 func Rng[Num intType](n Num) iter.Seq[Num] {
 	return hiter.RepeatFunc(func() Num { return rand.N(n) }, -1)
 }

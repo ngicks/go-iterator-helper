@@ -5,7 +5,7 @@ import (
 )
 
 // Step returns an iterator over numerics values starting from initial and added step at each step.
-// The iterator iterates forever. The caller might want to limit it by [xiter.Limit].
+// The iterator iterates forever. The caller might want to limit it by [Limit].
 func Step[N Numeric](initial, step N) iter.Seq[N] {
 	return func(yield func(N) bool) {
 		for n := initial; ; n += step {

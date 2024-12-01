@@ -34,7 +34,8 @@ type GoGroup interface {
 
 // ForEachGo iterates over seq and calls fn with every value from seq in G's Go method.
 // After all values are consumed, the result of Wait is returned.
-// You may want to use [*errgroup.Group](https://pkg.go.dev/golang.org/x/sync/errgroup#Group) as implementor.
+// You may want to use *errgroup.Group as an implementor.
+// see: https://pkg.go.dev/golang.org/x/sync/errgroup#Group
 func ForEachGo[V any, G GoGroup](ctx context.Context, g G, fn func(context.Context, V) error, seq iter.Seq[V]) error {
 	for v := range seq {
 		g.Go(func() error {
@@ -46,7 +47,8 @@ func ForEachGo[V any, G GoGroup](ctx context.Context, g G, fn func(context.Conte
 
 // ForEachGo2 iterates over seq and calls fn with every key-value pair from seq in G's Go method.
 // After all values are consumed, the result of Wait is returned.
-// You may want to use [*errgroup.Group](https://pkg.go.dev/golang.org/x/sync/errgroup#Group) as implementor.
+// You may want to use *errgroup.Group as an implementor.
+// see: https://pkg.go.dev/golang.org/x/sync/errgroup#Group
 func ForEachGo2[K, V any, G GoGroup](ctx context.Context, g G, fn func(context.Context, K, V) error, seq iter.Seq2[K, V]) error {
 	for k, v := range seq {
 		g.Go(func() error {

@@ -13,7 +13,7 @@ var (
 )
 
 // SqlRows adds IntoIter2 to [*sql.Rows].
-// For detailed behavior, see [hiter.SqlRows].
+// For detailed behavior, see [databaseiter.SqlRows].
 type SqlRows[T any] struct {
 	Rows    *sql.Rows
 	Scanner func(*sql.Rows) (T, error)
@@ -24,7 +24,7 @@ func (s SqlRows[T]) IntoIter2() iter.Seq2[T, error] {
 }
 
 // SqlRows adds IntoIter2 to [*sql.Rows].
-// For detailed behavior, see [hiter.SqlRows].
+// For detailed behavior, see [databaseiter.SqlRows].
 type Nexter[
 	T any,
 	Nexter interface {

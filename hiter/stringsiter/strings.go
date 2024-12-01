@@ -150,7 +150,7 @@ func CutUpperCase(s string) (tokUntil int, skipUntil int) {
 	return len(org), len(org)
 }
 
-// SplitFunc returns an iterator over sub string of s cut by splitFn.
+// SplitFunc returns an iterator over sub string of s cut by [CutterFunc].
 // When n > 0, SplitFunc cuts only n times and
 // the returned iterator yields rest of string after n sub strings, if non empty.
 // The sub strings from the iterator overlaps if splitFn decides so.

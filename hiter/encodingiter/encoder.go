@@ -69,9 +69,7 @@ func WriteBinaryMarshaler[Enc encoding.BinaryMarshaler](w io.Writer, sep []byte,
 }
 
 // Encode writes consecutive decode results of all values from seq.
-//
-// The iterator stops if and only if dec returns io.EOF. Handling other errors is caller's responsibility.
-// If the first error should stop the iterator, use [LimitUntil], [LimitAfter] or [*errbox.Box].
+// The first error stops the iteration.
 func Encode[V any, Enc interface{ Encode(v any) error }](enc Enc, seq iter.Seq[V]) error {
 	for v := range seq {
 		if err := enc.Encode(v); err != nil {

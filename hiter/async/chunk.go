@@ -20,7 +20,7 @@ var (
 
 // Chunk returns an iterator over consecutive values of up to n elements from seq.
 //
-// The returned iterator reuses the buffer it yields. Apply [sh.Clone] if the caller needs to retain slices.
+// The returned iterator reuses the buffer it yields. Apply [mapper.Clone] if the caller needs to retain slices.
 //
 // Chunk may yield slices where 0 < len(s) <= n.
 // Values may be shorter than n if timeout > 0 and the timeout duration passed since last time seq generated a value.

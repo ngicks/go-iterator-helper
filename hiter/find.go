@@ -114,3 +114,27 @@ func FindLastFunc2[K, V any](fn func(K, V) bool, seq iter.Seq2[K, V]) (foundK K,
 	}
 	return foundK, foundV, idx
 }
+
+// Contains reports whether v is present in seq.
+func Contains[V comparable](v V, seq iter.Seq[V]) bool {
+	_, idx := Find(v, seq)
+	return idx >= 0
+}
+
+// ContainsFunc reports whether at least one element v of s satisfies f(v).
+func ContainsFunc[V any](f func(V) bool, seq iter.Seq[V]) bool {
+	_, idx := FindFunc(f, seq)
+	return idx >= 0
+}
+
+// Contains2 reports whether k-v pair is present in seq.
+func Contains2[K, V comparable](k K, v V, seq iter.Seq2[K, V]) bool {
+	_, _, idx := Find2(k, v, seq)
+	return idx >= 0
+}
+
+// ContainsFunc2 reports whether at least one k-v pair of s satisfies f(k, v).
+func ContainsFunc2[K, V any](f func(K, V) bool, seq iter.Seq2[K, V]) bool {
+	_, _, idx := FindFunc2(f, seq)
+	return idx >= 0
+}

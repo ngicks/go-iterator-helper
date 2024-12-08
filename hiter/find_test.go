@@ -11,12 +11,35 @@ import (
 func TestFind(t *testing.T) {
 	src1 := []any{"foo", "bar", "foo", "baz", "foo"}
 	src2 := []string{"foo", "bar", "foo", "baz", "foo"}
+	src3 := [][]string{{"foo"}, {"foo", "bar"}, {"foo"}}
 
 	type testCase struct {
 		name string
 		tgtV string
 		idx  int
 	}
+
+	t.Run("Contains", func(t *testing.T) {
+		assert.Assert(t, hiter.Contains("foo", slices.Values(src1)))
+		assert.Assert(t, hiter.Contains("bar", slices.Values(src1)))
+		assert.Assert(t, !hiter.Contains("qux", slices.Values(src1)))
+	})
+
+	t.Run("ContainsFunc", func(t *testing.T) {
+		assert.Assert(t, hiter.ContainsFunc(func(s []string) bool { return slices.Contains(s, "foo") }, slices.Values(src3)))
+		assert.Assert(t, !hiter.ContainsFunc(func(s []string) bool { return slices.Contains(s, "qux") }, slices.Values(src3)))
+	})
+
+	t.Run("Contains2", func(t *testing.T) {
+		assert.Assert(t, hiter.Contains2(0, "foo", slices.All(src1)))
+		assert.Assert(t, !hiter.Contains2(0, "bar", slices.All(src1)))
+		assert.Assert(t, !hiter.Contains2(0, "qux", slices.All(src1)))
+	})
+
+	t.Run("ContainsFunc2", func(t *testing.T) {
+		assert.Assert(t, hiter.ContainsFunc2(func(i int, s []string) bool { return i == 0 && slices.Contains(s, "foo") }, slices.All(src3)))
+		assert.Assert(t, !hiter.ContainsFunc2(func(i int, s []string) bool { return i == 0 && slices.Contains(s, "bar") }, slices.All(src3)))
+	})
 
 	t.Run("Find", func(t *testing.T) {
 		for _, tc := range []testCase{

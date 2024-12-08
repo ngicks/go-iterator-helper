@@ -40,3 +40,25 @@ Those listed in [#61898](https://github.com/golang/go/issues/61898).
 
 This package is vendored so that you can use it anywhere without copy-and-pasting everywhere.
 It is already frozen; no change will be made even when xiter proposal got some modification.
+
+## Future deprecations
+
+All functions will be noted as deprecated when std, `golang.org/x/exp/xiter` or similar quasi-std packages define equivalents.
+
+It is just simply noted as deprecated: functions will remain same regardless of deprecation.
+You definitely should use std where possible, but you can keep using `hiter`.
+
+## Deprecated functions
+
+### After Go 1.24
+
+Nothing.
+
+https://tip.golang.org/doc/go1.24
+
+`Go 1.24` adds
+
+- `Line`, `SplitSeq`, `SplitAfterSeq`, `FieldSeq` and `FieldFuncSeq` to `(strings|bytes)`.
+  - `stringsiter` package defines similar functions but not exactly same. Those remain valid and maintained.
+- iterator sources to `go/types`
+  - `hiter.Atter` remains valid since it can be used for any implementors, e.g. [github.com/gammazero/deque](https://github.com/gammazero/deque)

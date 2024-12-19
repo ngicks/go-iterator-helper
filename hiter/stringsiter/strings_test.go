@@ -17,8 +17,10 @@ var (
 
 func TestCollect(t *testing.T) {
 	s := slices.Values([]string{"foo", "bar", "baz"})
-	assert.Equal(t, "foobarbaz", stringsiter.Collect(1024, s))
-	assert.Equal(t, "foo, bar, baz", stringsiter.Join(1024, ", ", s))
+	assert.Equal(t, "foobarbaz", stringsiter.Collect(s))
+	assert.Equal(t, "foobarbaz", stringsiter.CollectHinted(1024, s))
+	assert.Equal(t, "foo, bar, baz", stringsiter.Join(", ", s))
+	assert.Equal(t, "foo, bar, baz", stringsiter.JoinHinted(1024, ", ", s))
 }
 
 func TestChunk(t *testing.T) {
@@ -64,8 +66,10 @@ func TestChunk(t *testing.T) {
 			BreakAt:  2,
 		}.Test(t)
 
-		assert.Equal(t, runesSrc, stringsiter.Collect(len(runesSrc), slices.Values(expected)))
-		assert.Equal(t, runesSrc, stringsiter.Join(len(runesSrc), "", slices.Values(expected)))
+		assert.Equal(t, runesSrc, stringsiter.Collect(slices.Values(expected)))
+		assert.Equal(t, runesSrc, stringsiter.CollectHinted(len(runesSrc), slices.Values(expected)))
+		assert.Equal(t, runesSrc, stringsiter.Join("", slices.Values(expected)))
+		assert.Equal(t, runesSrc, stringsiter.JoinHinted(len(runesSrc), "", slices.Values(expected)))
 	})
 
 	t.Run("divide by 0", func(t *testing.T) {

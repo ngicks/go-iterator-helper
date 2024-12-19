@@ -10,9 +10,13 @@ import (
 )
 
 // Collect concatenates all values form seq to a single string.
-// sizeHint hints size of all values in bytes,
-// which will be used to pre-allocate buffer.
-func Collect(sizeHint int, seq iter.Seq[string]) string {
+// If size of all value over seq
+func Collect(seq iter.Seq[string]) string {
+	return CollectHinted(0, seq)
+}
+
+// CollectHinted is like [Collect] but can hint its internal buffer size to reduce allocation per call.
+func CollectHinted(sizeHint int, seq iter.Seq[string]) string {
 	var buf strings.Builder
 	buf.Grow(sizeHint)
 	for s := range seq {
@@ -21,9 +25,15 @@ func Collect(sizeHint int, seq iter.Seq[string]) string {
 	return buf.String()
 }
 
-// Join is like [Collect] but inserts sep between every 2 values from seq, corresponds to [strings.Join].
-func Join(sizeHint int, sep string, seq iter.Seq[string]) string {
-	return Collect(
+// Join is like [Collect] but inserts sep between every 2 values from seq,
+// which corresponds to [strings.Join].
+func Join(sep string, seq iter.Seq[string]) string {
+	return JoinHinted(0, sep, seq)
+}
+
+// JoinHinted is like [Join] but can hint its internal buffer size to reduce allocation per call.
+func JoinHinted(sizeHint int, sep string, seq iter.Seq[string]) string {
+	return CollectHinted(
 		sizeHint,
 		hiter.Skip(
 			1,

@@ -17,7 +17,6 @@ func ExampleDecorate() {
 		N:   1,
 	}
 	m := stringsiter.Collect(
-		9+((2 /*num*/ +2 /*. */ +1 /* */)*3),
 		hiter.SkipLast(
 			1,
 			hiter.Decorate(

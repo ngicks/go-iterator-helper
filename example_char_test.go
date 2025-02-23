@@ -11,7 +11,6 @@ import (
 func ExampleRange_char() {
 	fmt.Println(
 		stringsiter.Collect(
-			27,
 			xiter.Map(
 				func(r rune) string {
 					return string(r - ('a' - 'A'))

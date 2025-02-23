@@ -10,7 +10,8 @@ import (
 )
 
 // Collect concatenates all values form seq to a single string.
-// If size of all value over seq
+// If sum size of all values over seq is known or can be roughly estimated before calling Collect,
+// [CollectHinted] is preferred because it can hint allocation size.
 func Collect(seq iter.Seq[string]) string {
 	return CollectHinted(0, seq)
 }
@@ -114,7 +115,7 @@ func CutNewLine(s string) (tokUntil int, skipUntil int) {
 
 // CutWord is a split function for a [SplitFunc] that returns each space-separated word of text,
 // with surrounding spaces deleted. It will never return an empty string.
-// The definition of space is set by unicode.IsSpace.
+// The definition of space is set by [unicode.IsSpace].
 func CutWord(s string) (tokUntil int, skipUntil int) {
 	if len(s) < 1 {
 		return len(s), len(s)

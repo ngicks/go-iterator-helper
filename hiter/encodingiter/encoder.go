@@ -8,7 +8,7 @@ import (
 
 // Write writes all values from seq by marshaling it through marshaler.
 // It returns the number of byte written to w.
-// If marshaler or io.Writer returns an error it stops the iteration and the function returns the error with numbers of written bytes so far.
+// If marshaler or [io.Writer] returns an error it stops the iteration and the function returns the error with numbers of written bytes so far.
 //
 // The marshaler receives each value from seq and accumulative number of bytes written.
 func Write[V any](w io.Writer, marshaler func(v V, written int) ([]byte, error), seq iter.Seq[V]) (n int, er error) {

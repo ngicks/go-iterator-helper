@@ -7,8 +7,8 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
 )
 
@@ -16,18 +16,18 @@ func TestStep(t *testing.T) {
 	assert.DeepEqual(
 		t,
 		[]int{10, 14, 18, 22, 26, 30, 34, 38, 42, 46},
-		slices.Collect(xiter.Limit(hiter.Step(10, 4), 10)),
+		slices.Collect(hiter.Limit(10, hiter.Step(10, 4))),
 	)
 	assert.DeepEqual(
 		t,
 		[]int{12, 5, -2},
-		slices.Collect(xiter.Limit(hiter.Step(12, -7), 3)),
+		slices.Collect(hiter.Limit(3, hiter.Step(12, -7))),
 	)
 }
 
 func TestStepBy(t *testing.T) {
 	src := slices.Collect(
-		xiter.Map(func(i int) string {
+		adapter.Map(func(i int) string {
 			return fmt.Sprintf("%d", i)
 		},
 			hiter.Range(0, 15),

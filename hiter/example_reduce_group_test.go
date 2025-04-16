@@ -6,7 +6,7 @@ import (
 	"maps"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 )
 
 func ExampleReduceGroup() {
@@ -24,7 +24,7 @@ func ExampleReduceGroup() {
 	reduced := hiter.ReduceGroup(
 		func(sum []string, c string) []string { return append(sum, c) },
 		nil,
-		xiter.Concat2(maps.All(m1), maps.All(m2)),
+		adapter.Concat2(maps.All(m1), maps.All(m2)),
 	)
 
 	bin, _ := json.MarshalIndent(reduced, "", "    ")

@@ -10,7 +10,6 @@ import (
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
 )
 
@@ -105,7 +104,7 @@ func TestHandleErr(t *testing.T) {
 				handleReceived = append(handleReceived, i)
 				return !errors.Is(err, errs[len(errs)-2])
 			},
-			hiter.Pairs(hiter.Range(0, 6), xiter.Concat(hiter.Once(error(nil)), slices.Values(errs))),
+			hiter.Pairs(hiter.Range(0, 6), adapter.Concat(hiter.Once(error(nil)), slices.Values(errs))),
 		),
 	)
 	// values paired to error are excluded.

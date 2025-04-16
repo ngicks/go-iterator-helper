@@ -7,7 +7,6 @@ import (
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
 )
@@ -33,7 +32,7 @@ func testResumable[T interface {
 	})
 	t.Run("break-and-resume", func(t *testing.T) {
 		res := factory(src)
-		assert.Assert(t, cmp.DeepEqual(slices.Collect(xiter.Limit(src, 3)), slices.Collect(xiter.Limit(res.IntoIter(), 3))))
+		assert.Assert(t, cmp.DeepEqual(slices.Collect(hiter.Limit(3, src)), slices.Collect(hiter.Limit(3, res.IntoIter()))))
 		assert.Assert(t, cmp.DeepEqual(slices.Collect(hiter.Skip(3, src)), slices.Collect(res.IntoIter())))
 		assert.Assert(t, slices.Collect(res.IntoIter()) == nil)
 	})
@@ -46,7 +45,7 @@ func testResumable[T interface {
 				res.Stop()
 			}
 		}
-		assert.Assert(t, cmp.DeepEqual(slices.Collect(xiter.Limit(src, 3)), values))
+		assert.Assert(t, cmp.DeepEqual(slices.Collect(hiter.Limit(3, src)), values))
 		assert.Assert(t, slices.Collect(res.IntoIter()) == nil)
 	})
 }
@@ -66,7 +65,7 @@ func testResumable2[T interface {
 	t.Run("break-and-resume", func(t *testing.T) {
 		res := factory(src)
 		defer res.Stop()
-		assert.Assert(t, cmp.DeepEqual(hiter.Collect2(xiter.Limit2(src, 3)), hiter.Collect2(xiter.Limit2(res.IntoIter2(), 3))))
+		assert.Assert(t, cmp.DeepEqual(hiter.Collect2(hiter.Limit2(3, src)), hiter.Collect2(hiter.Limit2(3, res.IntoIter2()))))
 		assert.Assert(t, cmp.DeepEqual(hiter.Collect2(hiter.Skip2(3, src)), hiter.Collect2(res.IntoIter2())))
 		assert.Assert(t, hiter.Collect2(res.IntoIter2()) == nil)
 	})
@@ -80,7 +79,7 @@ func testResumable2[T interface {
 				res.Stop()
 			}
 		}
-		assert.Assert(t, cmp.DeepEqual(hiter.Collect2(xiter.Limit2(src, 3)), pairs))
+		assert.Assert(t, cmp.DeepEqual(hiter.Collect2(hiter.Limit2(3, src)), pairs))
 		assert.Assert(t, hiter.Collect2(res.IntoIter2()) == nil)
 	})
 }

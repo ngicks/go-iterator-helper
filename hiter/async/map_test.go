@@ -11,7 +11,6 @@ import (
 
 	goCmp "github.com/google/go-cmp/cmp"
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
 )
@@ -43,7 +42,7 @@ func TestMap_successful(t *testing.T) {
 		{K: 14, V: errSample},
 	}
 	assert.Assert(t, cmp.DeepEqual(result, hiter.Collect2(m()), compareError))
-	assert.Assert(t, cmp.DeepEqual(result[:2], hiter.Collect2(xiter.Limit2(m(), 2)), compareError))
+	assert.Assert(t, cmp.DeepEqual(result[:2], hiter.Collect2(hiter.Limit2(2, m())), compareError))
 	assert.Assert(
 		t,
 		cmp.DeepEqual(

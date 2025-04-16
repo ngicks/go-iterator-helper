@@ -7,7 +7,6 @@ import (
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
 )
@@ -30,11 +29,11 @@ func TestPeekable(t *testing.T) {
 	assert.DeepEqual(t, slices.Collect(hiter.Range(0, 5)), res.Peek(5))
 	assert.DeepEqual(t, slices.Collect(hiter.Range(0, 5)), res.Peek(5))
 
-	assert.DeepEqual(t, slices.Collect(hiter.Range(0, 10)), slices.Collect(xiter.Limit(res.IntoIter(), 10)))
+	assert.DeepEqual(t, slices.Collect(hiter.Range(0, 10)), slices.Collect(hiter.Limit(10, res.IntoIter())))
 	assert.DeepEqual(t, slices.Collect(hiter.Range(10, 12)), res.Peek(2))
 
 	rest := slices.Collect(hiter.Range(10, 15))
-	for i, v := range xiter.Limit2(hiter.Enumerate(res.IntoIter()), 5) {
+	for i, v := range hiter.Limit2(5, hiter.Enumerate(res.IntoIter())) {
 		res.Peek(3)
 		assert.Equal(t, rest[i], v)
 	}
@@ -63,11 +62,11 @@ func TestPeekable2(t *testing.T) {
 	assert.DeepEqual(t, collectRange(0, 5), res.Peek(5))
 	assert.DeepEqual(t, collectRange(0, 5), res.Peek(5))
 
-	assert.DeepEqual(t, collectRange(0, 10), hiter.Collect2(xiter.Limit2(res.IntoIter2(), 10)))
+	assert.DeepEqual(t, collectRange(0, 10), hiter.Collect2(hiter.Limit2(10, res.IntoIter2())))
 	assert.DeepEqual(t, collectRange(10, 12), res.Peek(2))
 
 	rest := collectRange(10, 15)
-	for i, v := range xiter.Limit2(hiter.Enumerate(hiter.ToKeyValue(res.IntoIter2())), 5) {
+	for i, v := range hiter.Limit2(5, hiter.Enumerate(hiter.ToKeyValue(res.IntoIter2()))) {
 		res.Peek(3)
 		assert.Equal(t, rest[i], v)
 	}

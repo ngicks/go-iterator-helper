@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
 func TestFlatten(t *testing.T) {
@@ -31,7 +31,7 @@ func TestFlatten(t *testing.T) {
 	t.Run("Flatten", func(t *testing.T) {
 		testcase.One[int]{
 			Seq: func() iter.Seq[int] {
-				return hiter.FlattenSeq(xiter.Map(slices.Values, nested1))
+				return hiter.FlattenSeq(adapter.Map(slices.Values, nested1))
 			},
 			Expected: flattenResult,
 			BreakAt:  4,
@@ -70,7 +70,7 @@ func TestFlatten(t *testing.T) {
 		testcase.Two[int, int]{
 			Seq: func() iter.Seq2[int, int] {
 				return hiter.FlattenSeqF(hiter.Pairs(
-					xiter.Map(slices.Values, nested1),
+					adapter.Map(slices.Values, nested1),
 					flat1,
 				))
 			},
@@ -97,7 +97,7 @@ func TestFlatten(t *testing.T) {
 			Seq: func() iter.Seq2[int, int] {
 				return hiter.FlattenSeqL(hiter.Pairs(
 					flat2,
-					xiter.Map(slices.Values, nested2),
+					adapter.Map(slices.Values, nested2),
 				))
 			},
 			Expected: flattenLResult,

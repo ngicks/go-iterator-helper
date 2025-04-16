@@ -8,8 +8,8 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
 )
 
@@ -137,7 +137,7 @@ func TestTryFind(t *testing.T) {
 	assert.Equal(t, -1, idx)
 	assert.ErrorIs(t, err, testcase.ErrSample)
 
-	v, idx, err = hiter.TryFind(func(s string) bool { return s == "baz" }, xiter.Limit2(trySrc, 2))
+	v, idx, err = hiter.TryFind(func(s string) bool { return s == "baz" }, hiter.Limit2(2, trySrc))
 	assert.Equal(t, "", v)
 	assert.Equal(t, -1, idx)
 	assert.NilError(t, err)
@@ -150,13 +150,13 @@ func TestTryForEach(t *testing.T) {
 	)
 
 	args = args[:0]
-	err = hiter.TryForEach(func(s string) { args = append(args, s) }, xiter.Limit2(trySrc, 2))
-	assert.DeepEqual(t, slices.Collect(hiter.OmitL(xiter.Limit2(trySrc, 2))), args)
+	err = hiter.TryForEach(func(s string) { args = append(args, s) }, hiter.Limit2(2, trySrc))
+	assert.DeepEqual(t, slices.Collect(hiter.OmitL(hiter.Limit2(2, trySrc))), args)
 	assert.NilError(t, err)
 
 	args = args[:0]
 	err = hiter.TryForEach(func(s string) { args = append(args, s) }, trySrc)
-	assert.DeepEqual(t, slices.Collect(hiter.OmitL(xiter.Limit2(trySrc, 2))), args)
+	assert.DeepEqual(t, slices.Collect(hiter.OmitL(hiter.Limit2(2, trySrc))), args)
 	assert.ErrorIs(t, err, testcase.ErrSample)
 }
 
@@ -166,9 +166,9 @@ func TestTryReduce(t *testing.T) {
 		err error
 	)
 	sum, err = hiter.TryReduce(func(ss []string, s string) []string { return append(ss, s) }, []string{}, trySrc)
-	assert.DeepEqual(t, slices.Collect(hiter.OmitL(xiter.Limit2(trySrc, 2))), sum)
+	assert.DeepEqual(t, slices.Collect(hiter.OmitL(hiter.Limit2(2, trySrc))), sum)
 	assert.ErrorIs(t, err, testcase.ErrSample)
-	sum, err = hiter.TryReduce(func(ss []string, s string) []string { return append(ss, s) }, []string{}, xiter.Limit2(trySrc, 1))
+	sum, err = hiter.TryReduce(func(ss []string, s string) []string { return append(ss, s) }, []string{}, hiter.Limit2(1, trySrc))
 	assert.DeepEqual(t, []string{"foo"}, sum)
 	assert.NilError(t, err)
 }
@@ -180,18 +180,18 @@ func TestTryCollect(t *testing.T) {
 	)
 
 	sum, err = hiter.TryCollect(trySrc)
-	assert.DeepEqual(t, slices.Collect(hiter.OmitL(xiter.Limit2(trySrc, 2))), sum)
+	assert.DeepEqual(t, slices.Collect(hiter.OmitL(hiter.Limit2(2, trySrc))), sum)
 	assert.ErrorIs(t, err, testcase.ErrSample)
 
-	sum, err = hiter.TryCollect(xiter.Limit2(trySrc, 1))
+	sum, err = hiter.TryCollect(hiter.Limit2(1, trySrc))
 	assert.DeepEqual(t, []string{"foo"}, sum)
 	assert.NilError(t, err)
 
 	sum, err = hiter.TryAppendSeq([]string{"foo"}, trySrc)
-	assert.DeepEqual(t, slices.Collect(xiter.Concat(hiter.Once("foo"), hiter.OmitL(xiter.Limit2(trySrc, 2)))), sum)
+	assert.DeepEqual(t, slices.Collect(adapter.Concat(hiter.Once("foo"), hiter.OmitL(hiter.Limit2(2, trySrc)))), sum)
 	assert.ErrorIs(t, err, testcase.ErrSample)
 
-	sum, err = hiter.TryAppendSeq([]string{"foo"}, xiter.Limit2(trySrc, 1))
+	sum, err = hiter.TryAppendSeq([]string{"foo"}, hiter.Limit2(1, trySrc))
 	assert.DeepEqual(t, []string{"foo", "foo"}, sum)
 	assert.NilError(t, err)
 }

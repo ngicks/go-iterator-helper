@@ -9,21 +9,22 @@ import (
 	"testing/iotest"
 	"time"
 
+	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/cryptoiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 	"github.com/ngicks/go-iterator-helper/hiter/iterreader"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
 )
 
 func TestReader(t *testing.T) {
 	src := slices.Collect(
-		xiter.Limit(
-			xiter.Map(
+		hiter.Limit(
+			10,
+			adapter.Map(
 				func(b []byte) string { return hex.EncodeToString(b) },
 				cryptoiter.RandBytes(8),
 			),
-			10,
 		),
 	)
 

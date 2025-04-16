@@ -9,7 +9,6 @@ import (
 	"github.com/jonboulle/clockwork"
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/mapper"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
 )
@@ -57,7 +56,7 @@ func TestChunk_successful(t *testing.T) {
 	assert.DeepEqual(
 		t,
 		[][]int{{0, 1, 2}, {3, 4, 5}},
-		slices.Collect(mapper.Clone(xiter.Limit(Chunk(0, 3, src), 2))),
+		slices.Collect(mapper.Clone(hiter.Limit(2, Chunk(0, 3, src)))),
 	)
 	assert.DeepEqual(
 		t,

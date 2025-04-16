@@ -9,14 +9,13 @@ import (
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/mathiter"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
 )
 
 func TestRng(t *testing.T) {
 	for i := range 10 {
 		i = i + 1
-		assert.Assert(t, hiter.Every(func(j int) bool { return 0 <= j && j < i }, xiter.Limit(mathiter.Rng(i), 100)))
+		assert.Assert(t, hiter.Every(func(j int) bool { return 0 <= j && j < i }, hiter.Limit(100, mathiter.Rng(i))))
 	}
 }
 
@@ -34,7 +33,7 @@ func TestRngSource(t *testing.T) {
 			numsExpected[idx] = int(r.Uint64N(uint64(i)))
 		}
 		rng := mathiter.RngSourced(i, mathRand.NewChaCha8(seed))
-		numsActual := slices.Collect(xiter.Limit(rng, 100))
+		numsActual := slices.Collect(hiter.Limit(100, rng))
 		assert.DeepEqual(t, numsExpected, numsActual)
 	}
 }

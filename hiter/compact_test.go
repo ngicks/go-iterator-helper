@@ -5,7 +5,7 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
 )
@@ -72,8 +72,8 @@ func TestCompact2(t *testing.T) {
 		},
 		{
 			input: Pairs( // 5,5 5,5 6,5 6,6 6,6
-				xiter.Concat(Repeat(5, 2), Repeat(6, 3)),
-				xiter.Concat(Repeat(5, 3), Repeat(6, 2)),
+				adapter.Concat(Repeat(5, 2), Repeat(6, 3)),
+				adapter.Concat(Repeat(5, 3), Repeat(6, 2)),
 			),
 			expected: KeyValues[int, int]{{K: 5, V: 5}, {K: 6, V: 5}, {K: 6, V: 6}},
 		},

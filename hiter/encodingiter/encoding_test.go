@@ -12,9 +12,9 @@ import (
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/encodingiter"
 	"github.com/ngicks/go-iterator-helper/hiter/errbox"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
 )
 
@@ -60,15 +60,15 @@ func TestEncoding(t *testing.T) {
 		var box *errbox.XmlDecoder
 		testcase.Two[xml.Token, error]{
 			Seq: func() iter.Seq2[xml.Token, error] {
-				return xiter.Map2(copyXmlToken, encodingiter.XmlDecoder(xmlDec()))
+				return adapter.Map2(copyXmlToken, encodingiter.XmlDecoder(xmlDec()))
 			},
 			Seqs: []func() iter.Seq2[xml.Token, error]{
 				func() iter.Seq2[xml.Token, error] {
-					return xiter.Map2(copyXmlToken, iterable.XmlDecoder{Decoder: xmlDec()}.IntoIter2())
+					return adapter.Map2(copyXmlToken, iterable.XmlDecoder{Decoder: xmlDec()}.IntoIter2())
 				},
 				func() iter.Seq2[xml.Token, error] {
 					box = errbox.NewXmlDecoder(xmlDec())
-					return hiter.Pairs(xiter.Map(xml.CopyToken, box.IntoIter()), hiter.Repeat(error(nil), -1))
+					return hiter.Pairs(adapter.Map(xml.CopyToken, box.IntoIter()), hiter.Repeat(error(nil), -1))
 				},
 			},
 			Expected: []hiter.KeyValue[xml.Token, error]{

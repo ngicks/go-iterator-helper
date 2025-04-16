@@ -6,13 +6,13 @@ import (
 	"slices"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 )
 
 func ExampleWindow_moving_average() {
 	src := []int{1, 0, 1, 0, 1, 0, 5, 3, 2, 3, 4, 6, 5, 3, 6, 7, 7, 8, 9, 5, 7, 7, 8}
 	first := true
-	for avg := range xiter.Map(
+	for avg := range adapter.Map(
 		func(s []int) float64 {
 			return float64(hiter.Sum(slices.Values(s))) / float64(len(s))
 		},
@@ -32,7 +32,7 @@ func ExampleWindow_moving_average() {
 func ExampleWindowSeq_moving_average() {
 	src := []int{1, 0, 1, 0, 1, 0, 5, 3, 2, 3, 4, 6, 5, 3, 6, 7, 7, 8, 9, 5, 7, 7, 8}
 	first := true
-	for avg := range xiter.Map(
+	for avg := range adapter.Map(
 		func(s iter.Seq[int]) float64 {
 			return float64(hiter.Sum(s)) / float64(5)
 		},

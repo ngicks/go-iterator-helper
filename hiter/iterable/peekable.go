@@ -5,7 +5,6 @@ import (
 	"slices"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
 var (
@@ -39,7 +38,7 @@ func (p *Peekable[V]) Stop() {
 func (p *Peekable[V]) Peek(n int) []V {
 	// internal behavior might need some change to use ring buffer.
 	if diff := n - len(p.peeked); diff > 0 {
-		p.peeked = slices.AppendSeq(p.peeked, xiter.Limit(p.r.IntoIter(), diff))
+		p.peeked = slices.AppendSeq(p.peeked, hiter.Limit(diff, p.r.IntoIter()))
 	}
 	if len(p.peeked) > n {
 		return p.peeked[:n:n]
@@ -100,7 +99,7 @@ func (p *Peekable2[K, V]) Stop() {
 // Peeked pairs are only removed through the iterator returned from IntoIter.
 func (p *Peekable2[K, V]) Peek(n int) []hiter.KeyValue[K, V] {
 	if diff := n - len(p.peeked); diff > 0 {
-		p.peeked = hiter.AppendSeq2(p.peeked, xiter.Limit2(p.r.IntoIter2(), diff))
+		p.peeked = hiter.AppendSeq2(p.peeked, hiter.Limit2(diff, p.r.IntoIter2()))
 	}
 	if len(p.peeked) > n {
 		return p.peeked[:n:n]

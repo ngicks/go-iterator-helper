@@ -31,7 +31,6 @@ func ExampleNewSqlRows_successful() {
 	}
 
 	boxed := errbox.NewSqlRows(rows, scanner)
-	defer boxed.Stop()
 
 	for row := range boxed.IntoIter() {
 		fmt.Printf("row = %#v\n", row)
@@ -49,7 +48,6 @@ func ExampleNewSqlRows_row_error() {
 	defer mock.Close()
 
 	boxed := errbox.NewSqlRows(testhelper.QueryRows(mock), testhelper.Scan)
-	defer boxed.Stop()
 
 	for row := range boxed.IntoIter() {
 		fmt.Printf("row = %#v\n", row)
@@ -78,7 +76,6 @@ func ExampleNewSqlRows_scan_error() {
 			return testhelper.Scan(r)
 		},
 	)
-	defer boxed.Stop()
 
 	for row := range boxed.IntoIter() {
 		fmt.Printf("row = %#v\n", row)

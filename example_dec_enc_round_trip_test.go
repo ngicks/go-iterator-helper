@@ -21,7 +21,6 @@ func Example_dec_enc_round_trip() {
 
 	rawDec := json.NewDecoder(bytes.NewReader(src))
 	dec := errbox.New(encodingiter.Decode[map[string]string](rawDec))
-	defer dec.Stop()
 
 	enc := json.NewEncoder(os.Stdout)
 

@@ -22,7 +22,6 @@ func ExampleNewJsonDecoder_a_semantically_broken() {
 	}`
 
 	dec := errbox.NewJsonDecoder(json.NewDecoder(strings.NewReader(semanticallyBroken)))
-	defer dec.Stop()
 
 	var depth int
 	for t := range dec.IntoIter() {
@@ -89,7 +88,6 @@ func ExampleNewJsonDecoder_b_syntactically_broken() {
 			),
 		),
 	)
-	defer dec.Stop()
 
 	for t := range dec.IntoIter() {
 		fmt.Printf("%v\n", t)
@@ -130,7 +128,6 @@ func ExampleNewJsonDecoder_c_reader_broken() {
 			),
 		),
 	)
-	defer dec.Stop()
 
 	for t := range dec.IntoIter() {
 		fmt.Printf("%v\n", t)

@@ -27,7 +27,6 @@ func ExampleNewXmlDecoder_a_semantically_broken() {
 	</root>`
 
 	dec := errbox.NewXmlDecoder(xml.NewDecoder(strings.NewReader(strings.TrimSpace(semanticallyBroken))))
-	defer dec.Stop()
 
 	var depth int
 	for t := range dec.IntoIter() {
@@ -83,7 +82,6 @@ func ExampleNewXmlDecoder_b_syntactically_broken() {
 			),
 		),
 	)
-	defer dec.Stop()
 
 	for t := range dec.IntoIter() {
 		fmt.Printf("%#v\n", t)
@@ -136,7 +134,6 @@ func ExampleNewXmlDecoder_c_reader_broken() {
 			),
 		),
 	)
-	defer dec.Stop()
 
 	for t := range dec.IntoIter() {
 		fmt.Printf("%#v\n", t)

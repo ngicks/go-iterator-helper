@@ -6,8 +6,8 @@ Helpers / converters / sources for iterators.
 
 ## NOTE: things that are already iterator
 
-Listed below are already iterator.
-This module will not defines iterator sources for these kind.
+Listed below are already iterators.
+This module will not define iterator sources for these kind.
 (in case older version of this modules has defined those, it should already be removed.)
 
 ```go

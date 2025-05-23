@@ -8,6 +8,7 @@ import (
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/errbox"
+	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 	"gotest.tools/v3/assert"
@@ -40,11 +41,10 @@ func TestBox(t *testing.T) {
 		BreakAt:  3,
 	}.Test(t)
 
-	errSample := errors.New("sample")
 	box := errbox.New(
 		hiter.Pairs(
 			hiter.Range(0, 6),
-			xiter.Concat(hiter.Repeat(error(nil), 5), hiter.Once(errSample)),
+			adapter.Concat(hiter.Repeat(error(nil), 5), hiter.Once(errSample)),
 		),
 	)
 
@@ -58,7 +58,6 @@ func TestBox(t *testing.T) {
 }
 
 func TestBox_Map(t *testing.T) {
-	errSample := errors.New("sample")
 	box := errbox.Map2(
 		func(i, j int) (int, int, error) {
 			if i > j {

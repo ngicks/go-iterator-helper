@@ -8,12 +8,10 @@ import (
 )
 
 // PushHeapSeq pushes the values from seq to h and returns the extended heap.
-// The complexity is O(n) where n = length of total heap content after all element from seq is appended.
 func PushHeapSeq[H heap.Interface, V any](h H, seq iter.Seq[V]) H {
 	for v := range seq {
 		h.Push(v)
 	}
-	heap.Init(h)
 	return h
 }
 

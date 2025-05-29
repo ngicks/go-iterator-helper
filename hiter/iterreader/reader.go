@@ -3,6 +3,7 @@ package iterreader
 
 import (
 	"encoding"
+	"fmt"
 	"io"
 	"iter"
 
@@ -85,5 +86,20 @@ func (r *iterReader[V]) Read(p []byte) (n int, err error) {
 	}
 	err = io.EOF
 	r.err = err
+	return
+}
+
+func (r *iterReader[V]) WriteTo(w io.Writer) (n int64, err error) {
+	for v := range r.seq {
+		bin, err := r.marshaler(v)
+		if err != nil {
+			return n, fmt.Errorf("*iterReader: marshaler failed: %w", err)
+		}
+		nn, err := w.Write(bin)
+		n += int64(nn)
+		if err != nil {
+			return n, fmt.Errorf("*iterReader: write failed: %w", err)
+		}
+	}
 	return
 }

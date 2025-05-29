@@ -1,6 +1,7 @@
 package iterreader_test
 
 import (
+	"bytes"
 	"encoding/hex"
 	"io"
 	"slices"
@@ -17,44 +18,67 @@ import (
 	"gotest.tools/v3/assert"
 )
 
-func TestReader(t *testing.T) {
-	src := slices.Collect(
-		hiter.Limit(
-			10,
-			adapter.Map(
-				func(b []byte) string { return hex.EncodeToString(b) },
-				cryptoiter.RandBytes(8),
-			),
+var src = slices.Collect(
+	hiter.Limit(
+		10,
+		adapter.Map(
+			func(b []byte) string { return hex.EncodeToString(b) },
+			cryptoiter.RandBytes(8),
 		),
-	)
+	),
+)
 
-	var (
-		r   io.Reader
-		err error
-		bin []byte
-	)
+func TestReader(t *testing.T) {
+	type testCase struct {
+		name    func() string
+		readAll func(r io.Reader) ([]byte, error)
+	}
 
-	r = iterreader.Reader(
+	for _, tc := range []testCase{
+		{
+			func() string { return "Read" },
+			io.ReadAll,
+		},
+		{
+			func() string { return "WriteTo" },
+			func(r io.Reader) ([]byte, error) {
+				buf := new(bytes.Buffer)
+				_, err := r.(io.WriterTo).WriteTo(buf)
+				return buf.Bytes(), err
+			},
+		},
+	} {
+		t.Run(tc.name(), func(t *testing.T) {
+			var (
+				r   io.Reader
+				err error
+				bin []byte
+			)
+			r = iterreader.Reader(
+				func(s string) ([]byte, error) { return []byte(s), nil },
+				iterable.NewResumable(slices.Values(src)).IntoIter(),
+			)
+			bin, err = tc.readAll(r)
+			assert.NilError(t, err)
+			assert.Equal(t, strings.Join(src, ""), string(bin))
+
+			r = iterreader.Reader(
+				func(s string) ([]byte, error) { return []byte(s + "\n"), nil },
+				iterable.NewResumable(slices.Values(src)).IntoIter(),
+			)
+			bin, err = tc.readAll(r)
+			assert.NilError(t, err)
+			assert.Equal(t, strings.Join(src, "\n")+"\n", string(bin))
+		})
+	}
+}
+
+func TestReader_iotest_TestReader(t *testing.T) {
+	r := iterreader.Reader(
 		func(s string) ([]byte, error) { return []byte(s), nil },
 		iterable.NewResumable(slices.Values(src)).IntoIter(),
 	)
-	bin, err = io.ReadAll(r)
-	assert.NilError(t, err)
-	assert.Equal(t, strings.Join(src, ""), string(bin))
-
-	r = iterreader.Reader(
-		func(s string) ([]byte, error) { return []byte(s + "\n"), nil },
-		iterable.NewResumable(slices.Values(src)).IntoIter(),
-	)
-	bin, err = io.ReadAll(r)
-	assert.NilError(t, err)
-	assert.Equal(t, strings.Join(src, "\n")+"\n", string(bin))
-
-	r = iterreader.Reader(
-		func(s string) ([]byte, error) { return []byte(s), nil },
-		iterable.NewResumable(slices.Values(src)).IntoIter(),
-	)
-	err = iotest.TestReader(r, []byte(strings.Join(src, "")))
+	err := iotest.TestReader(r, []byte(strings.Join(src, "")))
 	assert.NilError(t, err)
 }
 
@@ -139,15 +163,10 @@ func TestMarshalerReader(t *testing.T) {
 2024-09-23T02:45:21Z
 2024-08-04T20:01:36Z
 `
-	expectedBytes := append(
-		append(
-			append(
-				[]byte(nil),
-				must(times[0].MarshalBinary())...,
-			),
-			must(times[1].MarshalBinary())...,
-		),
-		must(times[2].MarshalBinary())...,
+	expectedBytes := slices.Concat(
+		must(times[0].MarshalBinary()),
+		must(times[1].MarshalBinary()),
+		must(times[2].MarshalBinary()),
 	)
 
 	var (

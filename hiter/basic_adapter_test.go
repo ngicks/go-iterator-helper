@@ -110,7 +110,7 @@ func TestEqual(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := hiter.Equal(slices.Values(tt.seq1), slices.Values(tt.seq2))
-			assert.Assert(t, goCmp.Equal(tt.expected, result))
+			assert.Equal(t, tt.expected, result)
 		})
 	}
 }
@@ -157,7 +157,7 @@ func TestEqual2(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := hiter.Equal2(hiter.Values2(tt.seq1), hiter.Values2(tt.seq2))
-			assert.Assert(t, goCmp.Equal(tt.expected, result))
+			assert.Equal(t, tt.expected, result)
 		})
 	}
 }
@@ -196,7 +196,7 @@ func TestEqualFunc(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := hiter.EqualFunc(slices.Values(tt.seq1), slices.Values(tt.seq2), tt.cmpFunc)
-			assert.Assert(t, goCmp.Equal(tt.expected, result))
+			assert.Equal(t, tt.expected, result)
 		})
 	}
 }
@@ -232,7 +232,7 @@ func TestEqualFunc2(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			result := hiter.EqualFunc2(hiter.Values2(tt.seq1), hiter.Values2(tt.seq2), tt.cmpFunc)
-			assert.Assert(t, goCmp.Equal(tt.expected, result))
+			assert.Equal(t, tt.expected, result)
 		})
 	}
 }
@@ -447,18 +447,18 @@ func TestReduce(t *testing.T) {
 	t.Run("sum", func(t *testing.T) {
 		src := []int{1, 2, 3, 4, 5}
 		result := hiter.Reduce(func(sum, v int) int { return sum + v }, 0, slices.Values(src))
-		assert.Assert(t, goCmp.Equal(15, result))
+		assert.Equal(t, 15, result)
 	})
 
 	t.Run("string concatenation", func(t *testing.T) {
 		src := []string{"hello", " ", "world"}
 		result := hiter.Reduce(func(acc, v string) string { return acc + v }, "", slices.Values(src))
-		assert.Assert(t, goCmp.Equal("hello world", result))
+		assert.Equal(t, "hello world", result)
 	})
 
 	t.Run("empty sequence", func(t *testing.T) {
 		result := hiter.Reduce(func(sum, v int) int { return sum + v }, 42, slices.Values([]int{}))
-		assert.Assert(t, goCmp.Equal(42, result))
+		assert.Equal(t, 42, result)
 	})
 
 	t.Run("find maximum", func(t *testing.T) {
@@ -469,7 +469,7 @@ func TestReduce(t *testing.T) {
 			}
 			return max
 		}, src[0], slices.Values(src[1:]))
-		assert.Assert(t, goCmp.Equal(9, result))
+		assert.Equal(t, 9, result)
 	})
 
 	t.Run("build slice", func(t *testing.T) {
@@ -485,7 +485,7 @@ func TestReduce2(t *testing.T) {
 	t.Run("sum with keys", func(t *testing.T) {
 		src := []hiter.KeyValue[int, int]{{1, 10}, {2, 20}, {3, 30}}
 		result := hiter.Reduce2(func(sum, k, v int) int { return sum + k + v }, 0, hiter.Values2(src))
-		assert.Assert(t, goCmp.Equal(66, result)) // 0 + (1+10) + (2+20) + (3+30) = 66
+		assert.Equal(t, 66, result) // 0 + (1+10) + (2+20) + (3+30) = 66
 	})
 
 	t.Run("build map", func(t *testing.T) {
@@ -500,7 +500,7 @@ func TestReduce2(t *testing.T) {
 
 	t.Run("empty sequence", func(t *testing.T) {
 		result := hiter.Reduce2(func(sum, k, v int) int { return sum + k + v }, 100, hiter.Values2([]hiter.KeyValue[int, int]{}))
-		assert.Assert(t, goCmp.Equal(100, result))
+		assert.Equal(t, 100, result)
 	})
 
 	t.Run("concatenate keys and values", func(t *testing.T) {
@@ -511,7 +511,7 @@ func TestReduce2(t *testing.T) {
 			}
 			return acc + "_" + k + v
 		}, "", hiter.Values2(src))
-		assert.Assert(t, goCmp.Equal("helloworld_foobar", result))
+		assert.Equal(t, "helloworld_foobar", result)
 	})
 }
 

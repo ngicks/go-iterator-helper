@@ -29,7 +29,7 @@ func Example_partition() {
 		"%#v\n",
 		slices.Collect(
 			hiter.OmitF(
-				hiter.MapKeys(
+				hiter.MapsKeys(
 					mm,
 					hiter.Range(0, len(mm)),
 				),

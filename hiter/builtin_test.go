@@ -11,7 +11,7 @@ import (
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 )
 
-func TestMap(t *testing.T) {
+func TestMaps(t *testing.T) {
 	expected := map[string]string{
 		"foo": "foofoo",
 		"bar": "barbar",
@@ -31,7 +31,7 @@ func TestMap(t *testing.T) {
 	t.Run("MapAll nil", func(t *testing.T) {
 		testcase.Map[string, string]{
 			Seq: func() iter.Seq2[string, string] {
-				return iterable.MapAll[string, string](nil).Iter2()
+				return iterable.MapsAll[string, string](nil).Iter2()
 			},
 			Expected: map[string]string{},
 		}.Test(t)
@@ -47,7 +47,7 @@ func TestMap(t *testing.T) {
 	t.Run("MapSorted", func(t *testing.T) {
 		testcase.Two[string, int]{
 			Seq: func() iter.Seq2[string, int] {
-				return hiter.MapSorted[map[string]int](expectedSI)
+				return hiter.MapsSorted[map[string]int](expectedSI)
 			},
 			Seqs: []func() iter.Seq2[string, int]{
 				func() iter.Seq2[string, int] {
@@ -62,7 +62,7 @@ func TestMap(t *testing.T) {
 	t.Run("MapSorted nil", func(t *testing.T) {
 		testcase.Two[string, int]{
 			Seq: func() iter.Seq2[string, int] {
-				return hiter.MapSorted[map[string]int](nil)
+				return hiter.MapsSorted[map[string]int](nil)
 			},
 			Seqs: []func() iter.Seq2[string, int]{
 				func() iter.Seq2[string, int] {
@@ -76,7 +76,7 @@ func TestMap(t *testing.T) {
 	t.Run("MapSortedFunc", func(t *testing.T) {
 		testcase.Two[string, int]{
 			Seq: func() iter.Seq2[string, int] {
-				return hiter.MapSortedFunc(
+				return hiter.MapsSortedFunc(
 					expectedSI,
 					func(s1, s2 string) int {
 						return cmp.Compare(expectedSI[s1], expectedSI[s2])
@@ -106,7 +106,7 @@ func TestMap(t *testing.T) {
 	t.Run("MapSortedFunc nil ", func(t *testing.T) {
 		testcase.Two[string, int]{
 			Seq: func() iter.Seq2[string, int] {
-				return hiter.MapSortedFunc[map[string]int](
+				return hiter.MapsSortedFunc[map[string]int](
 					nil,
 					func(s1, s2 string) int { return cmp.Compare(expectedSI[s1], expectedSI[s2]) },
 				)

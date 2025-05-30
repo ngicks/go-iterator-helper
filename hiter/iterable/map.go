@@ -28,7 +28,7 @@ func (m MapAll[K, V]) Iter2() iter.Seq2[K, V] {
 type MapSorted[K cmp.Ordered, V any] map[K]V
 
 func (m MapSorted[K, V]) Iter2() iter.Seq2[K, V] {
-	return hiter.MapSorted(m)
+	return hiter.MapsSorted(m)
 }
 
 func (m MapSorted[K, V]) Reverse() MapSortedFunc[map[K]V, K, V] {
@@ -50,9 +50,9 @@ type MapSortedFunc[M ~map[K]V, K comparable, V any] struct {
 
 func (m MapSortedFunc[M, K, V]) Iter2() iter.Seq2[K, V] {
 	if !m.rev {
-		return hiter.MapSortedFunc(m.M, m.Cmp)
+		return hiter.MapsSortedFunc(m.M, m.Cmp)
 	} else {
-		return hiter.MapSortedFunc(m.M, func(i, j K) int { return -m.Cmp(i, j) })
+		return hiter.MapsSortedFunc(m.M, func(i, j K) int { return -m.Cmp(i, j) })
 	}
 }
 

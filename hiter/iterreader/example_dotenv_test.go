@@ -42,7 +42,7 @@ func Example_writing_dot_env() {
 			func(k, v string) string {
 				return k + "=" + quoteVariable(v) + "\n"
 			},
-			hiter.MapSorted(values),
+			hiter.MapsSorted(values),
 		),
 	)
 

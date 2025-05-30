@@ -31,7 +31,7 @@ func TestMaps(t *testing.T) {
 	t.Run("MapAll nil", func(t *testing.T) {
 		testcase.Map[string, string]{
 			Seq: func() iter.Seq2[string, string] {
-				return iterable.MapsAll[string, string](nil).Iter2()
+				return iterable.MapAll[string, string](nil).Iter2()
 			},
 			Expected: map[string]string{},
 		}.Test(t)

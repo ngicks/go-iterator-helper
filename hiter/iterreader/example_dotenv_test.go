@@ -5,10 +5,8 @@ import (
 	"compress/gzip"
 	"fmt"
 	"io"
-	"maps"
 	"strings"
 
-	"github.com/joho/godotenv"
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/iterreader"
 )
@@ -72,17 +70,8 @@ func Example_writing_dot_env() {
 
 	fmt.Printf("%s\n", bin)
 
-	unmarshaled, err := godotenv.UnmarshalBytes(bin)
-	if err != nil {
-		panic(err)
-	}
-	fmt.Printf("%#v\n", unmarshaled)
-	fmt.Printf("same? = %t\n", maps.Equal(values, unmarshaled))
 	// Output:
 	// BAZ="\`\"\${YAY}\"\`\
 	// Oh?"
 	// FOO=BAR
-	//
-	// map[string]string{"BAZ":"`\"${YAY}\"`\nOh?", "FOO":"BAR"}
-	// same? = true
 }

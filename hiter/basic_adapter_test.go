@@ -94,12 +94,13 @@ func TestConcat2(t *testing.T) {
 }
 
 func TestEqual(t *testing.T) {
-	tests := []struct {
+	type testCase struct {
 		name     string
 		seq1     []int
 		seq2     []int
 		expected bool
-	}{
+	}
+	tests := []testCase{
 		{"identical sequences", []int{1, 2, 3}, []int{1, 2, 3}, true},
 		{"different sequences", []int{1, 2, 3}, []int{1, 2, 4}, false},
 		{"different lengths", []int{1, 2}, []int{1, 2, 3}, false},
@@ -107,21 +108,22 @@ func TestEqual(t *testing.T) {
 		{"one empty", []int{1}, []int{}, false},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			result := hiter.Equal(slices.Values(tt.seq1), slices.Values(tt.seq2))
-			assert.Equal(t, tt.expected, result)
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			result := hiter.Equal(slices.Values(tc.seq1), slices.Values(tc.seq2))
+			assert.Equal(t, tc.expected, result)
 		})
 	}
 }
 
 func TestEqual2(t *testing.T) {
-	tests := []struct {
+	type testCase struct {
 		name     string
 		seq1     []hiter.KeyValue[string, int]
 		seq2     []hiter.KeyValue[string, int]
 		expected bool
-	}{
+	}
+	tests := []testCase{
 		{
 			"identical sequences",
 			[]hiter.KeyValue[string, int]{{"a", 1}, {"b", 2}},
@@ -154,22 +156,23 @@ func TestEqual2(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			result := hiter.Equal2(hiter.Values2(tt.seq1), hiter.Values2(tt.seq2))
-			assert.Equal(t, tt.expected, result)
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			result := hiter.Equal2(hiter.Values2(tc.seq1), hiter.Values2(tc.seq2))
+			assert.Equal(t, tc.expected, result)
 		})
 	}
 }
 
 func TestEqualFunc(t *testing.T) {
-	tests := []struct {
+	type testCase struct {
 		name     string
 		seq1     []string
 		seq2     []int
 		cmpFunc  func(string, int) bool
 		expected bool
-	}{
+	}
+	tests := []testCase{
 		{
 			"equal by length",
 			[]string{"hi", "bye"},
@@ -193,22 +196,23 @@ func TestEqualFunc(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			result := hiter.EqualFunc(slices.Values(tt.seq1), slices.Values(tt.seq2), tt.cmpFunc)
-			assert.Equal(t, tt.expected, result)
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			result := hiter.EqualFunc(slices.Values(tc.seq1), slices.Values(tc.seq2), tc.cmpFunc)
+			assert.Equal(t, tc.expected, result)
 		})
 	}
 }
 
 func TestEqualFunc2(t *testing.T) {
-	tests := []struct {
+	type testCase struct {
 		name     string
 		seq1     []hiter.KeyValue[string, int]
 		seq2     []hiter.KeyValue[int, string]
 		cmpFunc  func(string, int, int, string) bool
 		expected bool
-	}{
+	}
+	tests := []testCase{
 		{
 			"equal by swapped key-value",
 			[]hiter.KeyValue[string, int]{{"1", 1}, {"2", 2}},
@@ -229,10 +233,10 @@ func TestEqualFunc2(t *testing.T) {
 		},
 	}
 
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			result := hiter.EqualFunc2(hiter.Values2(tt.seq1), hiter.Values2(tt.seq2), tt.cmpFunc)
-			assert.Equal(t, tt.expected, result)
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			result := hiter.EqualFunc2(hiter.Values2(tc.seq1), hiter.Values2(tc.seq2), tc.cmpFunc)
+			assert.Equal(t, tc.expected, result)
 		})
 	}
 }
@@ -526,9 +530,9 @@ func TestZip(t *testing.T) {
 		}
 
 		expected := []hiter.Zipped[int, string]{
-			{V1: 1, Ok1: true, V2: "a", Ok2: true},
-			{V1: 2, Ok1: true, V2: "b", Ok2: true},
-			{V1: 3, Ok1: true, V2: "c", Ok2: true},
+			{L: hiter.Option[int]{V: 1, Ok: true}, R: hiter.Option[string]{V: "a", Ok: true}},
+			{L: hiter.Option[int]{V: 2, Ok: true}, R: hiter.Option[string]{V: "b", Ok: true}},
+			{L: hiter.Option[int]{V: 3, Ok: true}, R: hiter.Option[string]{V: "c", Ok: true}},
 		}
 		assert.Assert(t, goCmp.DeepEqual(expected, results))
 	})
@@ -543,10 +547,10 @@ func TestZip(t *testing.T) {
 		}
 
 		expected := []hiter.Zipped[int, string]{
-			{V1: 1, Ok1: true, V2: "a", Ok2: true},
-			{V1: 2, Ok1: true, V2: "b", Ok2: true},
-			{V1: 3, Ok1: true, V2: "", Ok2: false},
-			{V1: 4, Ok1: true, V2: "", Ok2: false},
+			{L: hiter.Option[int]{V: 1, Ok: true}, R: hiter.Option[string]{V: "a", Ok: true}},
+			{L: hiter.Option[int]{V: 2, Ok: true}, R: hiter.Option[string]{V: "b", Ok: true}},
+			{L: hiter.Option[int]{V: 3, Ok: true}, R: hiter.Option[string]{V: "", Ok: false}},
+			{L: hiter.Option[int]{V: 4, Ok: true}, R: hiter.Option[string]{V: "", Ok: false}},
 		}
 		assert.Assert(t, goCmp.DeepEqual(expected, results))
 	})
@@ -561,10 +565,10 @@ func TestZip(t *testing.T) {
 		}
 
 		expected := []hiter.Zipped[int, string]{
-			{V1: 1, Ok1: true, V2: "a", Ok2: true},
-			{V1: 2, Ok1: true, V2: "b", Ok2: true},
-			{V1: 0, Ok1: false, V2: "c", Ok2: true},
-			{V1: 0, Ok1: false, V2: "d", Ok2: true},
+			{L: hiter.Option[int]{V: 1, Ok: true}, R: hiter.Option[string]{V: "a", Ok: true}},
+			{L: hiter.Option[int]{V: 2, Ok: true}, R: hiter.Option[string]{V: "b", Ok: true}},
+			{L: hiter.Option[int]{V: 0, Ok: false}, R: hiter.Option[string]{V: "c", Ok: true}},
+			{L: hiter.Option[int]{V: 0, Ok: false}, R: hiter.Option[string]{V: "d", Ok: true}},
 		}
 		assert.Assert(t, goCmp.DeepEqual(expected, results))
 	})
@@ -594,8 +598,8 @@ func TestZip(t *testing.T) {
 		}
 
 		expected := []hiter.Zipped[int, string]{
-			{V1: 1, Ok1: true, V2: "a", Ok2: true},
-			{V1: 2, Ok1: true, V2: "b", Ok2: true},
+			{L: hiter.Option[int]{V: 1, Ok: true}, R: hiter.Option[string]{V: "a", Ok: true}},
+			{L: hiter.Option[int]{V: 2, Ok: true}, R: hiter.Option[string]{V: "b", Ok: true}},
 		}
 		assert.Assert(t, goCmp.DeepEqual(expected, results))
 	})
@@ -606,14 +610,14 @@ func TestZip2(t *testing.T) {
 		seq1 := hiter.Values2([]hiter.KeyValue[int, string]{{0, "a"}, {1, "b"}})
 		seq2 := hiter.Values2([]hiter.KeyValue[string, int]{{"x", 10}, {"y", 20}})
 
-		var results []hiter.Zipped2[int, string, string, int]
+		var results []hiter.Zipped[hiter.KeyValue[int, string], hiter.KeyValue[string, int]]
 		for z := range hiter.Zip2(seq1, seq2) {
 			results = append(results, z)
 		}
 
-		expected := []hiter.Zipped2[int, string, string, int]{
-			{K1: 0, V1: "a", Ok1: true, K2: "x", V2: 10, Ok2: true},
-			{K1: 1, V1: "b", Ok1: true, K2: "y", V2: 20, Ok2: true},
+		expected := []hiter.Zipped[hiter.KeyValue[int, string], hiter.KeyValue[string, int]]{
+			{L: hiter.Option[hiter.KeyValue[int, string]]{V: hiter.KeyValue[int, string]{K: 0, V: "a"}, Ok: true}, R: hiter.Option[hiter.KeyValue[string, int]]{V: hiter.KeyValue[string, int]{K: "x", V: 10}, Ok: true}},
+			{L: hiter.Option[hiter.KeyValue[int, string]]{V: hiter.KeyValue[int, string]{K: 1, V: "b"}, Ok: true}, R: hiter.Option[hiter.KeyValue[string, int]]{V: hiter.KeyValue[string, int]{K: "y", V: 20}, Ok: true}},
 		}
 		assert.Assert(t, goCmp.DeepEqual(expected, results))
 	})
@@ -622,15 +626,15 @@ func TestZip2(t *testing.T) {
 		seq1 := hiter.Values2([]hiter.KeyValue[int, string]{{0, "a"}, {1, "b"}, {2, "c"}})
 		seq2 := hiter.Values2([]hiter.KeyValue[string, int]{{"x", 10}})
 
-		var results []hiter.Zipped2[int, string, string, int]
+		var results []hiter.Zipped[hiter.KeyValue[int, string], hiter.KeyValue[string, int]]
 		for z := range hiter.Zip2(seq1, seq2) {
 			results = append(results, z)
 		}
 
-		expected := []hiter.Zipped2[int, string, string, int]{
-			{K1: 0, V1: "a", Ok1: true, K2: "x", V2: 10, Ok2: true},
-			{K1: 1, V1: "b", Ok1: true, K2: "", V2: 0, Ok2: false},
-			{K1: 2, V1: "c", Ok1: true, K2: "", V2: 0, Ok2: false},
+		expected := []hiter.Zipped[hiter.KeyValue[int, string], hiter.KeyValue[string, int]]{
+			{L: hiter.Option[hiter.KeyValue[int, string]]{V: hiter.KeyValue[int, string]{K: 0, V: "a"}, Ok: true}, R: hiter.Option[hiter.KeyValue[string, int]]{V: hiter.KeyValue[string, int]{K: "x", V: 10}, Ok: true}},
+			{L: hiter.Option[hiter.KeyValue[int, string]]{V: hiter.KeyValue[int, string]{K: 1, V: "b"}, Ok: true}, R: hiter.Option[hiter.KeyValue[string, int]]{V: hiter.KeyValue[string, int]{K: "", V: 0}, Ok: false}},
+			{L: hiter.Option[hiter.KeyValue[int, string]]{V: hiter.KeyValue[int, string]{K: 2, V: "c"}, Ok: true}, R: hiter.Option[hiter.KeyValue[string, int]]{V: hiter.KeyValue[string, int]{K: "", V: 0}, Ok: false}},
 		}
 		assert.Assert(t, goCmp.DeepEqual(expected, results))
 	})
@@ -639,15 +643,15 @@ func TestZip2(t *testing.T) {
 		seq1 := hiter.Values2([]hiter.KeyValue[int, string]{{0, "a"}})
 		seq2 := hiter.Values2([]hiter.KeyValue[string, int]{{"x", 10}, {"y", 20}, {"z", 30}})
 
-		var results []hiter.Zipped2[int, string, string, int]
+		var results []hiter.Zipped[hiter.KeyValue[int, string], hiter.KeyValue[string, int]]
 		for z := range hiter.Zip2(seq1, seq2) {
 			results = append(results, z)
 		}
 
-		expected := []hiter.Zipped2[int, string, string, int]{
-			{K1: 0, V1: "a", Ok1: true, K2: "x", V2: 10, Ok2: true},
-			{K1: 0, V1: "", Ok1: false, K2: "y", V2: 20, Ok2: true},
-			{K1: 0, V1: "", Ok1: false, K2: "z", V2: 30, Ok2: true},
+		expected := []hiter.Zipped[hiter.KeyValue[int, string], hiter.KeyValue[string, int]]{
+			{L: hiter.Option[hiter.KeyValue[int, string]]{V: hiter.KeyValue[int, string]{K: 0, V: "a"}, Ok: true}, R: hiter.Option[hiter.KeyValue[string, int]]{V: hiter.KeyValue[string, int]{K: "x", V: 10}, Ok: true}},
+			{L: hiter.Option[hiter.KeyValue[int, string]]{V: hiter.KeyValue[int, string]{K: 0, V: ""}, Ok: false}, R: hiter.Option[hiter.KeyValue[string, int]]{V: hiter.KeyValue[string, int]{K: "y", V: 20}, Ok: true}},
+			{L: hiter.Option[hiter.KeyValue[int, string]]{V: hiter.KeyValue[int, string]{K: 0, V: ""}, Ok: false}, R: hiter.Option[hiter.KeyValue[string, int]]{V: hiter.KeyValue[string, int]{K: "z", V: 30}, Ok: true}},
 		}
 		assert.Assert(t, goCmp.DeepEqual(expected, results))
 	})
@@ -656,7 +660,7 @@ func TestZip2(t *testing.T) {
 		seq1 := hiter.Values2([]hiter.KeyValue[int, string]{})
 		seq2 := hiter.Values2([]hiter.KeyValue[string, int]{})
 
-		var results []hiter.Zipped2[int, string, string, int]
+		var results []hiter.Zipped[hiter.KeyValue[int, string], hiter.KeyValue[string, int]]
 		for z := range hiter.Zip2(seq1, seq2) {
 			results = append(results, z)
 		}
@@ -668,7 +672,7 @@ func TestZip2(t *testing.T) {
 		seq1 := hiter.Values2([]hiter.KeyValue[int, string]{{0, "a"}, {1, "b"}, {2, "c"}})
 		seq2 := hiter.Values2([]hiter.KeyValue[string, int]{{"x", 10}, {"y", 20}, {"z", 30}})
 
-		var results []hiter.Zipped2[int, string, string, int]
+		var results []hiter.Zipped[hiter.KeyValue[int, string], hiter.KeyValue[string, int]]
 		for z := range hiter.Zip2(seq1, seq2) {
 			results = append(results, z)
 			if len(results) == 1 {
@@ -676,7 +680,9 @@ func TestZip2(t *testing.T) {
 			}
 		}
 
-		expected := []hiter.Zipped2[int, string, string, int]{{K1: 0, V1: "a", Ok1: true, K2: "x", V2: 10, Ok2: true}}
+		expected := []hiter.Zipped[hiter.KeyValue[int, string], hiter.KeyValue[string, int]]{
+			{L: hiter.Option[hiter.KeyValue[int, string]]{V: hiter.KeyValue[int, string]{K: 0, V: "a"}, Ok: true}, R: hiter.Option[hiter.KeyValue[string, int]]{V: hiter.KeyValue[string, int]{K: "x", V: 10}, Ok: true}},
+		}
 		assert.Assert(t, goCmp.DeepEqual(expected, results))
 	})
 }

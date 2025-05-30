@@ -34,7 +34,7 @@ func Concat2[K, V any](seqs ...iter.Seq2[K, V]) iter.Seq2[K, V] {
 // Equal return true if 2 seqs yields same sequences.
 func Equal[V comparable](x, y iter.Seq[V]) bool {
 	for z := range Zip(x, y) {
-		if z.Ok1 != z.Ok2 || z.V1 != z.V2 {
+		if z.L.Ok != z.R.Ok || z.L.V != z.R.V {
 			return false
 		}
 	}
@@ -44,7 +44,7 @@ func Equal[V comparable](x, y iter.Seq[V]) bool {
 // Equal2 return true if 2 seqs yields same sequences.
 func Equal2[K, V comparable](x, y iter.Seq2[K, V]) bool {
 	for z := range Zip2(x, y) {
-		if z.Ok1 != z.Ok2 || z.K1 != z.K2 || z.V1 != z.V2 {
+		if z.L.Ok != z.R.Ok || z.L.V.K != z.R.V.K || z.L.V.V != z.R.V.V {
 			return false
 		}
 	}
@@ -57,7 +57,7 @@ func Equal2[K, V comparable](x, y iter.Seq2[K, V]) bool {
 // and the comparison stops at the first index for which eq returns false.
 func EqualFunc[V1, V2 any](x iter.Seq[V1], y iter.Seq[V2], f func(V1, V2) bool) bool {
 	for z := range Zip(x, y) {
-		if z.Ok1 != z.Ok2 || !f(z.V1, z.V2) {
+		if z.L.Ok != z.R.Ok || !f(z.L.V, z.R.V) {
 			return false
 		}
 	}
@@ -70,7 +70,7 @@ func EqualFunc[V1, V2 any](x iter.Seq[V1], y iter.Seq[V2], f func(V1, V2) bool) 
 // and the comparison stops at the first index for which eq returns false.
 func EqualFunc2[K1, V1, K2, V2 any](x iter.Seq2[K1, V1], y iter.Seq2[K2, V2], f func(K1, V1, K2, V2) bool) bool {
 	for z := range Zip2(x, y) {
-		if z.Ok1 != z.Ok2 || !f(z.K1, z.V1, z.K2, z.V2) {
+		if z.L.Ok != z.R.Ok || !f(z.L.V.K, z.L.V.V, z.R.V.K, z.R.V.V) {
 			return false
 		}
 	}
@@ -275,46 +275,32 @@ func Reduce2[Sum, K, V any](f func(Sum, K, V) Sum, sum Sum, seq iter.Seq2[K, V])
 	return sum
 }
 
+type Option[V any] struct {
+	V  V
+	Ok bool
+}
+
 // A Zipped is a pair of zipped values, one of which may be missing,
 // drawn from two different sequences.
 type Zipped[V1, V2 any] struct {
-	V1  V1
-	Ok1 bool // whether V1 is present (if not, it will be zero)
-	V2  V2
-	Ok2 bool // whether V2 is present (if not, it will be zero)
+	L Option[V1]
+	R Option[V2]
 }
 
-// Zip returns an iterator that iterates x and y in parallel,
-// yielding Zipped values of successive elements of x and y.
-// If one sequence ends before the other, the iteration continues
-// with Zipped values in which either Ok1 or Ok2 is false,
-// depending on which sequence ended first.
-//
-// Zip is a useful building block for adapters that process
-// pairs of sequences. For example, Equal can be defined as:
-//
-//	func Equal[V comparable](x, y iter.Seq[V]) bool {
-//		for z := range Zip(x, y) {
-//			if z.Ok1 != z.Ok2 || z.V1 != z.V2 {
-//				return false
-//			}
-//		}
-//		return true
-//	}
 func Zip[V1, V2 any](x iter.Seq[V1], y iter.Seq[V2]) iter.Seq[Zipped[V1, V2]] {
 	return func(yield func(z Zipped[V1, V2]) bool) {
 		next, stop := iter.Pull(y)
 		defer stop()
 		v2, ok2 := next()
 		for v1 := range x {
-			if !yield(Zipped[V1, V2]{v1, true, v2, ok2}) {
+			if !yield(Zipped[V1, V2]{Option[V1]{v1, true}, Option[V2]{v2, ok2}}) {
 				return
 			}
 			v2, ok2 = next()
 		}
 		var zv1 V1
 		for ok2 {
-			if !yield(Zipped[V1, V2]{zv1, false, v2, ok2}) {
+			if !yield(Zipped[V1, V2]{Option[V1]{zv1, false}, Option[V2]{v2, ok2}}) {
 				return
 			}
 			v2, ok2 = next()
@@ -322,41 +308,16 @@ func Zip[V1, V2 any](x iter.Seq[V1], y iter.Seq[V2]) iter.Seq[Zipped[V1, V2]] {
 	}
 }
 
-// A Zipped2 is a pair of zipped key-value pairs,
-// one of which may be missing, drawn from two different sequences.
-type Zipped2[K1, V1, K2, V2 any] struct {
-	K1  K1
-	V1  V1
-	Ok1 bool // whether K1, V1 are present (if not, they will be zero)
-	K2  K2
-	V2  V2
-	Ok2 bool // whether K2, V2 are present (if not, they will be zero)
-}
-
-// Zip2 returns an iterator that iterates x and y in parallel,
-// yielding Zipped2 values of successive elements of x and y.
-// If one sequence ends before the other, the iteration continues
-// with Zipped2 values in which either Ok1 or Ok2 is false,
-// depending on which sequence ended first.
-//
-// Zip2 is a useful building block for adapters that process
-// pairs of sequences. For example, Equal2 can be defined as:
-//
-//	func Equal2[K, V comparable](x, y iter.Seq2[K, V]) bool {
-//		for z := range Zip2(x, y) {
-//			if z.Ok1 != z.Ok2 || z.K1 != z.K2 || z.V1 != z.V2 {
-//				return false
-//			}
-//		}
-//		return true
-//	}
-func Zip2[K1, V1, K2, V2 any](x iter.Seq2[K1, V1], y iter.Seq2[K2, V2]) iter.Seq[Zipped2[K1, V1, K2, V2]] {
-	return func(yield func(z Zipped2[K1, V1, K2, V2]) bool) {
+func Zip2[K1, V1, K2, V2 any](x iter.Seq2[K1, V1], y iter.Seq2[K2, V2]) iter.Seq[Zipped[KeyValue[K1, V1], KeyValue[K2, V2]]] {
+	return func(yield func(z Zipped[KeyValue[K1, V1], KeyValue[K2, V2]]) bool) {
 		next, stop := iter.Pull2(y)
 		defer stop()
 		k2, v2, ok2 := next()
 		for k1, v1 := range x {
-			if !yield(Zipped2[K1, V1, K2, V2]{k1, v1, true, k2, v2, ok2}) {
+			if !yield(Zipped[KeyValue[K1, V1], KeyValue[K2, V2]]{
+				Option[KeyValue[K1, V1]]{KeyValue[K1, V1]{k1, v1}, true},
+				Option[KeyValue[K2, V2]]{KeyValue[K2, V2]{k2, v2}, ok2},
+			}) {
 				return
 			}
 			k2, v2, ok2 = next()
@@ -364,7 +325,10 @@ func Zip2[K1, V1, K2, V2 any](x iter.Seq2[K1, V1], y iter.Seq2[K2, V2]) iter.Seq
 		var zk1 K1
 		var zv1 V1
 		for ok2 {
-			if !yield(Zipped2[K1, V1, K2, V2]{zk1, zv1, false, k2, v2, ok2}) {
+			if !yield(Zipped[KeyValue[K1, V1], KeyValue[K2, V2]]{
+				Option[KeyValue[K1, V1]]{KeyValue[K1, V1]{zk1, zv1}, false},
+				Option[KeyValue[K2, V2]]{KeyValue[K2, V2]{k2, v2}, ok2},
+			}) {
 				return
 			}
 			k2, v2, ok2 = next()

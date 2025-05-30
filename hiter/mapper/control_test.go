@@ -9,7 +9,6 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 	"gotest.tools/v3/assert"
 )
 
@@ -93,7 +92,7 @@ func TestHandleErr(t *testing.T) {
 	assert.DeepEqual(t, []int(nil), handleReceived)
 
 	errs := slices.Collect(
-		adapter.Map(
+		hiter.Map(
 			func(i int64) error { return errors.New(strconv.FormatInt(i, 10)) },
 			hiter.Range[int64](1, 6),
 		),
@@ -104,7 +103,7 @@ func TestHandleErr(t *testing.T) {
 				handleReceived = append(handleReceived, i)
 				return !errors.Is(err, errs[len(errs)-2])
 			},
-			hiter.Pairs(hiter.Range(0, 6), adapter.Concat(hiter.Once(error(nil)), slices.Values(errs))),
+			hiter.Pairs(hiter.Range(0, 6), hiter.Concat(hiter.Once(error(nil)), slices.Values(errs))),
 		),
 	)
 	// values paired to error are excluded.

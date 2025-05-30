@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"gotest.tools/v3/assert"
 )
@@ -27,7 +26,7 @@ func TestStep(t *testing.T) {
 
 func TestStepBy(t *testing.T) {
 	src := slices.Collect(
-		adapter.Map(func(i int) string {
+		hiter.Map(func(i int) string {
 			return fmt.Sprintf("%d", i)
 		},
 			hiter.Range(0, 15),

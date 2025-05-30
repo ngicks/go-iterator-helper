@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
@@ -69,7 +68,7 @@ func TestWindow(t *testing.T) {
 
 func TestWindowSeq(t *testing.T) {
 	t.Run("empty slice", func(t *testing.T) {
-		c := slices.Collect(adapter.Map(slices.Collect, hiter.WindowSeq(5, hiter.Repeat(0, 0))))
+		c := slices.Collect(hiter.Map(slices.Collect, hiter.WindowSeq(5, hiter.Repeat(0, 0))))
 		assert.Assert(t, cmp.Len(c, 0))
 	})
 
@@ -77,7 +76,7 @@ func TestWindowSeq(t *testing.T) {
 		t.Run(tc.name, func(t *testing.T) {
 			testcase.One[[]int]{
 				Seq: func() iter.Seq[[]int] {
-					return adapter.Map(
+					return hiter.Map(
 						slices.Collect,
 						hiter.WindowSeq(tc.size, slices.Values(widowSrc)),
 					)

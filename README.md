@@ -38,9 +38,10 @@ Packages nested under other package are flattened, e.g. `encodingiter` defines h
 
 Those listed in [#61898](https://github.com/golang/go/issues/61898).
 
-Deprecated: you should no longer use this package since the proposal is withdrawn. `hiter` re-defined equivalents so you can use.
-The proposal was wind down the author saw Go iterator was too young.
-Once Go iterator gets matured in the community, proposal might once be proposed.
+Deprecated: you should no longer use this package since the proposal is withdrawn.
+`hiter` re-defines equivalents so you can use these in there.
+The proposal was wound down because the author saw Go iterator was too young.
+Once Go iterator gets matured in the community, proposal might again be proposed.
 At that time signatures of functions would be changed if the community finds better conventions.
 
 This package is vendored so that you can use it anywhere without copy-and-pasting everywhere.

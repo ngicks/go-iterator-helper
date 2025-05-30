@@ -5,7 +5,6 @@ import (
 	"iter"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 )
 
 // Cancellable returns an iterator over seq but it also checks if ctx is cancelled each n elements seq yields.
@@ -24,7 +23,7 @@ func Cancellable2[K, V any](n int, ctx context.Context, seq iter.Seq2[K, V]) ite
 // Even if handle returns true, values paired to non-nil error are excluded from the returned iterator.
 func HandleErr[V any](handle func(V, error) bool, seq iter.Seq2[V, error]) iter.Seq[V] {
 	return hiter.OmitL(
-		adapter.Filter2(
+		hiter.Filter2(
 			func(_ V, err error) bool { return err == nil },
 			hiter.LimitUntil2(func(v V, err error) bool { return err == nil || handle(v, err) }, seq),
 		),

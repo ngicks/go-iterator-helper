@@ -12,7 +12,6 @@ import (
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/cryptoiter"
-	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 	"github.com/ngicks/go-iterator-helper/hiter/iterreader"
 	"gotest.tools/v3/assert"
@@ -21,7 +20,7 @@ import (
 var src = slices.Collect(
 	hiter.Limit(
 		10,
-		adapter.Map(
+		hiter.Map(
 			func(b []byte) string { return hex.EncodeToString(b) },
 			cryptoiter.RandBytes(8),
 		),

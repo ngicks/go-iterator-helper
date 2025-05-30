@@ -1,14 +1,4 @@
-// Code copied from
-//
-// https://github.com/golang/go/issues/61898
-//
-// vendored here until xiter is accepted and merged.
-//
-// Deprecated: you should no longer use this package since the proposal is withdrawn. `hiter` re-defines equivalents so you can use these in there.
-// The proposal was wound down because the author saw Go iterator was too young.
-// Once Go iterator gets matured in the community, proposal might again be proposed.
-// At that time signatures of functions would be changed if the community finds better conventions.
-package xiter
+package hiter
 
 import (
 	"cmp"
@@ -41,7 +31,7 @@ func Concat2[K, V any](seqs ...iter.Seq2[K, V]) iter.Seq2[K, V] {
 	}
 }
 
-// Equal reports whether the two sequences are equal.
+// Equal return true if 2 seqs yields same sequences.
 func Equal[V comparable](x, y iter.Seq[V]) bool {
 	for z := range Zip(x, y) {
 		if z.Ok1 != z.Ok2 || z.V1 != z.V2 {
@@ -51,7 +41,7 @@ func Equal[V comparable](x, y iter.Seq[V]) bool {
 	return true
 }
 
-// Equal2 reports whether the two sequences are equal.
+// Equal2 return true if 2 seqs yields same sequences.
 func Equal2[K, V comparable](x, y iter.Seq2[K, V]) bool {
 	for z := range Zip2(x, y) {
 		if z.Ok1 != z.Ok2 || z.K1 != z.K2 || z.V1 != z.V2 {
@@ -61,7 +51,10 @@ func Equal2[K, V comparable](x, y iter.Seq2[K, V]) bool {
 	return true
 }
 
-// EqualFunc reports whether the two sequences are equal according to the function f.
+// EqualFunc reports whether two sequences are equal using an equality function on each pair of elements.
+// If the lengths are different, EqualFunc returns false.
+// Otherwise, the elements are compared in increasing index order,
+// and the comparison stops at the first index for which eq returns false.
 func EqualFunc[V1, V2 any](x iter.Seq[V1], y iter.Seq[V2], f func(V1, V2) bool) bool {
 	for z := range Zip(x, y) {
 		if z.Ok1 != z.Ok2 || !f(z.V1, z.V2) {
@@ -71,7 +64,10 @@ func EqualFunc[V1, V2 any](x iter.Seq[V1], y iter.Seq[V2], f func(V1, V2) bool) 
 	return true
 }
 
-// EqualFunc2 reports whether the two sequences are equal according to the function f.
+// EqualFunc2 reports whether two sequences are equal using an equality function on each pair of elements.
+// If the lengths are different, EqualFunc returns false.
+// Otherwise, the elements are compared in increasing index order,
+// and the comparison stops at the first index for which eq returns false.
 func EqualFunc2[K1, V1, K2, V2 any](x iter.Seq2[K1, V1], y iter.Seq2[K2, V2], f func(K1, V1, K2, V2) bool) bool {
 	for z := range Zip2(x, y) {
 		if z.Ok1 != z.Ok2 || !f(z.K1, z.V1, z.K2, z.V2) {
@@ -106,8 +102,9 @@ func Filter2[K, V any](f func(K, V) bool, seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 }
 
 // Limit returns an iterator over seq that stops after n values.
-func Limit[V any](seq iter.Seq[V], n int) iter.Seq[V] {
+func Limit[V any](n int, seq iter.Seq[V]) iter.Seq[V] {
 	return func(yield func(V) bool) {
+		n := n // no state in the iterator
 		if n <= 0 {
 			return
 		}
@@ -123,8 +120,9 @@ func Limit[V any](seq iter.Seq[V], n int) iter.Seq[V] {
 }
 
 // Limit2 returns an iterator over seq that stops after n key-value pairs.
-func Limit2[K, V any](seq iter.Seq2[K, V], n int) iter.Seq2[K, V] {
+func Limit2[K, V any](n int, seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
+		n := n
 		if n <= 0 {
 			return
 		}
@@ -140,8 +138,8 @@ func Limit2[K, V any](seq iter.Seq2[K, V], n int) iter.Seq2[K, V] {
 }
 
 // Map returns an iterator over f applied to seq.
-func Map[In, Out any](f func(In) Out, seq iter.Seq[In]) iter.Seq[Out] {
-	return func(yield func(Out) bool) {
+func Map[V1, V2 any](f func(V1) V2, seq iter.Seq[V1]) iter.Seq[V2] {
+	return func(yield func(V2) bool) {
 		for in := range seq {
 			if !yield(f(in)) {
 				return
@@ -151,8 +149,8 @@ func Map[In, Out any](f func(In) Out, seq iter.Seq[In]) iter.Seq[Out] {
 }
 
 // Map2 returns an iterator over f applied to seq.
-func Map2[KIn, VIn, KOut, VOut any](f func(KIn, VIn) (KOut, VOut), seq iter.Seq2[KIn, VIn]) iter.Seq2[KOut, VOut] {
-	return func(yield func(KOut, VOut) bool) {
+func Map2[K1, V1, K2, V2 any](f func(K1, V1) (K2, V2), seq iter.Seq2[K1, V1]) iter.Seq2[K2, V2] {
+	return func(yield func(K2, V2) bool) {
 		for k, v := range seq {
 			if !yield(f(k, v)) {
 				return

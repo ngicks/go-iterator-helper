@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 )
 
@@ -46,7 +45,7 @@ func TestUniqueFunc2(t *testing.T) {
 		Seq: func() iter.Seq2[[]int, []int] {
 			return hiter.UniqueFunc2(
 				func(k, v []int) int {
-					return hiter.Sum(adapter.Concat(slices.Values(k), slices.Values(v)))
+					return hiter.Sum(hiter.Concat(slices.Values(k), slices.Values(v)))
 				},
 				hiter.Values2([]hiter.KeyValue[[]int, []int]{
 					{[]int{1, 2}, []int{3}},

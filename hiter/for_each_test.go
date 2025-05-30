@@ -8,7 +8,6 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 	"github.com/ngicks/go-iterator-helper/hiter/internal/testcase"
 	"gotest.tools/v3/assert"
 )
@@ -44,6 +43,7 @@ func (g *fakeErrGroup) Go(f func() error) {
 		}
 	}()
 }
+
 func (g *fakeErrGroup) Wait() error {
 	g.wg.Wait()
 	return g.err
@@ -114,11 +114,9 @@ func TestDiscard2(t *testing.T) {
 	assert.DeepEqual(t, hiter.Collect2(src), args)
 }
 
-var (
-	trySrc = hiter.Pairs(
-		slices.Values([]string{"foo", "bar", "baz", "qux"}),
-		slices.Values([]error{nil, nil, testcase.ErrSample, nil}),
-	)
+var trySrc = hiter.Pairs(
+	slices.Values([]string{"foo", "bar", "baz", "qux"}),
+	slices.Values([]error{nil, nil, testcase.ErrSample, nil}),
 )
 
 func TestTryFind(t *testing.T) {
@@ -188,7 +186,7 @@ func TestTryCollect(t *testing.T) {
 	assert.NilError(t, err)
 
 	sum, err = hiter.TryAppendSeq([]string{"foo"}, trySrc)
-	assert.DeepEqual(t, slices.Collect(adapter.Concat(hiter.Once("foo"), hiter.OmitL(hiter.Limit2(2, trySrc)))), sum)
+	assert.DeepEqual(t, slices.Collect(hiter.Concat(hiter.Once("foo"), hiter.OmitL(hiter.Limit2(2, trySrc)))), sum)
 	assert.ErrorIs(t, err, testcase.ErrSample)
 
 	sum, err = hiter.TryAppendSeq([]string{"foo"}, hiter.Limit2(1, trySrc))

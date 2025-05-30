@@ -5,7 +5,6 @@ import (
 	"slices"
 	"testing"
 
-	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 	"gotest.tools/v3/assert"
 	"gotest.tools/v3/assert/cmp"
 )
@@ -13,7 +12,7 @@ import (
 func TestPermutations(t *testing.T) {
 	m := maps.Collect(
 		Pairs(
-			adapter.Map(
+			Map(
 				func(v []int) [5]int { return [5]int(slices.Clone(v)) },
 				Permutations([]int{1, 2, 3, 4, 5}),
 			),

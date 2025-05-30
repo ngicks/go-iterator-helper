@@ -6,7 +6,6 @@ import (
 	"testing"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/hiter/internal/adapter"
 	"github.com/ngicks/go-iterator-helper/hiter/mathiter"
 	"gotest.tools/v3/assert"
 )
@@ -16,22 +15,22 @@ func TestMinMax(t *testing.T) {
 		i int
 	}
 
-	rng := adapter.Map(func(i int) int { return i + 5 }, mathiter.Rng(100))
+	rng := hiter.Map(func(i int) int { return i + 5 }, mathiter.Rng(100))
 
 	for i := range 5 {
 		nums := slices.Collect(hiter.Limit(2, rng))
-		m := hiter.Min(adapter.Concat(hiter.Limit(nums[0], rng), hiter.Once(i), hiter.Limit(nums[1], rng)))
+		m := hiter.Min(hiter.Concat(hiter.Limit(nums[0], rng), hiter.Once(i), hiter.Limit(nums[1], rng)))
 		assert.Equal(t, i, m)
-		m = hiter.Max(adapter.Concat(hiter.Limit(nums[0], rng), hiter.Once(i+106), hiter.Limit(nums[1], rng)))
+		m = hiter.Max(hiter.Concat(hiter.Limit(nums[0], rng), hiter.Once(i+106), hiter.Limit(nums[1], rng)))
 		assert.Equal(t, i+106, m)
 
 		s := hiter.MinFunc(
 			func(i, j sample) int {
 				return cmp.Compare(i.i, j.i)
 			},
-			adapter.Map(
+			hiter.Map(
 				func(i int) sample { return sample{i} },
-				adapter.Concat(hiter.Limit(nums[0], rng), hiter.Once(i), hiter.Limit(nums[1], rng)),
+				hiter.Concat(hiter.Limit(nums[0], rng), hiter.Once(i), hiter.Limit(nums[1], rng)),
 			),
 		)
 		assert.Equal(t, sample{i}, s)
@@ -39,9 +38,9 @@ func TestMinMax(t *testing.T) {
 			func(i, j sample) int {
 				return cmp.Compare(i.i, j.i)
 			},
-			adapter.Map(
+			hiter.Map(
 				func(i int) sample { return sample{i} },
-				adapter.Concat(hiter.Limit(nums[0], rng), hiter.Once(i+106), hiter.Limit(nums[1], rng)),
+				hiter.Concat(hiter.Limit(nums[0], rng), hiter.Once(i+106), hiter.Limit(nums[1], rng)),
 			),
 		)
 		assert.Equal(t, sample{i + 106}, s)

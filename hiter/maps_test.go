@@ -18,6 +18,22 @@ func TestMaps(t *testing.T) {
 		"baz": "bazbaz",
 	}
 
+	// Test MapsKeys function with early termination
+	t.Run("MapsKeys", func(t *testing.T) {
+		testcase.Two[string, string]{
+			Seq: func() iter.Seq2[string, string] {
+				keys := []string{"foo", "bar", "baz"}
+				return hiter.MapsKeys(expected, slices.Values(keys))
+			},
+			Expected: []hiter.KeyValue[string, string]{
+				{"foo", "foofoo"},
+				{"bar", "barbar"},
+				{"baz", "bazbaz"},
+			},
+			BreakAt: 2, // This tests the early termination case
+		}.Test(t)
+	})
+
 	t.Run("MapAll", func(t *testing.T) {
 		testcase.Map[string, string]{
 			Seq: func() iter.Seq2[string, string] {

@@ -6,10 +6,8 @@ import (
 	"iter"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/hiter/mapper"
+	_ "github.com/ngicks/go-iterator-helper/hiter/mapper"
 )
-
-var _ = mapper.Clone[[]any]
 
 // RandBytes returns an iterator over pseudo-random n bytes long slice.
 // The buffer which the iterator returns is reused and should not be retained by the callers.

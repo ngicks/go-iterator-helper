@@ -1,14 +1,12 @@
 package tee
 
 import (
-	"io"
+	_ "io"
 	"iter"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 )
-
-var _ = io.Reader(nil)
 
 // TeeSeq is [iter.Seq] equivalent of [io.TeeReader].
 //

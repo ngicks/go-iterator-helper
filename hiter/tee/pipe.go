@@ -2,13 +2,11 @@ package tee
 
 import (
 	"context"
-	"io"
+	_ "io"
 	"iter"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 )
-
-var _ = io.Pipe
 
 var (
 	_ hiter.IntoIterable[any]       = (*Pipe[any])(nil)

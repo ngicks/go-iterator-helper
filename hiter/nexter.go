@@ -1,11 +1,9 @@
 package hiter
 
 import (
-	"database/sql"
+	_ "database/sql"
 	"iter"
 )
-
-var _ = (*sql.Rows)(nil)
 
 // Nexter is tested in databaseiter
 

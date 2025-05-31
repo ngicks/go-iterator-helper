@@ -7,6 +7,10 @@ type KeyValue[K, V any] struct {
 	V V
 }
 
+func KVPair[K, V any](k K, v V) KeyValue[K, V] {
+	return KeyValue[K, V]{k, v}
+}
+
 // Values2 returns an iterator that yields the KeyValue slice elements in order.
 func Values2[S ~[]KeyValue[K, V], K, V any](s S) iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {

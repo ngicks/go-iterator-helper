@@ -165,7 +165,7 @@ func (p *Pipe2[K, V]) TryPush(k K, v V) (open, pushed bool) {
 	default:
 	}
 	select {
-	case p.c <- hiter.KeyValue[K, V]{K: k, V: v}:
+	case p.c <- hiter.KVPair(k, v):
 		return true, true
 	default:
 		return true, false

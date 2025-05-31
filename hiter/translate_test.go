@@ -20,33 +20,146 @@ func TestEnumerate(t *testing.T) {
 		Seq: func() iter.Seq2[int, int] {
 			return hiter.Enumerate(slices.Values(srcInt1))
 		},
-		BreakAt:  2,
-		Expected: []hiter.KeyValue[int, int]{{0, 12}, {1, 76}, {2, 8}, {3, 9}, {4, 923}},
+		BreakAt: 2,
+		Expected: []hiter.KeyValue[int, int]{
+			{0, 12},
+			{1, 76},
+			{2, 8},
+			{3, 9},
+			{4, 923},
+		},
 	}.Test(t)
 }
 
 func TestPairs(t *testing.T) {
-	testcase.Two[int, int]{
-		Seq: func() iter.Seq2[int, int] {
-			return hiter.Pairs(slices.Values(srcInt1), slices.Values(srcInt2))
-		},
-		BreakAt:  2,
-		Expected: []hiter.KeyValue[int, int]{{12, 567}, {76, 2}, {8, 8}, {9, 0}, {923, 3}},
-	}.Test(t)
-	testcase.Two[int, int]{
-		Seq: func() iter.Seq2[int, int] {
-			return hiter.Pairs(slices.Values(srcInt1[:len(srcInt1)-1]), slices.Values(srcInt2))
-		},
-		BreakAt:  2,
-		Expected: []hiter.KeyValue[int, int]{{12, 567}, {76, 2}, {8, 8}, {9, 0}},
-	}.Test(t)
-	testcase.Two[int, int]{
-		Seq: func() iter.Seq2[int, int] {
-			return hiter.Pairs(slices.Values(srcInt1), slices.Values(srcInt2[:len(srcInt2)-1]))
-		},
-		BreakAt:  2,
-		Expected: []hiter.KeyValue[int, int]{{12, 567}, {76, 2}, {8, 8}, {9, 0}},
-	}.Test(t)
+	t.Run("same length", func(t *testing.T) {
+		testcase.Two[int, int]{
+			Seq: func() iter.Seq2[int, int] {
+				return hiter.Pairs(slices.Values(srcInt1), slices.Values(srcInt2))
+			},
+			BreakAt: 2,
+			Expected: []hiter.KeyValue[int, int]{
+				{12, 567},
+				{76, 2},
+				{8, 8},
+				{9, 0},
+				{923, 3},
+			},
+		}.Test(t)
+	})
+
+	t.Run("former is shorter", func(t *testing.T) {
+		testcase.Two[int, int]{
+			Seq: func() iter.Seq2[int, int] {
+				return hiter.Pairs(slices.Values(srcInt1[:len(srcInt1)-1]), slices.Values(srcInt2))
+			},
+			BreakAt: 2,
+			Expected: []hiter.KeyValue[int, int]{
+				{12, 567},
+				{76, 2},
+				{8, 8},
+				{9, 0},
+			},
+		}.Test(t)
+	})
+
+	t.Run("latter is shorter", func(t *testing.T) {
+		testcase.Two[int, int]{
+			Seq: func() iter.Seq2[int, int] {
+				return hiter.Pairs(slices.Values(srcInt1), slices.Values(srcInt2[:len(srcInt2)-1]))
+			},
+			BreakAt: 2,
+			Expected: []hiter.KeyValue[int, int]{
+				{12, 567},
+				{76, 2},
+				{8, 8},
+				{9, 0},
+			},
+		}.Test(t)
+	})
+}
+
+func TestPairs2(t *testing.T) {
+	srcKV1 := []hiter.KeyValue[int, string]{
+		{1, "foo"},
+		{2, "bar"},
+		{3, "baz"},
+		{4, "qux"},
+		{5, "quux"},
+	}
+	srcKV2 := []hiter.KeyValue[string, int]{
+		{"a", 10},
+		{"b", 20},
+		{"c", 30},
+		{"d", 40},
+		{"e", 50},
+	}
+
+	t.Run("same length", func(t *testing.T) {
+		testcase.Two[hiter.KeyValue[int, string], hiter.KeyValue[string, int]]{
+			Seq: func() iter.Seq2[hiter.KeyValue[int, string], hiter.KeyValue[string, int]] {
+				return hiter.Pairs2(hiter.Values2(srcKV1), hiter.Values2(srcKV2))
+			},
+			BreakAt: 2,
+			Expected: []hiter.KeyValue[hiter.KeyValue[int, string], hiter.KeyValue[string, int]]{
+				{hiter.KVPair(1, "foo"), hiter.KVPair("a", 10)},
+				{hiter.KVPair(2, "bar"), hiter.KVPair("b", 20)},
+				{hiter.KVPair(3, "baz"), hiter.KVPair("c", 30)},
+				{hiter.KVPair(4, "qux"), hiter.KVPair("d", 40)},
+				{hiter.KVPair(5, "quux"), hiter.KVPair("e", 50)},
+			},
+		}.Test(t)
+	})
+
+	t.Run("former is shorter", func(t *testing.T) {
+		testcase.Two[hiter.KeyValue[int, string], hiter.KeyValue[string, int]]{
+			Seq: func() iter.Seq2[hiter.KeyValue[int, string], hiter.KeyValue[string, int]] {
+				return hiter.Pairs2(hiter.Values2(srcKV1[:len(srcKV1)-1]), hiter.Values2(srcKV2))
+			},
+			BreakAt: 2,
+			Expected: []hiter.KeyValue[hiter.KeyValue[int, string], hiter.KeyValue[string, int]]{
+				{hiter.KVPair(1, "foo"), hiter.KVPair("a", 10)},
+				{hiter.KVPair(2, "bar"), hiter.KVPair("b", 20)},
+				{hiter.KVPair(3, "baz"), hiter.KVPair("c", 30)},
+				{hiter.KVPair(4, "qux"), hiter.KVPair("d", 40)},
+			},
+		}.Test(t)
+	})
+
+	t.Run("latter is shorter", func(t *testing.T) {
+		testcase.Two[hiter.KeyValue[int, string], hiter.KeyValue[string, int]]{
+			Seq: func() iter.Seq2[hiter.KeyValue[int, string], hiter.KeyValue[string, int]] {
+				return hiter.Pairs2(hiter.Values2(srcKV1), hiter.Values2(srcKV2[:len(srcKV2)-1]))
+			},
+			BreakAt: 2,
+			Expected: []hiter.KeyValue[hiter.KeyValue[int, string], hiter.KeyValue[string, int]]{
+				{hiter.KVPair(1, "foo"), hiter.KVPair("a", 10)},
+				{hiter.KVPair(2, "bar"), hiter.KVPair("b", 20)},
+				{hiter.KVPair(3, "baz"), hiter.KVPair("c", 30)},
+				{hiter.KVPair(4, "qux"), hiter.KVPair("d", 40)},
+			},
+		}.Test(t)
+	})
+
+	t.Run("former is empty", func(t *testing.T) {
+		testcase.Two[hiter.KeyValue[int, string], hiter.KeyValue[string, int]]{
+			Seq: func() iter.Seq2[hiter.KeyValue[int, string], hiter.KeyValue[string, int]] {
+				return hiter.Pairs2(hiter.Values2([]hiter.KeyValue[int, string]{}), hiter.Values2(srcKV2))
+			},
+			BreakAt:  0,
+			Expected: nil,
+		}.Test(t)
+	})
+
+	t.Run("latter is empty", func(t *testing.T) {
+		testcase.Two[hiter.KeyValue[int, string], hiter.KeyValue[string, int]]{
+			Seq: func() iter.Seq2[hiter.KeyValue[int, string], hiter.KeyValue[string, int]] {
+				return hiter.Pairs2(hiter.Values2(srcKV1), hiter.Values2([]hiter.KeyValue[string, int]{}))
+			},
+			BreakAt:  0,
+			Expected: nil,
+		}.Test(t)
+	})
 }
 
 func TestTranspose(t *testing.T) {
@@ -54,8 +167,13 @@ func TestTranspose(t *testing.T) {
 		Seq: func() iter.Seq2[int, int] {
 			return hiter.Transpose(hiter.Pairs(slices.Values(srcInt1[:len(srcInt1)-1]), slices.Values(srcInt2)))
 		},
-		BreakAt:  2,
-		Expected: []hiter.KeyValue[int, int]{{567, 12}, {2, 76}, {8, 8}, {0, 9}},
+		BreakAt: 2,
+		Expected: []hiter.KeyValue[int, int]{
+			{567, 12},
+			{2, 76},
+			{8, 8},
+			{0, 9},
+		},
 	}.Test(t)
 }
 
@@ -96,7 +214,11 @@ func TestOmit2(t *testing.T) {
 }
 
 func TestUniteBy(t *testing.T) {
-	src := hiter.KeyValues[int, string]{{1, "foo"}, {2, "bar"}, {3, "baz"}}
+	src := hiter.KeyValues[int, string]{
+		{1, "foo"},
+		{2, "bar"},
+		{3, "baz"},
+	}
 	united := hiter.Unify(
 		func(k int, v string) hiter.KeyValue[int, string] { return hiter.KeyValue[int, string]{k, v} },
 		src.Iter2(),
@@ -113,7 +235,11 @@ func TestUniteBy(t *testing.T) {
 }
 
 func TestDivideBy(t *testing.T) {
-	src := []hiter.KeyValue[int, string]{{1, "foo"}, {2, "bar"}, {3, "baz"}}
+	src := []hiter.KeyValue[int, string]{
+		{1, "foo"},
+		{2, "bar"},
+		{3, "baz"},
+	}
 	divided := hiter.Divide(
 		func(kv hiter.KeyValue[int, string]) (int, string) { return kv.K, kv.V },
 		slices.Values(src),

@@ -109,3 +109,27 @@ func TestSprintf2(t *testing.T) {
 		slices.Collect(Sprintf2("%03[2]d, %03[1]d", hiter.Enumerate(hiter.Range(2, -1)))),
 	)
 }
+
+func TestStringsReplacer(t *testing.T) {
+	replacer := NewStringsReplacer("old", "new", "foo", "bar")
+
+	input := []string{"old text", "foo test", "something"}
+	result := slices.Collect(replacer.Map(slices.Values(input)))
+	expected := []string{"new text", "bar test", "something"}
+
+	assert.DeepEqual(t, expected, result)
+}
+
+func TestReplacer(t *testing.T) {
+	replacer := Replacer[string, int]{
+		"one":   1,
+		"two":   2,
+		"three": 3,
+	}
+
+	input := []string{"one", "two", "three", "four"}
+	result := slices.Collect(replacer.Map(slices.Values(input)))
+	expected := []int{1, 2, 3, 0} // "four" maps to zero value of int
+
+	assert.DeepEqual(t, expected, result)
+}

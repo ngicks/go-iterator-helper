@@ -26,6 +26,19 @@ func TestCompact(t *testing.T) {
 	} {
 		assert.Assert(t, cmp.DeepEqual(tc.expected, slices.Collect(Compact(tc.input))))
 	}
+
+	// Test early termination
+	t.Run("early termination", func(t *testing.T) {
+		var collected []int
+		seq := Compact(slices.Values([]int{1, 1, 2, 2, 3, 3}))
+		for v := range seq {
+			collected = append(collected, v)
+			if len(collected) >= 2 {
+				break
+			}
+		}
+		assert.DeepEqual(t, []int{1, 2}, collected)
+	})
 }
 
 func TestCompactFunc(t *testing.T) {
@@ -57,6 +70,20 @@ func TestCompactFunc(t *testing.T) {
 	} {
 		assert.Assert(t, cmp.DeepEqual(tc.expected, slices.Collect(CompactFunc(tc.eq, tc.input))))
 	}
+
+	// Test early termination
+	t.Run("early termination", func(t *testing.T) {
+		var collected []testSubject
+		eq := func(i, j testSubject) bool { return i.Foo == j.Foo }
+		seq := CompactFunc(eq, slices.Values([]testSubject{{"foo", 5}, {"foo", 6}, {"bar", 6}, {"baz", 6}}))
+		for v := range seq {
+			collected = append(collected, v)
+			if len(collected) >= 2 {
+				break
+			}
+		}
+		assert.DeepEqual(t, []testSubject{{"foo", 5}, {"bar", 6}}, collected)
+	})
 }
 
 func TestCompact2(t *testing.T) {
@@ -85,6 +112,22 @@ func TestCompact2(t *testing.T) {
 			),
 		)
 	}
+
+	// Test early termination
+	t.Run("early termination", func(t *testing.T) {
+		var collected []KeyValue[int, int]
+		seq := Compact2(Pairs(
+			slices.Values([]int{1, 1, 2, 2, 3, 3}),
+			slices.Values([]int{1, 1, 2, 2, 3, 3}),
+		))
+		for k, v := range seq {
+			collected = append(collected, KeyValue[int, int]{K: k, V: v})
+			if len(collected) >= 2 {
+				break
+			}
+		}
+		assert.DeepEqual(t, []KeyValue[int, int]{{K: 1, V: 1}, {K: 2, V: 2}}, collected)
+	})
 }
 
 func TestCompactFunc2(t *testing.T) {
@@ -131,4 +174,22 @@ func TestCompactFunc2(t *testing.T) {
 	} {
 		assert.Assert(t, cmp.DeepEqual(tc.expected, Collect2(CompactFunc2(tc.eq, tc.input))))
 	}
+
+	// Test early termination
+	t.Run("early termination", func(t *testing.T) {
+		var collected []KeyValue[int, testSubject]
+		eq := func(k1 int, v1 testSubject, k2 int, v2 testSubject) bool { return v1.Foo == v2.Foo }
+		seq := CompactFunc2(eq, slices.All([]testSubject{{"foo", 5}, {"foo", 6}, {"bar", 6}, {"baz", 6}}))
+		for k, v := range seq {
+			collected = append(collected, KeyValue[int, testSubject]{K: k, V: v})
+			if len(collected) >= 2 {
+				break
+			}
+		}
+		expected := []KeyValue[int, testSubject]{
+			{K: 0, V: testSubject{"foo", 5}},
+			{K: 2, V: testSubject{"bar", 6}},
+		}
+		assert.DeepEqual(t, expected, collected)
+	})
 }

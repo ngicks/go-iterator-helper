@@ -57,6 +57,21 @@ func TestBox(t *testing.T) {
 }
 
 func TestBox_Map(t *testing.T) {
+	// Test the Map function (not Map2)
+	box := errbox.Map(
+		func(i int) (int, error) {
+			if i >= 3 {
+				return 0, errSample
+			}
+			return i * 2, nil
+		},
+		hiter.Range(0, 6),
+	)
+	assert.DeepEqual(t, []int{0, 2, 4}, slices.Collect(box.IntoIter()))
+	assert.ErrorIs(t, box.Err(), errSample)
+}
+
+func TestBox_Map2(t *testing.T) {
 	box := errbox.Map2(
 		func(i, j int) (int, int, error) {
 			if i > j {
@@ -113,4 +128,41 @@ func TestBox2_Map2(t *testing.T) {
 	)
 	assert.DeepEqual(t, expected2[:3], hiter.Collect2(box.IntoIter2()))
 	assert.ErrorIs(t, box.Err(), errSample)
+}
+
+// Mock Nexter implementation for testing
+type mockNexter struct {
+	data  []int
+	index int
+	err   error
+}
+
+func (m *mockNexter) Next() bool {
+	m.index++
+	return m.index < len(m.data)
+}
+
+func (m *mockNexter) Err() error {
+	return m.err
+}
+
+func TestNewNexter(t *testing.T) {
+	// Test normal case
+	mock := &mockNexter{
+		data:  []int{1, 2, 3, 4, 5},
+		index: -1, // Start at -1 so Next() will increment to 0
+		err:   nil,
+	}
+
+	nexter := errbox.NewNexter(mock, func(m *mockNexter) (int, error) {
+		if m.index >= len(m.data) {
+			return 0, errors.New("out of bounds")
+		}
+		return m.data[m.index], nil
+	})
+
+	result := slices.Collect(nexter.IntoIter())
+	expected := []int{1, 2, 3, 4, 5}
+	assert.DeepEqual(t, expected, result)
+	assert.NilError(t, nexter.Err())
 }

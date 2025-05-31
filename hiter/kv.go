@@ -2,9 +2,23 @@ package hiter
 
 import "iter"
 
+// KeyValue is combination of K and V.
+// It is useful if paris of k and v needs to be sent through
+// somewhere it only accepts a single vlaue, e.g. channel.
+//
+// There are some utilities that help you consume KeyValue easier:
+//
+//   - [KVPair] : creates a KeyValue which saves you some key strokes by inferring types.
+//   - [Values2] : converts []KeyValue[K, V] based types to iter.Seq2.
+//   - [AppendSeq2], [Collect2] : collects iter.Seq2 to []KeyValue or types based on it.
+//   - [ToKeyValue], [FromKeyValue] : converts iter.Seq2[K, V] to/from iter.Seq[KeyValue[K, V]].
 type KeyValue[K, V any] struct {
 	K K
 	V V
+}
+
+func (k KeyValue[K, V]) Unpack() (K, V) {
+	return k.K, k.V
 }
 
 func KVPair[K, V any](k K, v V) KeyValue[K, V] {

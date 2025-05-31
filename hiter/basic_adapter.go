@@ -34,7 +34,7 @@ func Concat2[K, V any](seqs ...iter.Seq2[K, V]) iter.Seq2[K, V] {
 // Equal return true if 2 seqs yields same sequences.
 func Equal[V comparable](x, y iter.Seq[V]) bool {
 	for z := range Zip(x, y) {
-		if z.L.Ok != z.R.Ok || z.L.V != z.R.V {
+		if z.L != z.R {
 			return false
 		}
 	}
@@ -44,7 +44,7 @@ func Equal[V comparable](x, y iter.Seq[V]) bool {
 // Equal2 return true if 2 seqs yields same sequences.
 func Equal2[K, V comparable](x, y iter.Seq2[K, V]) bool {
 	for z := range Zip2(x, y) {
-		if z.L.Ok != z.R.Ok || z.L.V.K != z.R.V.K || z.L.V.V != z.R.V.V {
+		if z.L != z.R {
 			return false
 		}
 	}
@@ -57,7 +57,7 @@ func Equal2[K, V comparable](x, y iter.Seq2[K, V]) bool {
 // and the comparison stops at the first index for which eq returns false.
 func EqualFunc[V1, V2 any](x iter.Seq[V1], y iter.Seq[V2], f func(V1, V2) bool) bool {
 	for z := range Zip(x, y) {
-		if z.L.Ok != z.R.Ok || !f(z.L.V, z.R.V) {
+		if !z.BothPresent() || !f(z.Unpack()) {
 			return false
 		}
 	}
@@ -70,7 +70,7 @@ func EqualFunc[V1, V2 any](x iter.Seq[V1], y iter.Seq[V2], f func(V1, V2) bool) 
 // and the comparison stops at the first index for which eq returns false.
 func EqualFunc2[K1, V1, K2, V2 any](x iter.Seq2[K1, V1], y iter.Seq2[K2, V2], f func(K1, V1, K2, V2) bool) bool {
 	for z := range Zip2(x, y) {
-		if z.L.Ok != z.R.Ok || !f(z.L.V.K, z.L.V.V, z.R.V.K, z.R.V.V) {
+		if !z.BothPresent() || !f(ZippedUnpackKeyValue(z)) {
 			return false
 		}
 	}
@@ -282,9 +282,21 @@ type Option[V any] struct {
 
 // A Zipped is a pair of zipped values, one of which may be missing,
 // drawn from two different sequences.
-type Zipped[V1, V2 any] struct {
-	L Option[V1]
-	R Option[V2]
+type Zipped[L, R any] struct {
+	L Option[L]
+	R Option[R]
+}
+
+func (z Zipped[L, R]) BothPresent() bool {
+	return z.L.Ok && z.R.Ok
+}
+
+func (z Zipped[L, R]) Unpack() (L, R) {
+	return z.L.V, z.R.V
+}
+
+func ZippedUnpackKeyValue[K1, V1, K2, V2 any](z Zipped[KeyValue[K1, V1], KeyValue[K2, V2]]) (K1, V1, K2, V2) {
+	return z.L.V.K, z.L.V.V, z.R.V.K, z.R.V.V
 }
 
 func Zip[V1, V2 any](x iter.Seq[V1], y iter.Seq[V2]) iter.Seq[Zipped[V1, V2]] {

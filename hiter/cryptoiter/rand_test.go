@@ -31,13 +31,11 @@ func TestRandBytesWithClone(t *testing.T) {
 	}
 
 	// Verify buffers are different (not sharing memory)
-	if len(cloned) >= 2 {
-		// Check if they point to different memory locations by modifying one
-		original := make([]byte, len(cloned[0]))
-		copy(original, cloned[0])
-		cloned[0][0] = ^cloned[0][0] // flip bits
-		assert.Assert(t, string(cloned[0]) != string(original))
-	}
+	// Check if they point to different memory locations by modifying one
+	original := make([]byte, len(cloned[0]))
+	copy(original, cloned[0])
+	cloned[0][0] = ^cloned[0][0] // flip bits
+	assert.Assert(t, string(cloned[0]) != string(original))
 }
 
 func TestRandBytesZeroSize(t *testing.T) {

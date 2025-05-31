@@ -32,8 +32,6 @@ func Tap2[K, V any](tap func(K, V), seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 
 // TapLast returns an iterator over values from seq.
 // tap is executed after all values from seq are consumed without breaking it.
-//
-// Experimental: not tested and might be changed any time.
 func TapLast[V any](tap func(), seq iter.Seq[V]) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		for v := range seq {
@@ -47,8 +45,6 @@ func TapLast[V any](tap func(), seq iter.Seq[V]) iter.Seq[V] {
 
 // TapLast2 returns an iterator over key-value pairs from seq.
 // tap is executed after all pairs from seq are consumed without breaking it.
-//
-// Experimental: not tested and might be changed any time.
 func TapLast2[K, V any](tap func(), seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
 		for k, v := range seq {

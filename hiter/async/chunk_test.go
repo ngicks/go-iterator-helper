@@ -93,27 +93,23 @@ func TestChunk_timeout(t *testing.T) {
 	c <- 0
 	waitReset()
 	c <- 1
-	waitReset()
 	f.BlockUntil(1)
 	f.Advance(time.Millisecond + 100)
 	assert.DeepEqual(t, []int{0, 1}, <-resultChan)
 	c <- 2
 	waitReset()
 	c <- 3
-	waitReset()
 	c <- 4
 	assert.DeepEqual(t, []int{2, 3, 4}, <-resultChan)
 	c <- 5
 	waitReset()
 	c <- 6
-	waitReset()
 	f.BlockUntil(1)
 	f.Advance(time.Millisecond)
 	assert.DeepEqual(t, []int{5, 6}, <-resultChan)
 	c <- 7
 	waitReset()
 	c <- 8
-	waitReset()
 	c <- 9
 	assert.DeepEqual(t, []int{7, 8, 9}, <-resultChan)
 	close(c)
@@ -165,5 +161,4 @@ func TestChunk_panic_propagation(t *testing.T) {
 		}()
 		assert.Assert(t, cmp.DeepEqual([][]int{{0, 1, 2, 3}, {4, 5, 6, 7}}, result))
 	})
-
 }

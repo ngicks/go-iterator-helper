@@ -7,23 +7,18 @@ import (
 	"time"
 
 	"github.com/jonboulle/clockwork"
-	"github.com/ngicks/go-iterator-helper/hiter/mapper"
+	_ "github.com/ngicks/go-iterator-helper/hiter/mapper"
 )
 
-// Keeping this line to let linking work.
-// hope dead code elimination works well on this.
-var _ any = mapper.Clone[[]any]
-
-var (
-	clock = clockwork.NewRealClock()
-)
+var clock = clockwork.NewRealClock()
 
 // Chunk returns an iterator over consecutive values of up to n elements from seq.
 //
 // The returned iterator reuses the buffer it yields. Apply [mapper.Clone] if the caller needs to retain slices.
 //
 // Chunk may yield slices where 0 < len(s) <= n.
-// Values may be shorter than n if timeout > 0 and the timeout duration passed since last time seq generated a value.
+// Values may be shorter than n if timeout > 0 and seq is slow.
+// Internally Chunk resets timer only when the first element in a chunk is yielded.
 //
 // Chunk panics if n is less than 1.
 func Chunk[V any](timeout time.Duration, n int, seq iter.Seq[V]) iter.Seq[[]V] {
@@ -96,16 +91,17 @@ func Chunk[V any](timeout time.Duration, n int, seq iter.Seq[V]) iter.Seq[[]V] {
 
 				buf[idx] = v
 				idx++
-				if idx != n {
-					if timeout > 0 {
-						timer.Reset(timeout)
-					}
-				} else {
+				switch idx {
+				case n:
 					if !yield(buf) {
 						return
 					}
 					timer.Stop()
 					idx = 0
+				case 1:
+					if timeout > 0 {
+						timer.Reset(timeout)
+					}
 				}
 			case <-timer.Chan():
 				if idx > 0 {

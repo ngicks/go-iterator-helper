@@ -5,13 +5,12 @@ import (
 	"slices"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
 func ExampleCompact() {
-	m := xiter.Merge(
-		xiter.Map(func(i int) int { return 2 * i }, hiter.Range(1, 11)),
-		xiter.Map(func(i int) int { return 1 << i }, hiter.Range(1, 11)),
+	m := hiter.Merge(
+		hiter.Map(func(i int) int { return 2 * i }, hiter.Range(1, 11)),
+		hiter.Map(func(i int) int { return 1 << i }, hiter.Range(1, 11)),
 	)
 
 	first := true
@@ -35,9 +34,12 @@ func ExampleCompactFunc2() {
 	for i, v := range hiter.CompactFunc2(
 		func(i1 int, v1 example, i2 int, v2 example) bool { return v1.Key == v2.Key },
 		hiter.Enumerate(slices.Values([]example{
-			{"foo", "yay"}, {"foo", "nay"}, {"foo", "mah"},
+			{"foo", "yay"},
+			{"foo", "nay"},
+			{"foo", "mah"},
 			{"bar", "yay"},
-			{"baz", "yay"}, {"baz", "nay"},
+			{"baz", "yay"},
+			{"baz", "nay"},
 		})),
 	) {
 		fmt.Printf("%d: %v\n", i, v)

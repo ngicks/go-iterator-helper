@@ -4,13 +4,12 @@ import (
 	"fmt"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
 func ExampleRange_prevent_off_by_one() {
 	for i := range hiter.LimitUntil(
 		func(i int) bool { return i < 50 },
-		xiter.Map(
+		hiter.Map(
 			func(i int) int { return i * 7 },
 			hiter.Range(0, 10),
 		),

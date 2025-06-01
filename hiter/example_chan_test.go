@@ -8,7 +8,6 @@ import (
 	"time"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
 func ExampleChanSend() {
@@ -40,7 +39,7 @@ func ExampleChanSend() {
 						// Ensuring moderate task distribution among workers(goroutines.)
 						time.Sleep(rand.N[time.Duration](100))
 					},
-					xiter.Map(
+					hiter.Map(
 						func(s string) string { return "✨" + s + "✨" },
 						hiter.Chan(ctx, in),
 					),

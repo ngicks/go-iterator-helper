@@ -5,14 +5,13 @@ import (
 	"slices"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
 func ExampleFlatten() {
 	yayyay := []string{"yay", "yay", "yay"}
 	wah := []string{"wah", "wah"}
 	first := true
-	for s := range hiter.Flatten(xiter.Concat(slices.Values([][]string{yayyay}), slices.Values([][]string{wah}))) {
+	for s := range hiter.Flatten(hiter.Concat(slices.Values([][]string{yayyay}), slices.Values([][]string{wah}))) {
 		if !first {
 			fmt.Print(" ")
 		}

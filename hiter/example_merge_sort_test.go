@@ -3,30 +3,11 @@ package hiter_test
 import (
 	"cmp"
 	"fmt"
-	"iter"
 	"slices"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/mathiter"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
-
-// avoiding xter dep
-func limit[V any](seq iter.Seq[V], n int) iter.Seq[V] {
-	return func(yield func(V) bool) {
-		if n <= 0 {
-			return
-		}
-		for v := range seq {
-			if !yield(v) {
-				return
-			}
-			if n--; n <= 0 {
-				break
-			}
-		}
-	}
-}
 
 func mergeSortFunc[S ~[]T, T any](m S, cmp func(l, r T) int) S {
 	if len(m) <= 1 {
@@ -76,13 +57,13 @@ func (s sliceAdapter[T]) Len() int {
 func ExampleMergeSort() {
 	rng := mathiter.Rng(20)
 	fmt.Printf("merge sort: %t\n",
-		slices.IsSorted(mergeSortFunc(slices.Collect(limit(rng, 10)), cmp.Compare)),
+		slices.IsSorted(mergeSortFunc(slices.Collect(hiter.Limit(10, rng)), cmp.Compare)),
 	)
 	fmt.Printf(
 		"merge sort iter: %t\n",
 		slices.IsSorted(
 			slices.Collect(
-				hiter.MergeSort(slices.Collect(limit(rng, 10))),
+				hiter.MergeSort(slices.Collect(hiter.Limit(10, rng))),
 			),
 		),
 	)
@@ -90,7 +71,7 @@ func ExampleMergeSort() {
 		"merge sort atter: %t\n",
 		slices.IsSorted(
 			slices.Collect(
-				hiter.MergeSortSliceLike(sliceAdapter[int](slices.Collect(limit(rng, 10)))),
+				hiter.MergeSortSliceLike(sliceAdapter[int](slices.Collect(hiter.Limit(10, rng)))),
 			),
 		),
 	)
@@ -101,11 +82,11 @@ func ExampleMergeSort() {
 				hiter.MergeSortSliceLike(
 					hiter.ConcatSliceLike(
 						slices.Collect(
-							xiter.Map(
+							hiter.Map(
 								func(i int) hiter.SliceLike[int] {
-									return sliceAdapter[int](slices.Collect(limit(rng, i)))
+									return sliceAdapter[int](slices.Collect(hiter.Limit(i, rng)))
 								},
-								xiter.Limit(rng, 5),
+								hiter.Limit(5, rng),
 							),
 						)...,
 					),

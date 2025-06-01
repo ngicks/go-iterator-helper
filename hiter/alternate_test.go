@@ -101,8 +101,12 @@ func TestAlternate(t *testing.T) {
 						slices.All([]int{1, 2, 3}),
 					)
 				},
-				Expected: []hiter.KeyValue[int, int]{{0, 1}, {1, 2}, {2, 3}},
-				BreakAt:  2,
+				Expected: []hiter.KeyValue[int, int]{
+					{0, 1},
+					{1, 2},
+					{2, 3},
+				},
+				BreakAt: 2,
 			}.Test(t)
 		})
 
@@ -114,8 +118,15 @@ func TestAlternate(t *testing.T) {
 						slices.All([]int{4, 5, 6}),
 					)
 				},
-				Expected: []hiter.KeyValue[int, int]{{0, 1}, {0, 4}, {1, 2}, {1, 5}, {2, 3}, {2, 6}},
-				BreakAt:  2,
+				Expected: []hiter.KeyValue[int, int]{
+					{0, 1},
+					{0, 4},
+					{1, 2},
+					{1, 5},
+					{2, 3},
+					{2, 6},
+				},
+				BreakAt: 2,
 			}.Test(t)
 		})
 
@@ -129,9 +140,15 @@ func TestAlternate(t *testing.T) {
 					)
 				},
 				Expected: []hiter.KeyValue[int, int]{
-					{0, 1}, {0, 4}, {0, 7},
-					{1, 2}, {1, 5}, {1, 8},
-					{2, 3}, {2, 6}, {2, 9},
+					{0, 1},
+					{0, 4},
+					{0, 7},
+					{1, 2},
+					{1, 5},
+					{1, 8},
+					{2, 3},
+					{2, 6},
+					{2, 9},
 				},
 				BreakAt: 5,
 			}.Test(t)
@@ -159,8 +176,10 @@ func TestAlternate(t *testing.T) {
 					)
 				},
 				Expected: []hiter.KeyValue[int, int]{
-					{0, 1}, {0, 4},
-					{1, 2}, {1, 5},
+					{0, 1},
+					{0, 4},
+					{1, 2},
+					{1, 5},
 					{2, 3},
 				},
 				BreakAt: 2,

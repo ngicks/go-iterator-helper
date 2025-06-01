@@ -139,8 +139,49 @@ func TestMaps(t *testing.T) {
 		}.Test(t)
 	})
 
+	t.Run("MapsOverlay", func(t *testing.T) {
+		m1 := map[string]int{
+			"foo":   1,
+			"bar":   2,
+			"baz":   3,
+			"qux":   4,
+			"quux":  5,
+			"corge": 6,
+		}
+		m2 := map[string]int{
+			"foo": 7,
+			"bar": 8,
+			"baz": 9,
+			"qux": 10,
 
+			"whooooooaa": 0,
+		}
+		m3 := map[string]int{
+			"foo": 11,
+			"bar": 12,
+
+			"weeeeeeeee": 0,
+		}
+		testcase.Map[string, int]{
+			Seq: func() iter.Seq2[string, int] {
+				return hiter.MapsOverlay(m1, m2, m3)
 			},
+			Seqs: []func() iter.Seq2[string, int]{
+				func() iter.Seq2[string, int] {
+					return iterable.MapOverlay[map[string]int, string, int]{
+						Maps: []map[string]int{m1, m2, m3},
+					}.Iter2()
+				},
+			},
+			Expected: map[string]int{
+				"foo":        11,
+				"bar":        12,
+				"baz":        9,
+				"qux":        10,
+				"quux":       5,
+				"corge":      6,
+				"whooooooaa": 0,
+				"weeeeeeeee": 0,
 			},
 		}.Test(t)
 	})

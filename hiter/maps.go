@@ -39,3 +39,23 @@ func MapsSortedFunc[M ~map[K]V, K comparable, V any](m M, f func(i, j K) int) it
 		}
 	}
 }
+
+// MapsOverlay return an iterator over key-value pairs from maps mm in overlaying manner.
+// Every unique keys appear in the output only once for each.
+// If multiple maps has same key, value in right most map is chosen.
+func MapsOverlay[M ~map[K]V, K comparable, V any](mm ...M) iter.Seq2[K, V] {
+	return func(yield func(K, V) bool) {
+		seen := map[K]struct{}{}
+		for _, m := range slices.Backward(mm) {
+			for k, v := range m {
+				if _, ok := seen[k]; ok {
+					continue
+				}
+				seen[k] = struct{}{}
+				if !yield(k, v) {
+					return
+				}
+			}
+		}
+	}
+}

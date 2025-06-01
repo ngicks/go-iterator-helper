@@ -204,7 +204,6 @@ func TestPipe_CloseOperations(t *testing.T) {
 	})
 
 	t.Run("close while pushing", func(t *testing.T) {
-		t.Skip("Skipping due to known race condition - this is testing concurrent usage which has inherent races")
 		p := NewPipe[int](0) // unbuffered
 		var wg sync.WaitGroup
 		pushed := make(chan bool, 1)

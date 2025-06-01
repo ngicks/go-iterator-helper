@@ -4,6 +4,7 @@ import (
 	"context"
 	_ "io"
 	"iter"
+	"sync"
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 )
@@ -15,6 +16,7 @@ var (
 
 // Pipe is similar [io.Pipe]
 type Pipe[V any] struct {
+	rw     sync.RWMutex
 	c      chan V
 	closed chan struct{}
 }
@@ -39,7 +41,7 @@ func NewPipe[V any](n int) *Pipe[V] {
 // the iterator returned from [*Pipe.IntoIter] stops after buffered values.
 //
 // Close itself is not gorotine safe;
-// it is safe to call Close adn Push from multiple goroutines.
+// it is safe to call Close and Push from multiple goroutines.
 // But simultaneous multiple calls to Close may panic.
 func (p *Pipe[V]) Close() {
 	select {
@@ -48,6 +50,8 @@ func (p *Pipe[V]) Close() {
 	default:
 	}
 	close(p.closed)
+	p.rw.Lock()
+	defer p.rw.Unlock()
 	close(p.c)
 }
 
@@ -63,6 +67,8 @@ func (p *Pipe[V]) Push(v V) bool {
 		return false
 	default:
 	}
+	p.rw.RLock()
+	defer p.rw.RUnlock()
 	select {
 	case p.c <- v:
 		return true
@@ -80,6 +86,8 @@ func (p *Pipe[V]) TryPush(v V) (open, pushed bool) {
 		return false, false
 	default:
 	}
+	p.rw.RLock()
+	defer p.rw.RUnlock()
 	select {
 	case p.c <- v:
 		return true, true
@@ -97,6 +105,7 @@ func (p *Pipe[V]) IntoIter() iter.Seq[V] {
 
 // Pipes is like [Pipe], but it pipes key-value pairs.
 type Pipe2[K, V any] struct {
+	rw     sync.RWMutex
 	c      chan hiter.KeyValue[K, V]
 	closed chan struct{}
 }
@@ -121,7 +130,7 @@ func NewPipe2[K, V any](n int) *Pipe2[K, V] {
 // the iterator returned from [*Pipe.IntoIter] stops after buffered values.
 //
 // Close itself is not gorotine safe;
-// it is safe to call Close adn Push from multiple goroutines.
+// it is safe to call Close and Push from multiple goroutines.
 // But simultaneous multiple calls to Close may panic.
 func (p *Pipe2[K, V]) Close() {
 	select {
@@ -130,6 +139,8 @@ func (p *Pipe2[K, V]) Close() {
 	default:
 	}
 	close(p.closed)
+	p.rw.Lock()
+	defer p.rw.Unlock()
 	close(p.c)
 }
 
@@ -145,6 +156,8 @@ func (p *Pipe2[K, V]) Push(k K, v V) bool {
 		return false
 	default:
 	}
+	p.rw.RLock()
+	defer p.rw.RUnlock()
 	select {
 	case p.c <- hiter.KeyValue[K, V]{K: k, V: v}:
 		return true
@@ -162,6 +175,8 @@ func (p *Pipe2[K, V]) TryPush(k K, v V) (open, pushed bool) {
 		return false, false
 	default:
 	}
+	p.rw.RLock()
+	defer p.rw.RUnlock()
 	select {
 	case p.c <- hiter.KVPair(k, v):
 		return true, true

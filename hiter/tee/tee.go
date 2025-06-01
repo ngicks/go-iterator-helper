@@ -14,8 +14,6 @@ import (
 // Yielding values from the returned iterator performs push before the inner loop receives the value.
 // The iterator is not stateful; you may want to wrap it with [iterable.Resumable].
 // If pusher returns false, the iterator stops iteration without yielding value.
-//
-// Experimental: not tested and might be changed any time.
 func TeeSeq[V any](pusher func(v V) bool, seq iter.Seq[V]) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		for v := range seq {
@@ -50,6 +48,8 @@ func TeeSeq2[K, V any](pusher func(K, V) bool, seq iter.Seq2[K, V]) iter.Seq2[K,
 
 // TeeSeqPipe tees values from seq to [*Pipe]. see doc comments for [TeeSeq].
 // Yielding values from returned [*iterable.Resumable] also performs push to [*Pipe].
+//
+// Closing pipe and stopping resumable are caller's responsibility.
 func TeeSeqPipe[V any](bufSize int, seq iter.Seq[V]) (*Pipe[V], *iterable.Resumable[V]) {
 	p := NewPipe[V](bufSize)
 	tee := iterable.NewResumable(
@@ -63,6 +63,8 @@ func TeeSeqPipe[V any](bufSize int, seq iter.Seq[V]) (*Pipe[V], *iterable.Resuma
 
 // TeeSeqPipe2 tees key-value pairs from seq to [*Pipe2]. see doc comments for [TeeSeq2].
 // Yielding pairs from returned [*iterable.Resumable2] also performs push to [*Pipe2].
+//
+// Closing pipe and stopping resumable are caller's responsibility.
 func TeeSeqPipe2[K, V any](bufSize int, seq iter.Seq2[K, V]) (*Pipe2[K, V], *iterable.Resumable2[K, V]) {
 	p := NewPipe2[K, V](bufSize)
 	tee := iterable.NewResumable2(

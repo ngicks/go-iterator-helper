@@ -52,7 +52,7 @@ func Equal2[K, V comparable](x, y iter.Seq2[K, V]) bool {
 }
 
 // EqualFunc reports whether two sequences are equal using an equality function on each pair of elements.
-func EqualFunc[V1, V2 any](x iter.Seq[V1], y iter.Seq[V2], f func(V1, V2) bool) bool {
+func EqualFunc[V1, V2 any](f func(V1, V2) bool, x iter.Seq[V1], y iter.Seq[V2]) bool {
 	for z := range Zip(x, y) {
 		if !z.BothPresent() || !f(z.Unpack()) {
 			return false
@@ -62,7 +62,7 @@ func EqualFunc[V1, V2 any](x iter.Seq[V1], y iter.Seq[V2], f func(V1, V2) bool) 
 }
 
 // EqualFunc2 reports whether two sequences are equal using an equality function on each pair of elements.
-func EqualFunc2[K1, V1, K2, V2 any](x iter.Seq2[K1, V1], y iter.Seq2[K2, V2], f func(K1, V1, K2, V2) bool) bool {
+func EqualFunc2[K1, V1, K2, V2 any](f func(K1, V1, K2, V2) bool, x iter.Seq2[K1, V1], y iter.Seq2[K2, V2]) bool {
 	for z := range Zip2(x, y) {
 		if !z.BothPresent() || !f(ZippedUnpackKeyValue(z)) {
 			return false
@@ -163,7 +163,7 @@ func Map2[K1, V1, K2, V2 any](f func(K1, V1) (K2, V2), seq iter.Seq2[K1, V1]) it
 // Merge is equivalent to calling MergeFunc with cmp.Compare[V]
 // as the ordering function.
 func Merge[V cmp.Ordered](x, y iter.Seq[V]) iter.Seq[V] {
-	return MergeFunc(x, y, cmp.Compare[V])
+	return MergeFunc(cmp.Compare[V], x, y)
 }
 
 // MergeFunc merges two sequences of values ordered by the function f.
@@ -174,7 +174,7 @@ func Merge[V cmp.Ordered](x, y iter.Seq[V]) iter.Seq[V] {
 // If the two input sequences are not ordered by f,
 // the output sequence will not be ordered by f,
 // but it will still contain every value from x and y exactly once.
-func MergeFunc[V any](x, y iter.Seq[V], f func(V, V) int) iter.Seq[V] {
+func MergeFunc[V any](f func(V, V) int, x, y iter.Seq[V]) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		next, stop := iter.Pull(y)
 		defer stop()
@@ -209,7 +209,7 @@ func MergeFunc[V any](x, y iter.Seq[V], f func(V, V) int) iter.Seq[V] {
 // Merge2 is equivalent to calling MergeFunc2 with cmp.Compare[K]
 // as the ordering function.
 func Merge2[K cmp.Ordered, V any](x, y iter.Seq2[K, V]) iter.Seq2[K, V] {
-	return MergeFunc2(x, y, cmp.Compare[K])
+	return MergeFunc2(cmp.Compare[K], x, y)
 }
 
 // MergeFunc2 merges two sequences of key-value pairs ordered by the function f.
@@ -220,7 +220,7 @@ func Merge2[K cmp.Ordered, V any](x, y iter.Seq2[K, V]) iter.Seq2[K, V] {
 // If the two input sequences are not ordered by f,
 // the output sequence will not be ordered by f,
 // but it will still contain every pair from x and y exactly once.
-func MergeFunc2[K, V any](x, y iter.Seq2[K, V], f func(K, K) int) iter.Seq2[K, V] {
+func MergeFunc2[K, V any](f func(K, K) int, x, y iter.Seq2[K, V]) iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
 		next, stop := iter.Pull2(y)
 		defer stop()

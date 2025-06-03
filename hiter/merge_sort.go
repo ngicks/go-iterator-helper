@@ -24,7 +24,7 @@ func MergeSortFunc[S ~[]T, T any](m S, cmp func(l, r T) int) iter.Seq[T] {
 		left, right := m[:len(m)/2], m[len(m)/2:]
 		leftIter := MergeSortFunc(left, cmp)
 		rightIter := MergeSortFunc(right, cmp)
-		for t := range MergeFunc(leftIter, rightIter, cmp) {
+		for t := range MergeFunc(cmp, leftIter, rightIter) {
 			if !yield(t) {
 				return
 			}
@@ -114,7 +114,7 @@ func mergeSortSubbableFunc[S SliceLike[T], T any](s subbable[S, T], cmp func(l, 
 		left, right := s.Sub(0, s.Len()/2), s.Sub(s.Len()/2, s.Len())
 		leftIter := mergeSortSubbableFunc(left, cmp)
 		rightIter := mergeSortSubbableFunc(right, cmp)
-		for t := range MergeFunc(leftIter, rightIter, cmp) {
+		for t := range MergeFunc(cmp, leftIter, rightIter) {
 			if !yield(t) {
 				return
 			}

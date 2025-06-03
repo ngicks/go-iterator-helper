@@ -198,7 +198,7 @@ func TestEqualFunc(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			result := hiter.EqualFunc(slices.Values(tc.seq1), slices.Values(tc.seq2), tc.cmpFunc)
+			result := hiter.EqualFunc(tc.cmpFunc, slices.Values(tc.seq1), slices.Values(tc.seq2))
 			assert.Equal(t, tc.expected, result)
 		})
 	}
@@ -235,7 +235,7 @@ func TestEqualFunc2(t *testing.T) {
 
 	for _, tc := range tests {
 		t.Run(tc.name, func(t *testing.T) {
-			result := hiter.EqualFunc2(hiter.Values2(tc.seq1), hiter.Values2(tc.seq2), tc.cmpFunc)
+			result := hiter.EqualFunc2(tc.cmpFunc, hiter.Values2(tc.seq1), hiter.Values2(tc.seq2))
 			assert.Equal(t, tc.expected, result)
 		})
 	}
@@ -743,7 +743,7 @@ func TestMergeFunc(t *testing.T) {
 		seq2 := slices.Values([]int{8, 6, 4, 2})
 		testcase.One[int]{
 			Seq: func() iter.Seq[int] {
-				return hiter.MergeFunc(seq1, seq2, func(a, b int) int { return cmp.Compare(b, a) })
+				return hiter.MergeFunc(func(a, b int) int { return cmp.Compare(b, a) }, seq1, seq2)
 			},
 			Expected: []int{8, 7, 6, 5, 4, 3, 2, 1},
 			BreakAt:  4,
@@ -755,7 +755,7 @@ func TestMergeFunc(t *testing.T) {
 		seq2 := slices.Values([]string{"cc", "dddd"})
 		testcase.One[string]{
 			Seq: func() iter.Seq[string] {
-				return hiter.MergeFunc(seq1, seq2, func(a, b string) int { return cmp.Compare(len(a), len(b)) })
+				return hiter.MergeFunc(func(a, b string) int { return cmp.Compare(len(a), len(b)) }, seq1, seq2)
 			},
 			Expected: []string{"a", "cc", "bbb", "dddd", "eeeee"},
 			BreakAt:  3,
@@ -795,7 +795,7 @@ func TestMergeFunc2(t *testing.T) {
 		seq2 := hiter.Values2([]hiter.KeyValue[int, string]{{20, "b"}, {40, "d"}})
 		testcase.Two[int, string]{
 			Seq: func() iter.Seq2[int, string] {
-				return hiter.MergeFunc2(seq1, seq2, func(k1, k2 int) int { return cmp.Compare(k1, k2) })
+				return hiter.MergeFunc2(func(k1, k2 int) int { return cmp.Compare(k1, k2) }, seq1, seq2)
 			},
 			Expected: []hiter.KeyValue[int, string]{{10, "a"}, {20, "b"}, {30, "c"}, {40, "d"}},
 			BreakAt:  2,

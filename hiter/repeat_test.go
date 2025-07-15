@@ -10,7 +10,6 @@ import (
 )
 
 func TestRepeat(t *testing.T) {
-	// avoiding depending to xiter.
 	limit10 := func(seq iter.Seq[uint]) iter.Seq[uint] {
 		var count int
 		return hiter.LimitUntil(func(uint) bool { count++; return count <= 10 }, seq)
@@ -81,8 +80,12 @@ func TestRepeat(t *testing.T) {
 				},
 			},
 			Expected: []hiter.KeyValue[uint, string]{
-				{7, "foo"}, {7, "foo"}, {7, "foo"},
-				{7, "foo"}, {7, "foo"}, {7, "foo"},
+				{7, "foo"},
+				{7, "foo"},
+				{7, "foo"},
+				{7, "foo"},
+				{7, "foo"},
+				{7, "foo"},
 				{7, "foo"},
 			},
 			BreakAt: 3,
@@ -104,8 +107,16 @@ func TestRepeat(t *testing.T) {
 				},
 			},
 			Expected: hiter.KeyValues[uint, string]{
-				{7, "foo"}, {7, "foo"}, {7, "foo"}, {7, "foo"}, {7, "foo"},
-				{7, "foo"}, {7, "foo"}, {7, "foo"}, {7, "foo"}, {7, "foo"},
+				{7, "foo"},
+				{7, "foo"},
+				{7, "foo"},
+				{7, "foo"},
+				{7, "foo"},
+				{7, "foo"},
+				{7, "foo"},
+				{7, "foo"},
+				{7, "foo"},
+				{7, "foo"},
 			},
 			Stateful: true,
 		}.Test(t)

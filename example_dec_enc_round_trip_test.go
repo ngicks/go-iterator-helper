@@ -7,9 +7,9 @@ import (
 	"maps"
 	"os"
 
+	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/encodingiter"
 	"github.com/ngicks/go-iterator-helper/hiter/errbox"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
 func Example_dec_enc_round_trip() {
@@ -26,10 +26,10 @@ func Example_dec_enc_round_trip() {
 
 	err := encodingiter.Encode(
 		enc,
-		xiter.Map(
+		hiter.Map(
 			func(m map[string]string) map[string]string {
 				return maps.Collect(
-					xiter.Map2(
+					hiter.Map2(
 						func(k, v string) (string, string) { return k + k, v + v },
 						maps.All(m),
 					),

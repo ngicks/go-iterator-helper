@@ -6,7 +6,6 @@ import (
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/tee"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
 func Example_teeing() {
@@ -25,7 +24,7 @@ func Example_teeing() {
 		hiter.Discard(seqPiped.IntoIter())
 	}()
 
-	for i := range xiter.Map(func(i int) int { return i * i }, seq.IntoIter()) {
+	for i := range hiter.Map(func(i int) int { return i * i }, seq.IntoIter()) {
 		fmt.Printf("i = %02d\n", i)
 	}
 	wg.Wait()

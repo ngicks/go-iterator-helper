@@ -5,13 +5,12 @@ import (
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/stringsiter"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
 func ExampleRange_char() {
 	fmt.Println(
 		stringsiter.Collect(
-			xiter.Map(
+			hiter.Map(
 				func(r rune) string {
 					return string(r - ('a' - 'A'))
 				},

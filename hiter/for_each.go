@@ -4,14 +4,9 @@ import (
 	"context"
 	"iter"
 	"slices"
-
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
-var (
-	_ = xiter.Reduce[any, any]
-	_ = slices.AppendSeq[[]any, any]
-)
+var _ = slices.AppendSeq[[]any, any]
 
 // ForEach iterates over seq and calls fn with every value seq yields.
 func ForEach[V any](fn func(V), seq iter.Seq[V]) {
@@ -96,7 +91,7 @@ func TryForEach[V any](f func(V), seq iter.Seq2[V, error]) error {
 	return nil
 }
 
-// TryReduce is like [xiter.Reduce] but returns an error if seq yields non-nil error.
+// TryReduce is like [Reduce] but returns an error if seq yields non-nil error.
 func TryReduce[Sum, V any](f func(Sum, V) Sum, sum Sum, seq iter.Seq2[V, error]) (Sum, error) {
 	for v, err := range seq {
 		if err != nil {

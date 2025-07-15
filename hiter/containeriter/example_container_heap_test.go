@@ -5,8 +5,8 @@ import (
 	"container/heap"
 	"fmt"
 
+	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/containeriter"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
 var _ heap.Interface = (*sliceHeap)(nil)
@@ -32,7 +32,7 @@ func ExampleHeap() {
 	h := &sliceHeap{0, 6, 1, 3, 2, 8, 210, 3, 7, 9, 2, 1, 54, 7}
 	heap.Init(h)
 
-	for num := range xiter.Limit(containeriter.Heap[int](h), 5) {
+	for num := range hiter.Limit(5, containeriter.Heap[int](h)) {
 		fmt.Printf("%d, ", num)
 	}
 

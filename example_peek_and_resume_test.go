@@ -5,7 +5,6 @@ import (
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
 func Example_peek_and_continue() {
@@ -30,7 +29,7 @@ func Example_peek_and_continue() {
 	fmt.Println()
 	fmt.Println("break and resume")
 	first = true
-	for v := range xiter.Limit(src, 3) {
+	for v := range hiter.Limit(3, src) {
 		if !first {
 			fmt.Print(", ")
 		}
@@ -50,7 +49,7 @@ func Example_peek_and_continue() {
 	fmt.Println()
 	fmt.Println("reconnect them to whole iterator.")
 	first = true
-	for v := range xiter.Concat(hiter.Once(v0), hiter.Once(v1), resumable.IntoIter()) {
+	for v := range hiter.Concat(hiter.Once(v0), hiter.Once(v1), resumable.IntoIter()) {
 		if !first {
 			fmt.Print(", ")
 		}

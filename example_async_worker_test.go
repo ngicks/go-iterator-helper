@@ -12,7 +12,6 @@ import (
 	"github.com/ngicks/go-iterator-helper/hiter/async"
 	"github.com/ngicks/go-iterator-helper/hiter/iterable"
 	"github.com/ngicks/go-iterator-helper/hiter/mapper"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
 // Example async worker channel demonstrates usage of [hiter.Chan], [hiter.ChanSend].
@@ -35,7 +34,7 @@ func Example_async_worker_channel() {
 			_, _ = hiter.ChanSend(
 				ctx,
 				out,
-				xiter.Map(
+				hiter.Map(
 					func(s string) hiter.KeyValue[string, error] {
 						return hiter.KeyValue[string, error]{
 							K: "✨" + s + "✨" + s + "✨",
@@ -74,7 +73,7 @@ func Example_async_worker_channel() {
 }
 
 // Example async worker map demonstrates usage of async.Map.
-// At the surface it is similar to [xiter.Map2]. Actually it calls mapper in separate goroutine.
+// At the surface it is similar to [hiter.Map2]. Actually it calls mapper in separate goroutine.
 // If you don't care about order of element,
 // just send values to workers through a channel and send back through another channel.
 func Example_async_worker_map() {

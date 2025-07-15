@@ -8,7 +8,6 @@ import (
 
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/containeriter"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
 func ExampleRingAll() {
@@ -82,7 +81,7 @@ func ExampleRingAll_moving_average() {
 	src := slices.Values([]int{1, 0, 1, 0, 1, 0, 5, 3, 2, 3, 4, 6, 5, 3, 6, 7, 7, 8, 9, 5, 7, 7, 8})
 
 	first := true
-	for avg := range xiter.Map(
+	for avg := range hiter.Map(
 		func(s iter.Seq[int]) float64 {
 			return float64(hiter.Sum(s)) / float64(windowSize)
 		},

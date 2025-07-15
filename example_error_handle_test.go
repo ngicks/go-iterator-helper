@@ -8,7 +8,6 @@ import (
 	"github.com/ngicks/go-iterator-helper/hiter"
 	"github.com/ngicks/go-iterator-helper/hiter/errbox"
 	"github.com/ngicks/go-iterator-helper/hiter/mapper"
-	"github.com/ngicks/go-iterator-helper/x/exp/xiter"
 )
 
 // Example error handle demonstrates various way to handle error.
@@ -20,7 +19,7 @@ func Example_error_handle() {
 
 	erroneous := hiter.Pairs(
 		hiter.Range(0, 6),
-		xiter.Concat(
+		hiter.Concat(
 			hiter.Repeat(error(nil), 2),
 			hiter.Repeat(errSample2, 2),
 			hiter.Once(errSample),

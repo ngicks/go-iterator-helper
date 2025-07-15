@@ -24,25 +24,25 @@ func (m *Map) Range(f func(key, value any) bool)
 Helpers for iterator.
 
 This package avoids re-implementing those which defined in standard or quasi-standard libraries.
-Namely `slices`, `maps`, ~~`x/exp/xiter`~~ (the proposal was withdrawn, at this time I'm not seeing what will be implemented in `x/exp/xiter`).
+Namely `slices`, `maps`, ~~`x/exp/xiter`~~ (the proposal was withdrawn, at this time I'm not seeing what will be implemented in the furure hypothesis `x/exp/xiter`).
 
-For example, `Zip`, `Reduce` are not defined since they will be implemented in `xiter` when
-[#61898](https://github.com/golang/go/issues/61898) accepted and merged.
+~~For example, `Zip`, `Reduce` are not defined since they will be implemented in `xiter` when~~
+~~[#61898](https://github.com/golang/go/issues/61898) accepted and merged.~~
 
 Some ideas are stolen from https://jsr.io/@std/collections/doc, like Permutation and SumOf.
 
 Each package named `*iter` corresponds to same `*` name of std library (e.g. `reflectiter` defines iterator souces/adapters for std package `refect`).
 Packages nested under other package are flattened, e.g. `encodingiter` defines helpers for `encoding/json`, `encoding/xml`, `encoding/csv` and so on.
 
-## x/exp/xiter
-
-Those listed in [#61898](https://github.com/golang/go/issues/61898).
+## Deprecated: x/exp/xiter
 
 Deprecated: you should no longer use this package since the proposal is withdrawn.
 `hiter` re-defines equivalents so you can use these in there.
 The proposal was wound down because the author saw Go iterator was too young.
 Once Go iterator gets matured in the community, proposal might again be proposed.
 At that time signatures of functions would be changed if the community finds better conventions.
+
+Those listed in [#61898](https://github.com/golang/go/issues/61898).
 
 This package is vendored so that you can use it anywhere without copy-and-pasting everywhere.
 It is already frozen; no change will be made even when xiter proposal got some modification.
@@ -68,3 +68,9 @@ https://tip.golang.org/doc/go1.24
   - `stringsiter` package defines similar functions but not exactly same. Those remain valid and maintained.
 - iterator sources to `go/types`
   - `hiter.Atter` remains valid since it can be used for any implementors, e.g. [github.com/gammazero/deque](https://github.com/gammazero/deque)
+
+### After Go 1.25
+
+Seems nothing
+
+https://tip.golang.org/doc/go1.25

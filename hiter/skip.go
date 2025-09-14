@@ -54,9 +54,6 @@ import (
 func Skip[V any](n int, seq iter.Seq[V]) iter.Seq[V] {
 	return func(yield func(V) bool) {
 		n := n
-		if n <= 0 {
-			return
-		}
 		for v := range seq {
 			if n--; n >= 0 {
 				continue
@@ -72,9 +69,6 @@ func Skip[V any](n int, seq iter.Seq[V]) iter.Seq[V] {
 func Skip2[K, V any](n int, seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 	return func(yield func(K, V) bool) {
 		n := n // no state
-		if n <= 0 {
-			return
-		}
 		for k, v := range seq {
 			if n--; n >= 0 {
 				continue
@@ -88,6 +82,10 @@ func Skip2[K, V any](n int, seq iter.Seq2[K, V]) iter.Seq2[K, V] {
 
 // SkipLast returns an iterator over seq that skips last n elements of seq.
 func SkipLast[V any](n int, seq iter.Seq[V]) iter.Seq[V] {
+	if n <= 0 {
+		return seq
+	}
+
 	return func(yield func(V) bool) {
 		var ( // easy implementation for ring buffer.
 			buf    = make([]V, n)
@@ -119,6 +117,10 @@ func SkipLast[V any](n int, seq iter.Seq[V]) iter.Seq[V] {
 
 // SkipLast2 returns an iterator over seq that skips last n key-value pairs of seq.
 func SkipLast2[K, V any](n int, seq iter.Seq2[K, V]) iter.Seq2[K, V] {
+	if n <= 0 {
+		return seq
+	}
+
 	return func(yield func(K, V) bool) {
 		var ( // easy implementation for ring buffer.
 			buf    = make([]KeyValue[K, V], n)

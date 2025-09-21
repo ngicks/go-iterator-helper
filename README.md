@@ -19,6 +19,155 @@ func (r Record) Attrs(f func(Attr) bool)
 func (m *Map) Range(f func(key, value any) bool)
 ```
 
+## Typical Usages
+
+This section provides examples of common iterator operations. Each example has a dedicated example test.
+
+### 1. Basic Operations
+
+#### Creating Iterators
+
+See [`Example_creatingIterators`](https://pkg.go.dev/github.com/ngicks/go-iterator-helper#example-package-CreatingIterators) for creating iterators from slices, ranges, repeated values, and single values.
+
+```go
+// From slices, Range, Repeat, Once
+// From slice (std): 1 - 3
+slice_iter := slices.Values([]int{1, 2, 3})
+// Range: 10 - 14 (inclusive-exclusive range)
+// To control inclusiveness, use RangeInclusive
+range_iter := hiter.Range(10, 15)
+// Repeat: [hi hi hi]
+repeat_iter := hiter.Repeat("hi", 3)
+// Once: [42]
+once_iter := hiter.Once(42)
+```
+
+#### Combining Iterators
+
+See [`Example_concat`](https://pkg.go.dev/github.com/ngicks/go-iterator-helper#example-package-Concat) for combining multiple iterators.
+
+```go
+first := slices.Values([]int{1, 2, 3})
+second := slices.Values([]int{10, 11})
+third := slices.Values([]int{20, 21, 22})
+
+combined := hiter.Concat(first, second, third)
+// Output: [1 2 3 10 11 20 21 22]
+```
+
+#### Transforming Data
+
+See [`Example_mapAndFilter`](https://pkg.go.dev/github.com/ngicks/go-iterator-helper#example-package-MapAndFilter) for transforming iterators with Map and Filter.
+
+```go
+numbers := slices.Values([]int{1, 2, 3, 4, 5, 6})
+
+doubled := hiter.Map(func(n int) int { return n * 2 }, numbers)
+// 2, 4, 6, 8, 10, 12
+evens := hiter.Filter(func(n int) bool { return n%2 == 0 }, numbers)
+// 2, 4, 6
+```
+
+#### Aggregation
+
+See [`Example_reduce`](https://pkg.go.dev/github.com/ngicks/go-iterator-helper#example-package-Reduce) for basic aggregation operations.
+
+```go
+numbers := slices.Values([]int{1, 2, 3, 4, 5})
+
+sum := hiter.Reduce(func(acc, val int) int { return acc + val }, 0, numbers)
+// Sum: 15
+// For this simple case use instead
+sum := hiter.Sum(numbers)
+// Sum: 15
+
+product := hiter.Reduce(func(acc, val int) int { return acc * val }, 1, numbers)
+// Product: 120
+```
+
+#### Group and Reduce
+
+See [`Example_reduceGroup`](https://pkg.go.dev/github.com/ngicks/go-iterator-helper#example-package-ReduceGroup) for grouping by key and aggregating values.
+
+```go
+grouped := hiter.ReduceGroup(
+    func(acc, val int) int { return acc + val },
+    0,
+    pairs,
+)
+// Result: map[fruit:55 vegetable:45]
+```
+
+#### String Operations
+
+See [`Example_stringJoin`](https://pkg.go.dev/github.com/ngicks/go-iterator-helper#example-package-StringJoin) for joining iterator values into strings.
+
+```go
+words := slices.Values([]string{"go", "iterator", "helper"})
+collected := stringsiter.Collect(words)
+// Result: "goiteratorhelper"
+joined := stringsiter.Join("-", words)
+// Result: "go-iterator-helper"
+```
+
+### 2. Error Handling
+
+#### Error-Aware Iteration
+
+See [`Example_tryForEach`](https://pkg.go.dev/github.com/ngicks/go-iterator-helper#example-package-TryForEach) for processing until errors occur.
+
+```go
+err := hiter.TryForEach(func(item string) { /* process */ }, data)
+```
+
+#### JSON Stream Error Handling
+
+See [`Example_errboxJSON`](https://pkg.go.dev/github.com/ngicks/go-iterator-helper#example-package-ErrboxJSON) for handling errors in JSON streams.
+
+```go
+decoder := json.NewDecoder(reader)
+jsonBox := errbox.New(encodingiter.Decode[Person](decoder))
+for person := range jsonBox.IntoIter() {
+    // Process valid records
+}
+if err := jsonBox.Err(); err != nil {
+    // Handle stream errors
+}
+```
+
+### 3. Advanced Patterns
+
+#### Moving Averages with Windows
+
+See [`Example_windowMovingAverage`](https://pkg.go.dev/github.com/ngicks/go-iterator-helper#example-package-WindowMovingAverage) for sliding window calculations.
+
+```go
+windows := hiter.Window(data, 3)
+averages := hiter.Map(func(w []int) float64 {
+    return float64(hiter.Sum(slices.Values(w))) / float64(len(w))
+}, windows)
+```
+
+#### Flattening Nested Structures
+
+See [`Example_flatten`](https://pkg.go.dev/github.com/ngicks/go-iterator-helper#example-package-Flatten) for flattening nested arrays.
+
+```go
+flattened := hiter.Flatten(slices.Values(nested))
+// [[a b] [c] [d e f]] → [a b c d e f]
+```
+
+#### Resumable Iteration
+
+See [`Example_resumable`](https://pkg.go.dev/github.com/ngicks/go-iterator-helper#example-package-Resumable) for pausable and resumable iteration.
+
+```go
+resumable := iterable.NewResumable(source)
+batch1 := hiter.Limit(3, resumable.IntoIter())  // [1 2 3]
+batch2 := hiter.Limit(3, resumable.IntoIter())  // [4 5 6]
+remaining := resumable.IntoIter()               // [7 8 9]
+```
+
 ## hiter
 
 Helpers for iterator.

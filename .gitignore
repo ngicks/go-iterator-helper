@@ -26,3 +26,4 @@ go.work.sum
 
 # temporary directory
 /working
+.serena

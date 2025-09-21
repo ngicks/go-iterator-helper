@@ -99,13 +99,14 @@ func New2[K, V any](seq iter.Seq2[hiter.KeyValue[K, V], error]) *Box2[K, V] {
 //
 // See doc comment for [Box] for detailed caveats.
 func Map2[K1, V1, K2, V2 any](mapper func(K1, V1) (K2, V2, error), seq iter.Seq2[K1, V1]) *Box2[K2, V2] {
-	return New2(hiter.Map2(
-		func(k K1, v V1) (hiter.KeyValue[K2, V2], error) {
-			k2, v2, err := mapper(k, v)
-			return hiter.KeyValue[K2, V2]{K: k2, V: v2}, err
-		},
-		seq,
-	),
+	return New2(
+		hiter.Map2(
+			func(k K1, v V1) (hiter.KeyValue[K2, V2], error) {
+				k2, v2, err := mapper(k, v)
+				return hiter.KeyValue[K2, V2]{K: k2, V: v2}, err
+			},
+			seq,
+		),
 	)
 }
 

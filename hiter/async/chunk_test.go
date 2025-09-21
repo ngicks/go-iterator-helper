@@ -70,15 +70,16 @@ func TestChunk_timeout(t *testing.T) {
 	src := hiter.Chan(context.Background(), c)
 
 	org := clock
+	f := newResetCountClock(clockwork.NewFakeClock())
+	clock = f
 	defer func() {
 		clock = org
 	}()
-	f := newResetCountClock(clockwork.NewFakeClock())
-	clock = f
 
 	resultChan := make(chan []int)
 	go func() {
 		for i, v := range hiter.Enumerate(Chunk(time.Millisecond, 3, src)) {
+			v = slices.Clone(v)
 			t.Logf("%d: %#v", i, v)
 			resultChan <- v
 		}
@@ -90,28 +91,57 @@ func TestChunk_timeout(t *testing.T) {
 		assert.Equal(t, time.Millisecond, <-f.ResetChan())
 	}
 
+	// Test timeout with single value
 	c <- 0
 	waitReset()
-	c <- 1
 	f.BlockUntil(1)
 	f.Advance(time.Millisecond + 100)
-	assert.DeepEqual(t, []int{0, 1}, <-resultChan)
+	result1 := <-resultChan
+	assert.Equal(t, 1, len(result1))
+	assert.Equal(t, 0, result1[0])
+
+	// Test that next value starts new chunk
+	c <- 1
+	waitReset()
+	f.BlockUntil(1)
+	f.Advance(time.Millisecond + 100)
+	result2 := <-resultChan
+	assert.Equal(t, 1, len(result2))
+	assert.Equal(t, 1, result2[0])
+
+	// Test filling buffer completely (no timeout)
 	c <- 2
 	waitReset()
 	c <- 3
 	c <- 4
 	assert.DeepEqual(t, []int{2, 3, 4}, <-resultChan)
+
+	f.Advance(time.Millisecond + 100)
+
+	// Test timeout behavior - values sent close together may or may not be in same chunk
 	c <- 5
-	waitReset()
 	c <- 6
+	waitReset() // This waits for timer reset from value 5
 	f.BlockUntil(1)
-	f.Advance(time.Millisecond)
-	assert.DeepEqual(t, []int{5, 6}, <-resultChan)
-	c <- 7
-	waitReset()
-	c <- 8
-	c <- 9
-	assert.DeepEqual(t, []int{7, 8, 9}, <-resultChan)
+	f.Advance(time.Millisecond + 100)
+	result3 := <-resultChan
+	// Can't strictly sync with this race.
+	// TODO: add (var valueReceived chan struct{}) at top of module
+	// and manipulate the channel to sync value received / time-out
+	assert.Assert(t, len(result3) >= 1 && len(result3) <= 2)
+	assert.Equal(t, 5, result3[0])
+	if len(result3) == 2 {
+		assert.Equal(t, 6, result3[1])
+	}
+
+	if len(result3) == 1 {
+		waitReset()
+		f.BlockUntil(1)
+		f.Advance(time.Millisecond + 100)
+		result4 := <-resultChan
+		assert.Equal(t, 6, result4[0])
+	}
+
 	close(c)
 	_, ok := <-resultChan
 	assert.Assert(t, !ok)

@@ -193,3 +193,61 @@ func TestTryCollect(t *testing.T) {
 	assert.DeepEqual(t, []string{"foo", "foo"}, sum)
 	assert.NilError(t, err)
 }
+
+func TestTryMapsCollect(t *testing.T) {
+	kvSrc := []hiter.KeyValue[hiter.KeyValue[string, int], error]{
+		{K: hiter.KVPair("a", 1), V: nil},
+		{K: hiter.KVPair("b", 2), V: nil},
+		{K: hiter.KVPair("c", 3), V: testcase.ErrSample},
+		{K: hiter.KVPair("d", 4), V: nil},
+	}
+
+	var (
+		result map[string]int
+		err    error
+	)
+
+	result, err = hiter.TryMapsCollect(hiter.Values2(kvSrc))
+	expected := map[string]int{"a": 1, "b": 2}
+	assert.DeepEqual(t, expected, result)
+	assert.ErrorIs(t, err, testcase.ErrSample)
+
+	limitedSrc := hiter.Limit2(2, hiter.Values2(kvSrc))
+	result, err = hiter.TryMapsCollect(limitedSrc)
+	expected = map[string]int{"a": 1, "b": 2}
+	assert.DeepEqual(t, expected, result)
+	assert.NilError(t, err)
+}
+
+func TestTryInsert(t *testing.T) {
+	kvSrc := []hiter.KeyValue[hiter.KeyValue[string, int], error]{
+		{K: hiter.KVPair("x", 10), V: nil},
+		{K: hiter.KVPair("y", 20), V: nil},
+		{K: hiter.KVPair("z", 30), V: testcase.ErrSample},
+		{K: hiter.KVPair("w", 40), V: nil},
+	}
+
+	m := make(map[string]int)
+	m["x"] = 999
+	m["initial"] = 999
+	err := hiter.TryInsert(m, hiter.Values2(kvSrc))
+	expected := map[string]int{"initial": 999, "x": 10, "y": 20}
+	assert.DeepEqual(t, expected, m)
+	assert.ErrorIs(t, err, testcase.ErrSample)
+
+	m2 := make(map[string]int)
+	m2["pre"] = 123
+	limitedSrc := hiter.Limit2(2, hiter.Values2(kvSrc))
+	err = hiter.TryInsert(m2, limitedSrc)
+	expected = map[string]int{"pre": 123, "x": 10, "y": 20}
+	assert.DeepEqual(t, expected, m2)
+	assert.NilError(t, err)
+
+	m3 := make(map[string]int)
+	m3["only"] = 456
+	emptyKvSrc := []hiter.KeyValue[hiter.KeyValue[string, int], error]{}
+	err = hiter.TryInsert(m3, hiter.Values2(emptyKvSrc))
+	expected = map[string]int{"only": 456}
+	assert.DeepEqual(t, expected, m3)
+	assert.NilError(t, err)
+}

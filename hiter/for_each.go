@@ -3,6 +3,7 @@ package hiter
 import (
 	"context"
 	"iter"
+	_ "maps"
 	"slices"
 )
 
@@ -118,4 +119,26 @@ func TryAppendSeq[S ~[]E, E any](s S, seq iter.Seq2[E, error]) (S, error) {
 		s = append(s, e)
 	}
 	return s, nil
+}
+
+// TryMapsCollect collects k-v pairs over seq to a map.
+// It stops on a first error without a paired value inserted.
+//
+// Use [Divide] combined with [KVPair] to convert [iter.Seq2][K, V] into iter.Seq2[KeyValue[K, V], error].
+func TryMapsCollect[K comparable, V any](seq iter.Seq2[KeyValue[K, V], error]) (map[K]V, error) {
+	m := make(map[K]V)
+	err := TryInsert(m, seq)
+	return m, err
+}
+
+// TryInsert is like [TryMapsCollect] but adds the k-v pairs from seq to m.
+// If a key in seq already exists in m, its value will be overwritten.
+func TryInsert[M ~map[K]V, K comparable, V any](m M, seq iter.Seq2[KeyValue[K, V], error]) error {
+	for kv, err := range seq {
+		if err != nil {
+			return err
+		}
+		m[kv.K] = kv.V
+	}
+	return nil
 }
